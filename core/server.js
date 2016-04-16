@@ -31,10 +31,10 @@ app.use(express.static('./frontend/app'));
 require('./routes')(app);
 
 
-//Ponemos la url de mongo según el modo actual (desarrollo, produccíon...)
-app.set('dbUrl',config.db[app.settings.env]);
+//URL de mongo según modo. Primero prueba la de HEROKU, si no, fichero de config.
+app.set('dbUrl',process.env.MONGOLAB_URI || config.db[app.settings.env]);
 
-//Ponemos el puerto según el modo actual
+//Ponemos el puerto según modo. Primero prueba el de HEROKU, si no, fichero de config.
 app.set('port',process.env.PORT || config.port[app.settings.env]);
 
 //Conectamos y lanzamos el servidor
