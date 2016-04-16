@@ -18,5 +18,9 @@
     "chai": "^3.5.0",
     "chai-http": "^2.0.1",
     "mocha": "^2.4.5"
+  },
+  "scripts": {
+    "postinstall": "cd frontend; npm install;"
+
   }
 }

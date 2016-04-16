@@ -1,7 +1,7 @@
 language: node_js
 node_js:
 - 5.8.0
-before_script: cd core; npm install; cd frontend ; npm install; cd ..
+before_script: cd core; npm install
 script: "./node_modules/mocha/bin/mocha"
 services: mongodb
 deploy:
