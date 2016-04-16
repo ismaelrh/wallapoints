@@ -5,8 +5,13 @@
 
 Proyecto de STW de Ismael Rodríguez, Sergio Soro y David Vergara.
 
-##Contenidos:
-* core -> Contiene el servicio web principal junto al frontend
+##Directorios:
+* **core** -> Contiene el servicio web principal junto al frontend
+
+##Ficheros:
+* **.travis.yml** -> Fichero de configuración de test Travis.
+* **Procfile** -> Fichero de configuración de ejecución en Heroku.
+
 
 Por favor, lee el README.md dentro de la carpeta "core" para más información.
 
