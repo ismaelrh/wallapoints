@@ -5,5 +5,7 @@ before_script: cd core && npm install
 script: "./node_modules/mocha/bin/mocha"
 services: mongodb
 deploy:
+  app: wallapoints
+  provider: heroku
   api_key:
     secure: qF8+kyTtxWYYZItab2Fl83kiHGN8VyW/+i1NTryhPCNRx2GyxRAJrTav4s+H4jtFN9q5xLx32w0829KgZ/64GcSX6nj29mmU+senodhevlH7Msgx9eqsNdR1XHM+iehFc8HdRJ0QVSpnRtw5yRZnekWIHfF6C8UBebbWk989rs3T5XhN3pnjldQj/1x+hHihXxblPNI+dFnPwku9d99R8hS321Wyd03q/HrGomHVexZZJ6oisy42ObedE71M63wH37ieS7Mmovj1EINukzx0/vy0xoAQzehHtAcgEdDqXYk3jMv1NpxF5Q9wqTNExcBiprLidRUfCnKltNrJIVh6KGGNkya7FF1He0CX8aShTRJA5URyQ9Ixpsd64pQFXafMrHsT78PrM4wQLTjuhJpxGoCqCziGOpgwvy8bItzJnQA3zv5JrCFpjSDsf5tdisHJhnMLgcwjB6z/rh+PfUkmD27TT8DeaLdkn6tZsjzQbNmv1Vv0E3MujpVLiUmTrmwbmhFmB/m3qXC+2i6m3naYkPoSDAe7kUkSlpmyoDr6++H2Zrm2h+9duakplIpqioYb/7JUajGtTQWVxz03Tn8clBEM+dFAPcIyuXU7Mj+rdLp2WyQ/HP4QabKcS4PShbW7j3rGnDfpqk8kmYOcsZMrpXt8NqDaecXhIgkkiPxmLpo=
