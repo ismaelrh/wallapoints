@@ -1,1 +1,1 @@
-web: "cd core && node server.js"
+web: "cd core/frontend; npm install; cd ..; npm install; node server.js"
