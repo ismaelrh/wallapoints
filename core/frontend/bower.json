@@ -1,9 +1,9 @@
 {
-  "name": "angular-seed",
-  "description": "A starter project for AngularJS",
+  "name": "WallaPoints Frontend",
+  "description": "STW",
   "version": "0.0.0",
-  "homepage": "https://github.com/angular/angular-seed",
-  "license": "MIT",
+  "homepage": "https://github.com/ismaro3/wallapoints",
+  "license": "Apache-2.0",
   "private": true,
   "dependencies": {
     "angular": "~1.4.0",

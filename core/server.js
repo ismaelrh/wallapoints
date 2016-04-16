@@ -18,7 +18,9 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.models = require('./models');
 
 //Servimos el frontend en "/"
-app.use("/",express.static('frontend/app'));
+console.log(express.static('frontend/app'));
+app.use(express.static('./frontend/app'));
+
 //Cargamos las rutas
 require('./routes')(app);
 
