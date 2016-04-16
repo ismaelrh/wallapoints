@@ -35,7 +35,7 @@ require('./routes')(app);
 app.set('dbUrl',config.db[app.settings.env]);
 
 //Ponemos el puerto según el modo actual
-app.set('port',config.port[app.settings.env]);
+app.set('port',process.env.PORT || config.port[app.settings.env]);
 
 //Conectamos y lanzamos el servidor
 mongoose.connect(app.get('dbUrl'));
