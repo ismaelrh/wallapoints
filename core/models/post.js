@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 
 //Definimos esquema
 var PostSchema = mongoose.Schema({
-  header: {type: String },
+  title: {type: String },
   author: {type: String },
   text: {type: String }
 });
