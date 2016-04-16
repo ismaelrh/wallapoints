@@ -20,7 +20,7 @@ angular.module('frontend')
      */
     self.retrievePosts = function(){
 
-        $http.get('/post').then(function(response){
+        $http.get('/posts').then(function(response){
             self.posts = response.data.message;
         }, function(err){
             console.log(err);
@@ -35,7 +35,7 @@ angular.module('frontend')
      */
     self.addPost = function(){
 
-        $http.post('/post', self.newPost).then(function(response){
+        $http.post('/posts', self.newPost).then(function(response){
 
             self.posts.push(response.data.message);
             self.newPost = {};
@@ -47,7 +47,7 @@ angular.module('frontend')
 
 
     self.deletePost = function(id){
-        $http.delete('/post/' + id).then(function(response){
+        $http.delete('/posts/' + id).then(function(response){
 
             //Search on local array
             var index = -1;

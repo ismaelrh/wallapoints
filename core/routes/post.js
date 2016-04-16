@@ -13,7 +13,7 @@ module.exports = function(app){
   //Método GET / - Devuelve lista de POST
   router.get("/",function(req,res){
 
-    console.log("Processing GET /post");
+
     Post.find({},function(err,results){
       if(err){
         res.status(500).send({"error":true,"message":"Error retrieving data"});
@@ -30,7 +30,7 @@ module.exports = function(app){
   //Método POST / - Añade un nuevo POST
   router.post("/",function(req,res){
 
-    console.log("Processing POST /post");
+
     var newPost = new Post(req.body);
     newPost.save(function(err,saved){
 
@@ -48,7 +48,7 @@ module.exports = function(app){
   //Método DELETE /:id - Borra un post
   router.delete("/:id",function(req,res){
 
-    console.log("Processing DELETE /post/:id" + req.params.id);
+
     Post.remove({_id:req.params.id},function(err,deleted){
 
       if(err){

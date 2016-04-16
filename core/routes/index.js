@@ -6,7 +6,7 @@
 module.exports = function(app) {
 
 
-  app.use("/user",require('./user')(app));
-  app.use("/post",require('./post')(app));
+  app.use("/users",require('./user')(app));
+  app.use("/posts",require('./post')(app));
 
 }
