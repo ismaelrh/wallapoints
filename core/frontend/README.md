@@ -3,7 +3,8 @@
 Frontend de la aplicación web de stw.
 
 ##Cómo ejecutar
-1. Si es la primera vez, ejecutar `npm install` en este directorio. Se bajarán las dependencias.
+1. Si ya has ejecutado 'npm install' en el directorio 'core', no necesitas hacer nada.
+2. En caso contrario, ejecutar `npm install` en este directorio. Se bajarán las dependencias.
 2. Para ejecutar el frontend hay que ejecutar el servidor Node.JS, pues es éste el encargado de servirlo. Para ello,
 seguir los pasos de ejecución detallados en el fichero 'README.MD' del directorio 'core'.
 
