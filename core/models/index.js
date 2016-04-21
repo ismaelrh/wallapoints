@@ -8,5 +8,6 @@
 
 module.exports = {
   Post: require('./post.js'),
-  User: require('./user.js')
+  User: require('./user.js'),
+  DeletedUser: require('./deletedUser.js')
 }
