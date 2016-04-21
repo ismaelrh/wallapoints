@@ -8,5 +8,8 @@ module.exports = function(app) {
 
   app.use("/users",require('./user')(app));
   app.use("/posts",require('./post')(app));
+  app.use("/guests/:guestMail/favourite",require('./favourite')(app));
+  app.use("/guests",require('./guest')(app));
 
-}
+
+};

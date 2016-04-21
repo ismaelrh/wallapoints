@@ -8,5 +8,9 @@
 
 module.exports = {
   Post: require('./post.js'),
-  User: require('./user.js')
-}
+  User: require('./user.js'),
+  Guest: require('./guest.js'),
+  Favourite: require('./favourite.js'),
+  Following: require('./following.js'),
+  Rating: require('./rating.js')
+};
