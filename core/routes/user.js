@@ -15,15 +15,6 @@ module.exports = function(app){
   var DeletedUser = app.models.DeletedUser;
   var userLoged = "";
 
-  var UserSchema = mongoose.Schema({
-    username: {type: String, required:true},
-    password: {type: String, required:true},
-    email: {type: String, required:true},
-    name: {type: String, required:true},
-    surname: {type: String, required:true},
-    registerDate: {type: Date, required:true},
-    lastAccessDate: {type: Date, required:true}
-  });
 
   /* Método GET /user, solo el admin puede obtener la lista con todos los usuarios del sistema */
   router.get("/",function(req,res){

@@ -7,6 +7,7 @@ var crypto = require('crypto');
 
 module.exports = function(app){
 
+    var router = express.Router({mergeParams: true});
 
 
     var Favourite = app.models.Favourite;
