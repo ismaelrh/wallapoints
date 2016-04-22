@@ -14,4 +14,3 @@ Proyecto de STW de Ismael Rodríguez, Sergio Soro y David Vergara.
 
 
 Por favor, lee el README.md dentro de la carpeta "core" para más información.
-
