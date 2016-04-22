@@ -3,7 +3,6 @@
 */
 
 var express = require('express');
-var randomstring = require("randomstring");
 
 
 module.exports = function(app){
