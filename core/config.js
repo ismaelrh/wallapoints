@@ -3,7 +3,7 @@ module.exports = {
     {
         production: "mongodb://localhost/wallapoints-prod",
         development: "mongodb://localhost/wallapoints-dev",
-        test: "mongodb://localhost/wallapoints-dev"
+        test: "mongodb://localhost/wallapoints-test"
 
     },
     port:{
