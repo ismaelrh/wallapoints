@@ -1,18 +1,23 @@
 /**
- * Módulo de router que maneja las peticiones de user.
+ * Ismael Rodríguez Hernández
+ * Módulo de router que maneja las peticiones de seguimiento
+ * de usuarios por parte de invitados.
  */
 
 var express = require('express');
-var crypto = require('crypto');
 
 module.exports = function(app){
 
     var router = express.Router({mergeParams: true});
 
-
     var Guest = app.models.Guest;
 
 
+    /**
+     * Comprueba que existe el "guest" al que se refieren las llamadas de este módulo.
+     * Se ejecutará antes que el resto de llamadas, descartándolas si no existe o
+     * sucede algún error.
+     */
     function checkGuestExists(req,res,next){
         Guest.findOne({mail:req.params.guestMail},function(err,result){
 
@@ -31,30 +36,39 @@ module.exports = function(app){
         });
     }
 
-    //Este comprueba que existe el invitado al que se refiere
-    //Se ejecuta antes que el resto de llamadas
     router.all('/', checkGuestExists);
     router.all('/:username', checkGuestExists);
 
-    //Método GET / -> Devuelve un listado de todos los followings
+
+    /**
+     * GET /
+     * Devuelve un listado de todos los usuarios a los que sigue el invitado.
+     * links.guestInfo apunta a información de dicho invitado.
+     */
     router.get("/",function(req,res){
 
         var guest = req.guest;
 
-        res.status(200).send({error:"false",message:guest.returnFollowingListObjectWithLinks()});
-
+        res.status(200).send(
+            {
+                error: "false",
+                message: guest.following,
+                links: [{guestInfo: "/guests/" + guest.mail}]
+            });
 
 
     });
 
-    //PUT / -> Inserta un seguido para el usuario
-    //Basta con pasar en la ruta
+
+    /**
+     * PUT /:username
+     * Provoca que el invitado siga al usuario :username (si existe).
+     */
     router.put("/:username",function(req,res){
 
 
-        console.log(req.guest);
         if(!req.params.username){
-            res.status(400).send({error:"true",message:"Please provide an object with a username"});
+            res.status(400).send({error:"true",message:"Please call this method with a username param"});
             return;
         }
 
@@ -63,9 +77,9 @@ module.exports = function(app){
 
         var guest = req.guest;
 
-        //Miramos si ya esta insertado
+        //Miramos si ya está siendo seguido por el invitado
         var alreadyInserted = false;
-        for(var i = 0; !alreadyInserted && i < guest.favourite.length; i++){
+        for(var i = 0; !alreadyInserted && i < guest.following.length; i++){
             if(guest.following[i]==req.params.username){
                 alreadyInserted = true;
             }
@@ -78,11 +92,12 @@ module.exports = function(app){
         guest.save(function(err,response){
             if(err){
                 res.status(500).send({error:"true",message:"Error while inserting following"});
-                return;
             }
             else{
-                res.status(200).send({error:"false",message:response.returnInsertedFollowingWithLink(req.params.username)});
-                return;
+                res.status(200).send(
+                    {error:"false",
+                    message:response.following,
+                    links: [{followingList: "/guests/" + guest.mail + "/following"}]});
             }
         });
 
@@ -90,13 +105,17 @@ module.exports = function(app){
 
     });
 
-    //Método GET /:poiId -> Devuelve un favorito
+
+    /**
+     * DELETE /:username
+     * Provoca que el invitado deje de seguir al usuario :username.
+     */
     router.delete("/:username",function(req,res){
 
         var username = req.params.username;
         var guest = req.guest;
 
-        //Miramos si esta añadido como favorito
+        //Miramos si el invitado está siguiendo a dicho usuario
         var alreadyFollowing = false;
         var followingIndex = -1;
         for(var i = 0; !alreadyFollowing && i < guest.following.length; i++){
@@ -106,6 +125,7 @@ module.exports = function(app){
             }
         }
 
+        //Si lo está siguiendo, borramos de lista de following
         if(alreadyFollowing){ //Si esta añadido, borramos
             guest.following.splice(followingIndex,1);
             guest.save(function(err,saved){
@@ -113,7 +133,11 @@ module.exports = function(app){
                     res.status(500).send({error:"true",message:"Error while deleting following"});
                 }
                 else{
-                    res.status(200).send({error:"true",message:saved.returnAllFollowingObject()});
+                    res.status(200).send({
+                        error:"true",
+                        message:"The user has been unfollowed",
+                        links: [{followingList: "/guests/" + guest.mail + "/following"}]});
+
                 }
             });
 

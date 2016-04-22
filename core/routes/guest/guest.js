@@ -5,7 +5,7 @@
 var express = require('express');
 var crypto = require('crypto');
 
-module.exports = function(app){
+module.exports = function (app) {
 
     var router = express.Router();
 
@@ -13,82 +13,112 @@ module.exports = function(app){
     var Guest = app.models.Guest;
 
 
-    //Método GET / -> Devuelve un listado de todos los GUEST, sin contraseñas
-    router.get("/",function(req,res){
+    /**
+     * GET /
+     * Obtiene una lista de todos los invitados disponibles, mostrando
+     * su mail y enlaces a sus listas de favoritos, usuarios que sigue y
+     * puntuaciones que ha puesto.
+     */
+    router.get("/", function (req, res) {
 
-        //todo: en favs, following y ratings poner enlaces
-        Guest.find({},'_id mail',function(err,results){
-            if(err){
-                res.send({"error":true,"message":"Error retrieving data"});
+
+        Guest.find({}, 'mail', function (err, results) {
+
+            if (err) {
+                res.send({"error": true, "message": "Error retrieving data"});
+                return;
             }
-            else{
 
-                var finalArray = [];
-                if(results.length == 0){
-                    res.send({"error":false,"message":finalArray});
-                    return;
+            var finalArray = [];
+
+            if (results.length == 0) { //Devolver array vacío
+                res.send({"error": false, "message": finalArray});
+                return;
+            }
+
+            //Se construye la lista a devolver, añadiendo enlaces
+            results.forEach(function (i, idx, array) {
+
+                finalArray.push(i.returnObjectWithLinksForList());
+                if (idx === array.length - 1) {
+                    res.send(
+                        {
+                            "error": false,
+                            "message": finalArray
+                        });
                 }
+            });
 
-                results.forEach(function(i, idx, array){
-
-                    finalArray.push(i.returnObjectWithLinksForList());
-                    if (idx === array.length - 1){
-                        res.send({"error":false,"message":finalArray});
-                    }
-                });
-
-
-            }
 
         });
 
     });
 
-    //Método POST / -> Nuevo invitado con mail y password (por lo menos)
-    router.post("/",function(req,res){
+
+    /**
+     * POST /
+     * Nuevo invitado a partir de un mail y password.
+     * El mail debe ser único.
+     * links.guestList = enlace a lista de guests
+     */
+    router.post("/", function (req, res) {
 
         console.log(req.body);
         var newGuest = new Guest(req.body);
 
 
-        if(newGuest.mail && newGuest.password){ //Datos necesarios provistos
+        if (newGuest.mail && newGuest.password) { //Datos necesarios provistos
 
             //Se calcula el hash
             newGuest.password = crypto.createHash('md5').update(newGuest.password).digest('hex');
 
-            newGuest.save(function(err,result){
+            newGuest.save(function (err, result) {
 
-                if(err){
-                    res.send({"error":true,"message":"Error saving data " + err});
-                    console.err(err);
+                if (err) {
+                    res.send({"error": true, "message": "Error saving data " + err});
+                    console.error(err);
                 }
-                else{
-                    res.send({"error":false,"message":result});
+                else {
+                    res.send({
+                        error: false,
+                        message: result,
+                        links: [{guestList: "/guests/"}]
+                    });
                 }
             });
 
         }
-        else{ //No provistos
+        else { //No provistos
 
-            res.status(400).send({"error":true,"message":"Bad request, please provide mail and password"});
+            res.status(400).send({"error": true, "message": "Bad request, please provide mail and password"});
 
         }
 
     });
 
-    //Método GET /:id -> Obtiene detalles de un solo guest
-    router.get("/:id",function(req,res){
 
-        //todo: en favs, following y ratings poner enlaces
-        Guest.findOne({mail:req.params.id},'_id mail favs following ratings',function(err,result){
-            if(err){
-                res.status(500).send({"error":true,"message":"Error retrieving data"});
+    /**
+     * GET /:id
+     * Devuelve los detalles (mail y enlaces a favoritos, usuarios que sigue y puntuaciones)
+     * de un invitado.
+     * links.guestList = enlace a lista de invitados
+     */
+    router.get("/:id", function (req, res) {
+
+
+        Guest.findOne({mail: req.params.id}, 'mail', function (err, result) {
+            if (err) {
+                res.status(500).send({"error": true, "message": "Error retrieving data"});
             }
-            else if(result==null){
-                res.status(404).send({"error":true,"message":"User does not exists"});
+            else if (result == null) {
+                res.status(404).send({"error": true, "message": "User does not exists"});
             }
-            else{
-                res.send({"error":false,"message":result.returnObjectWithLinksForDetail()});
+            else {
+                res.send({
+                    error: false,
+                    message: result.returnObjectWithLinksForDetail(),
+                    links: [{guestList: "/guests/"}]
+                });
             }
 
         });
@@ -96,12 +126,6 @@ module.exports = function(app){
     });
 
 
-
-
-
-
-
-    //...
 
     return router;
 

@@ -4,8 +4,8 @@ var mongoose = require('mongoose');
 var GuestSchema = mongoose.Schema({
     mail: {type:String, required:true, unique: true},
     password: {type: String, required: true },
-    favourite: {type: Array, "default":[], required:false},
-    following: {type: Array, "default":[], required:false},
+    favourite: [{type: mongoose.Schema.ObjectId, ref:'Poi'}],
+    following: [{type: mongoose.Schema.ObjectId, ref:'User'}],
     rating:  {type: Array, "default":[], required:false}
 });
 
@@ -14,7 +14,6 @@ GuestSchema.methods.returnObjectWithLinksForDetail = function(){
     var object = this.toJSON();
     object.favourite = "/guests/" + this.mail + "/favourite";
     object.following = "/guests/" + this.mail + "/following";
-    object.allGuestsList = "/guests";
     return object;
 };
 
@@ -48,16 +47,8 @@ GuestSchema.methods.returnAllFavouriteObject = function(){
     return object;
 };
 
-GuestSchema.methods.returnInsertedFavWithLink = function(inserted){
-    var object = {"insertedFav": inserted, "allFavourite": "/guests/" + this.mail + "/favourite"};
-    return object;
-};
 
 
-GuestSchema.methods.returnInsertedFollowingWithLink = function(inserted){
-    var object = {"insertedFollowing": inserted, "allFollowing": "/guests/" + this.mail + "/following"};
-    return object;
-};
 
 
 //(Opcional) definimos funciones que añadan algo de lógica al esquema

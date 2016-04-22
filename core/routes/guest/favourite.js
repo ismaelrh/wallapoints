@@ -1,9 +1,8 @@
 /**
- * Módulo de router que maneja las peticiones de user.
+ * Módulo de router que maneja los pois favoritos de un invitado.
  */
-
 var express = require('express');
-var crypto = require('crypto');
+
 
 module.exports = function(app){
 
@@ -12,7 +11,11 @@ module.exports = function(app){
 
     var Guest = app.models.Guest;
 
-
+    /**
+     * Comprueba que existe el "guest" al que se refieren las llamadas de este módulo.
+     * Se ejecutará antes que el resto de llamadas, descartándolas si no existe o
+     * sucede algún error.
+     */
     function checkGuestExists(req,res,next){
         Guest.findOne({mail:req.params.guestMail},function(err,result){
 
@@ -31,30 +34,58 @@ module.exports = function(app){
         });
     }
 
-    //Este comprueba que existe el invitado al que se refiere
-    //Se ejecuta antes que el resto de llamadas
     router.all('/', checkGuestExists);
     router.all('/:poiId', checkGuestExists);
 
-    //Método GET / -> Devuelve un listado de todos los favoritos del usuario
+
+    /**
+     * GET /
+     * Devuelve un array de los identificadores de los pois favoritos del usuario.
+     * links.guestInfo -> Enlace a todos los favoritos de dicho invitado.
+     */
     router.get("/",function(req,res){
 
         var guest = req.guest;
 
-        res.status(200).send({error:"false",message:guest.returnFavListObjectWithLinks()});
+        if(guest.favourite.length==0){ //Si array vacio -> no se realiza transformación
+            res.status(200).send({
+                error:"false",
+                message:guest.favourite,
+                links: [{guestInfo: "/guests/" + guest.mail}]
+            });
+        }
+        else{ //Si no vacío -> Obtener el título de cada POI -> ¿POR HTTP?
 
+            var finalArray = [];
+            guest.favourite.forEach(function (i, idx, array) {
+
+                finalArray.push({id: i, title: "Por hacer", href: "/poi/" + i});
+                if (idx === array.length - 1) {
+                    res.send(
+                        {
+                            "error": false,
+                            "message": finalArray
+                        });
+                }
+            });
+
+        }
 
 
     });
 
     //PUT / -> Inserta un favorito para el usuario
     //Basta con pasar en la ruta
+
+    /**
+     * PUT /:poiId
+     * Inserta como favorito el poi con id :poiId para el invitado actual.
+     */
     router.put("/:poiId",function(req,res){
 
 
-        console.log(req.guest);
         if(!req.params.poiId){
-            res.status(400).send({error:"true",message:"Please provide an object with a poi attribute"});
+            res.status(400).send({error:"true",message:"Please provide a poiId parameter"});
             return;
         }
 
@@ -63,7 +94,7 @@ module.exports = function(app){
 
         var guest = req.guest;
 
-        //Miramos si ya esta insertado
+        //Miramos si ya está marcado como favorito
         var alreadyInserted = false;
         for(var i = 0; !alreadyInserted && i < guest.favourite.length; i++){
             if(guest.favourite[i]==req.params.poiId){
@@ -81,7 +112,9 @@ module.exports = function(app){
                 return;
             }
             else{
-                res.status(200).send({error:"false",message:response.returnInsertedFavWithLink(req.params.poiId)});
+                res.status(200).send({error:"false",
+                    message:response.favourite,
+                    links: [{favouriteList: "/guests/" + guest.mail + "/favourite"}]});
                 return;
             }
         });
@@ -90,7 +123,11 @@ module.exports = function(app){
 
     });
 
-    //Método GET /:poiId -> Devuelve un favorito
+
+    /**
+     * DELETE /:poiId
+     * Desmarca como favorito del invitado actual el poi con id :poiId
+     */
     router.delete("/:poiId",function(req,res){
 
         var poi = req.params.poiId;
@@ -113,7 +150,9 @@ module.exports = function(app){
                     res.status(500).send({error:"true",message:"Error while deleting favourite"});
                 }
                 else{
-                    res.status(200).send({error:"false",message:saved.returnAllFavouriteObject()});
+                    res.status(200).send({error:"false",
+                        message:"Poi deleted from fav list",
+                        links: [{favouriteList: "/guests/" + guest.mail + "/favourite"}]});
                 }
             });
 
