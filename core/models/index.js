@@ -11,5 +11,8 @@ module.exports = {
   User: require('./user.js'),
   DeletedUser: require('./deletedUser.js'),
   Guest: require('./guest.js'),
+  Favourite: require('./favourite.js'),
+  Following: require('./following.js'),
+  Poi: require('./poi.js'),
   Rating: require('./rating.js')
 };
