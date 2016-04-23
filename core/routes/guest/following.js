@@ -11,6 +11,7 @@ module.exports = function(app){
     var router = express.Router({mergeParams: true});
 
     var Guest = app.models.Guest;
+    var User = app.models.User;
 
 
     /**
@@ -19,7 +20,9 @@ module.exports = function(app){
      * sucede algún error.
      */
     function checkGuestExists(req,res,next){
-        Guest.findOne({mail:req.params.guestMail},function(err,result){
+        Guest.findOne({mail:req.params.guestMail}).
+            populate('following')
+            .exec(function(err,result){
 
             if(err){
                 res.status(500).send({error:"true",message:"Error"});
@@ -49,12 +52,32 @@ module.exports = function(app){
 
         var guest = req.guest;
 
-        res.status(200).send(
-            {
-                error: "false",
-                message: guest.following,
+        if(guest.following.length==0){ //Si array vacio -> no se realiza transformación
+            res.status(200).send({
+                error:"false",
+                message:guest.following,
                 links: [{guestInfo: "/guests/" + guest.mail}]
             });
+        }
+        else{
+
+
+            var finalArray = [];
+            guest.following.forEach(function (i, idx, array) {
+
+                finalArray.push({username: i.username, name: i.name, href: "/users/" + i.username});
+                if (idx === array.length - 1) {
+                    res.send(
+                        {
+                            "error": false,
+                            "message": finalArray
+                        });
+                }
+            });
+
+        }
+
+
 
 
     });
@@ -73,33 +96,48 @@ module.exports = function(app){
         }
 
         //Mirar si el username realmente existe
-        var usernameExists = true; //todo -> poner de verdad
 
-        var guest = req.guest;
+        User.findOne({username:req.params.username},function(err,result){
 
-        //Miramos si ya está siendo seguido por el invitado
-        var alreadyInserted = false;
-        for(var i = 0; !alreadyInserted && i < guest.following.length; i++){
-            if(guest.following[i]==req.params.username){
-                alreadyInserted = true;
-            }
-        }
-
-        if(!alreadyInserted){
-            guest.following.push(req.params.username);
-        }
-
-        guest.save(function(err,response){
             if(err){
                 res.status(500).send({error:"true",message:"Error while inserting following"});
+                return;
             }
-            else{
-                res.status(200).send(
-                    {error:"false",
-                    message:response.following,
-                    links: [{followingList: "/guests/" + guest.mail + "/following"}]});
+            if(!result){
+                res.status(404).send({error:"true",message:"No such user"});
+                return;
             }
+
+            var guest = req.guest;
+
+            //Miramos si ya está siendo seguido por el invitado
+            var alreadyInserted = false;
+            for(var i = 0; !alreadyInserted && i < guest.following.length; i++){
+                if(guest.following[i].username==req.params.username){
+                    alreadyInserted = true;
+                }
+            }
+
+            if(!alreadyInserted){
+                guest.following.push(result);
+            }
+
+            guest.save(function(err,response){
+                if(err){
+                    res.status(500).send({error:"true",message:"Error while inserting following"});
+                }
+                else{
+                    res.status(200).send(
+                        {error:"false",
+                            message:{username: result.username, name: result.name, href: "/users/" + result.username},
+                            links: [{followingList: "/guests/" + guest.mail + "/following"}]});
+                }
+            });
+
         });
+
+
+
 
 
 

@@ -3,7 +3,8 @@
 */
 
 var express = require('express');
-
+var randomstring = require('randomstring');
+var crypto = require('crypto');
 
 module.exports = function(app){
 

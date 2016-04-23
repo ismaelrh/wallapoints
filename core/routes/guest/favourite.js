@@ -10,14 +10,18 @@ module.exports = function(app){
 
 
     var Guest = app.models.Guest;
+    var Poi = app.models.Poi;
 
     /**
      * Comprueba que existe el "guest" al que se refieren las llamadas de este módulo.
      * Se ejecutará antes que el resto de llamadas, descartándolas si no existe o
      * sucede algún error.
+     * Además, mete en req.guest el objeto de guest con los favoritos poblados.
      */
     function checkGuestExists(req,res,next){
-        Guest.findOne({mail:req.params.guestMail},function(err,result){
+        Guest.findOne({mail:req.params.guestMail})
+            .populate('favourite')
+            .exec(function(err,result){
 
             if(err){
                 res.status(500).send({error:"true",message:"Error"});
@@ -40,7 +44,7 @@ module.exports = function(app){
 
     /**
      * GET /
-     * Devuelve un array de los identificadores de los pois favoritos del usuario.
+     * Devuelve un array de los pois favoritos del usuario. Incluye _id, name y un href al recurso completo.
      * links.guestInfo -> Enlace a todos los favoritos de dicho invitado.
      */
     router.get("/",function(req,res){
@@ -54,12 +58,13 @@ module.exports = function(app){
                 links: [{guestInfo: "/guests/" + guest.mail}]
             });
         }
-        else{ //Si no vacío -> Obtener el título de cada POI -> ¿POR HTTP?
+        else{
+
 
             var finalArray = [];
             guest.favourite.forEach(function (i, idx, array) {
 
-                finalArray.push({id: i, title: "Por hacer", href: "/poi/" + i});
+                finalArray.push({id: i._id, name: i.name, href: "/poi/" + i._id});
                 if (idx === array.length - 1) {
                     res.send(
                         {
@@ -74,8 +79,7 @@ module.exports = function(app){
 
     });
 
-    //PUT / -> Inserta un favorito para el usuario
-    //Basta con pasar en la ruta
+
 
     /**
      * PUT /:poiId
@@ -90,36 +94,48 @@ module.exports = function(app){
         }
 
         //Mirar si el poi realmente existe
-        var poiExists = true; //todo -> poner de verdad
+        Poi.findOne({_id:req.params.poiId},function(err,result){
 
-        var guest = req.guest;
-
-        //Miramos si ya está marcado como favorito
-        var alreadyInserted = false;
-        for(var i = 0; !alreadyInserted && i < guest.favourite.length; i++){
-            if(guest.favourite[i]==req.params.poiId){
-                alreadyInserted = true;
-            }
-        }
-
-        if(!alreadyInserted){
-            guest.favourite.push(req.params.poiId);
-        }
-
-        guest.save(function(err,response){
             if(err){
-                res.status(500).send({error:"true",message:"Error while inserting favourite"});
+                res.status(500).send({error:"true",message:"Error while inserting favourite " + err});
                 return;
             }
-            else{
-                res.status(200).send({error:"false",
-                    message:response.favourite,
-                    links: [{favouriteList: "/guests/" + guest.mail + "/favourite"}]});
+
+            if(!result){
+                res.status(404).send({error:"true",message:"No such poi"});
                 return;
             }
+
+            var guest = req.guest;
+
+            //Miramos si ya está marcado como favorito
+            var alreadyInserted = false;
+            for(var i = 0; !alreadyInserted && i < guest.favourite.length; i++){
+                if(guest.favourite[i]._id==req.params.poiId){
+                    alreadyInserted = true;
+                }
+            }
+
+            if(!alreadyInserted){
+                guest.favourite.push(result._id);
+            }
+
+            guest.save(function(err,response){
+                if(err){
+                    res.status(500).send({error:"true",message:"Error while inserting favourite " + err});
+                    return;
+                }
+                else{
+
+                    res.status(200).send({error:"false",
+                        message:{_id:result._id,name:result.name,href: "/poi/" + result._id},
+                        links: [{favouriteList: "/guests/" + guest.mail + "/favourite"}]});
+                    return;
+                }
+            });
+
+
         });
-
-
 
     });
 
