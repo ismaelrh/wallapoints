@@ -69,8 +69,9 @@ module.exports = function(app){
                 if (idx === array.length - 1) {
                     res.send(
                         {
-                            "error": false,
-                            "message": finalArray
+                             error: false,
+                             message: finalArray,
+                             links: [{guestInfo: "/guests/" + guest.mail}]
                         });
                 }
             });
@@ -157,7 +158,7 @@ module.exports = function(app){
         var alreadyFollowing = false;
         var followingIndex = -1;
         for(var i = 0; !alreadyFollowing && i < guest.following.length; i++){
-            if(guest.following[i] == username){
+            if(guest.following[i].username == username){
                 alreadyFollowing = true;
                 followingIndex = i;
             }
@@ -172,7 +173,7 @@ module.exports = function(app){
                 }
                 else{
                     res.status(200).send({
-                        error:"true",
+                        error:"false",
                         message:"The user has been unfollowed",
                         links: [{followingList: "/guests/" + guest.mail + "/following"}]});
 

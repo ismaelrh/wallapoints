@@ -68,8 +68,9 @@ module.exports = function(app){
                 if (idx === array.length - 1) {
                     res.send(
                         {
-                            "error": false,
-                            "message": finalArray
+                             error: false,
+                             message: finalArray,
+                             links: [{guestInfo: "/guests/" + guest.mail}]
                         });
                 }
             });
@@ -153,7 +154,7 @@ module.exports = function(app){
         var alreadyFav = false;
         var favIndex = -1;
         for(var i = 0; !alreadyFav && i < guest.favourite.length; i++){
-            if(guest.favourite[i] == poi){
+            if(guest.favourite[i]._id == poi){
                 alreadyFav = true;
                 favIndex = i;
             }
