@@ -25,11 +25,11 @@ module.exports = function(app){
             .exec(function(err,result){
 
             if(err){
-                res.status(500).send({error:"true",message:"Error"});
+                res.status(500).send({error:true,message:"Error"});
                 return;
             }
             if(result==null){
-                res.status(404).send({error:"true",message:"Guest does not exist"});
+                res.status(404).send({error:true,message:"Guest does not exist"});
                 return;
             }
 
