@@ -13,6 +13,19 @@ var UserSchema = mongoose.Schema({
 
 //(Opcional) definimos funciones que añadan algo de lógica al esquema
 
+//Devuelve un objeto apto para devolver por interfaz rest,
+//quitando las propiedades _id y __v del usuario, y añadiendo href
+UserSchema.methods.cleanObjectAndAddHref = function(){
+  var object = this.toJSON();
+  object.href = "/users/" + this.username;
+  delete object._id;
+  delete object.__v;
+  return object;
+};
+
+
+
+
 //Compilamos modelo
 User = mongoose.model('User', UserSchema);
 

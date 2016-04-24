@@ -8,7 +8,7 @@ var crypto = require('crypto');
 module.exports = function (app) {
 
     var router = express.Router();
-    
+
     var Guest = app.models.Guest;
 
 
@@ -38,7 +38,7 @@ module.exports = function (app) {
             //Se construye la lista a devolver, añadiendo enlaces
             results.forEach(function (i, idx, array) {
 
-                finalArray.push(i.returnObjectWithLinksForList());
+                finalArray.push(i.cleanGuestForList());
                 if (idx === array.length - 1) {
                     res.send(
                         {
@@ -83,7 +83,7 @@ module.exports = function (app) {
                 else {
                     res.send({
                         error: false,
-                        message: result.returnObjectWithLinksForDetail(),
+                        message: result.cleanGuestForDetail(),
                         links: [{guestList: "/guests/"}]
                     });
                 }
@@ -113,7 +113,7 @@ module.exports = function (app) {
             else {
                 res.send({
                     error: false,
-                    message: result.returnObjectWithLinksForDetail(),
+                    message: result.cleanGuestForDetail(),
                     links: [{guestList: "/guests/"}]
                 });
             }
@@ -146,7 +146,7 @@ module.exports = function (app) {
                     }
                     res.send({
                         error: false,
-                        message: updatedGuest.returnObjectWithLinksForDetail(),
+                        message: updatedGuest.cleanGuestForDetail(),
                         links: [{guestList: "/guests/"}]
                     });
 

@@ -64,7 +64,7 @@ module.exports = function(app){
             var finalArray = [];
             guest.favourite.forEach(function (i, idx, array) {
 
-                finalArray.push({id: i._id, name: i.name, href: "/poi/" + i._id});
+                finalArray.push({id: i._id, name: i.name, lat: i.lat, long: i.long, href: "/pois/" + i._id});
                 if (idx === array.length - 1) {
                     res.send(
                         {
@@ -129,8 +129,8 @@ module.exports = function(app){
                 else{
 
                     res.status(200).send({error:"false",
-                        message:{_id:result._id,name:result.name,href: "/poi/" + result._id},
-                        links: [{favouriteList: "/guests/" + guest.mail + "/favourite"}]});
+                        message:{_id:result._id,name:result.name,lat: result.lat, long: result.long, href: "/poi/" + result._id},
+                        links: [{favouriteList: "/guests/" + guest.mail + "/favs"}]});
                     return;
                 }
             });
@@ -169,7 +169,7 @@ module.exports = function(app){
                 else{
                     res.status(200).send({error:"false",
                         message:"Poi deleted from fav list",
-                        links: [{favouriteList: "/guests/" + guest.mail + "/favourite"}]});
+                        links: [{favouriteList: "/guests/" + guest.mail + "/favs"}]});
                 }
             });
 

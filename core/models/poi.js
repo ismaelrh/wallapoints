@@ -12,7 +12,15 @@ var PoiSchema = mongoose.Schema({
     creator: {type: String, required:true}
 });
 
-//(Opcional) definimos funciones que añadan algo de lógica al esquema
+
+//Devuelve un objeto útil para enviar por la interfaz rest,
+//quitando la propiedad __v del poi y añadiendo href.
+PoiSchema.methods.cleanObjectAndAddHref = function(){
+    var object = this.toJSON();
+    object.href = "/pois/" + this._id;
+    delete object.__v;
+    return object;
+};
 
 //Compilamos modelo
 Poi = mongoose.model('Poi', PoiSchema);

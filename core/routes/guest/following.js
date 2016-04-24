@@ -65,7 +65,7 @@ module.exports = function(app){
             var finalArray = [];
             guest.following.forEach(function (i, idx, array) {
 
-                finalArray.push({username: i.username, name: i.name, href: "/users/" + i.username});
+                finalArray.push({username: i.username, email: i.email, href: "/users/" + i.username});
                 if (idx === array.length - 1) {
                     res.send(
                         {
@@ -130,7 +130,7 @@ module.exports = function(app){
                 else{
                     res.status(200).send(
                         {error:"false",
-                            message:{username: result.username, name: result.name, href: "/users/" + result.username},
+                            message:{username: result.username, email: result.email, href: "/users/" + result.username},
                             links: [{followingList: "/guests/" + guest.mail + "/following"}]});
                 }
             });
