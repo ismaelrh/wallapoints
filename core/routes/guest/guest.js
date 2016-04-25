@@ -17,10 +17,16 @@ module.exports = function (app) {
      * Obtiene una lista de todos los invitados disponibles, mostrando
      * su mail y enlaces a sus listas de favoritos, usuarios que sigue y
      * puntuaciones que ha puesto.
+     * Acceso: user admin
      */
     router.get("/", function (req, res) {
 
-        console.log(req.user);
+
+        if(req.user.type != "user" || req.user.username != "admin"){
+            res.status(403).send({"error": true, "message": "Forbidden. You are not authorized."});
+            return;
+        }
+
 
         Guest.find({}, 'mail', function (err, results) {
 
@@ -100,8 +106,19 @@ module.exports = function (app) {
      * Devuelve los detalles (mail y enlaces a favoritos, usuarios que sigue y puntuaciones)
      * de un invitado.
      * links.guestList = enlace a lista de invitados
+     * Acceso = admin o propio invitado
      */
     router.get("/:mail", function (req, res) {
+
+        //Cuando NO se es el propio invitado o admin -> error
+        if( !(
+                (req.user.type == "guest" && req.user.mail == req.params.mail) ||
+                (req.user.type == "user" && req.user.username == "admin"))
+            )
+        {
+            res.status(403).send({"error": true, "message": "Forbidden. You are not authorized."});
+            return;
+        }
 
 
         Guest.findOne({mail: req.params.mail}, 'mail', function (err, result) {
@@ -127,8 +144,19 @@ module.exports = function (app) {
      * PUT /:id
      * Actualiza el password de un invitado.
      * Links.guestList -> Lista de invitados
+     * Acceso = admin o propio invitado
      */
     router.put("/:mail", function (req, res) {
+
+
+        if( !(
+            (req.user.type == "guest" && req.user.mail == req.params.mail) ||
+            (req.user.type == "user" && req.user.username == "admin"))
+        )
+        {
+            res.status(403).send({"error": true, "message": "Forbidden. You are not authorized."});
+            return;
+        }
 
         Guest.findOne({mail: req.params.mail}, 'mail', function (err, result) {
             if (err) {
@@ -173,8 +201,18 @@ module.exports = function (app) {
      * DELETE /:id
      * Borra un invitado.
      * Links.guestList -> Lista de invitados
+     * Acceso = admin o propio invitado
      */
     router.delete("/:mail", function (req, res) {
+
+        if( !(
+            (req.user.type == "guest" && req.user.mail == req.params.mail) ||
+            (req.user.type == "user" && req.user.username == "admin"))
+        )
+        {
+            res.status(403).send({"error": true, "message": "Forbidden. You are not authorized."});
+            return;
+        }
 
         Guest.remove({mail: req.params.mail}, function (err, result) {
 

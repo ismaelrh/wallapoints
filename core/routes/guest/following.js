@@ -18,8 +18,21 @@ module.exports = function(app){
      * Comprueba que existe el "guest" al que se refieren las llamadas de este módulo.
      * Se ejecutará antes que el resto de llamadas, descartándolas si no existe o
      * sucede algún error.
+     * Comprueba también que el acceso es admin o el propio invitado.
      */
     function checkGuestExists(req,res,next){
+
+
+        if( !(
+            (req.user.type == "guest" && req.user.mail == req.params.mail) ||
+            (req.user.type == "user" && req.user.username == "admin"))
+        )
+        {
+            res.status(403).send({"error": true, "message": "Forbidden. You are not authorized."});
+            return;
+        }
+
+
         Guest.findOne({mail:req.params.guestMail}).
             populate('following')
             .exec(function(err,result){

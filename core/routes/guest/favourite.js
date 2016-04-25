@@ -17,8 +17,20 @@ module.exports = function(app){
      * Se ejecutará antes que el resto de llamadas, descartándolas si no existe o
      * sucede algún error.
      * Además, mete en req.guest el objeto de guest con los favoritos poblados.
+     * Comprueba también que el acceso es admin o el propio invitado.
      */
     function checkGuestExists(req,res,next){
+
+        if( !(
+            (req.user.type == "guest" && req.user.mail == req.params.mail) ||
+            (req.user.type == "user" && req.user.username == "admin"))
+        )
+        {
+            res.status(403).send({"error": true, "message": "Forbidden. You are not authorized."});
+            return;
+        }
+
+
         Guest.findOne({mail:req.params.guestMail})
             .populate('favourite')
             .exec(function(err,result){

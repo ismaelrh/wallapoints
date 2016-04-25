@@ -282,10 +282,11 @@ module.exports = function (app) {
                     /* Log in correcto */
 
                     var userObject = result.cleanObjectAndAddHref();
+                    userObject.type = "user";
                     delete userObject.password;
 
                     /*Se genera token de sesion, guardando dentro info de usuario */
-                    var token = jwt.sign({user: userObject}, app.get('jwtsecret'), {
+                    var token = jwt.sign(userObject, app.get('jwtsecret'), {
                             expiresIn: "1h"
                         } // expires in 1 hour
                     );
