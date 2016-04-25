@@ -24,8 +24,6 @@ UserSchema.methods.cleanObjectAndAddHref = function(){
 };
 
 
-
-
 //Compilamos modelo
 User = mongoose.model('User', UserSchema);
 

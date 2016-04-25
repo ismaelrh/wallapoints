@@ -10,6 +10,7 @@ module.exports = {
         production: 8888,
         development: 8888,
         test: 8889
-    }
+    },
+    jwtsecret: "firmasuperlargaeimposibledeadivinar"
 
 };

@@ -45,7 +45,7 @@ module.exports = function (app) {
     router.all('/:guestMail', checkPoiExists);
 
 
-    
+
 
 
     return router;

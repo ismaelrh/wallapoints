@@ -5,6 +5,7 @@
 var express = require('express');
 var randomstring = require('randomstring');
 var crypto = require('crypto');
+var jwt = require('jsonwebtoken');
 
 module.exports = function (app) {
 
@@ -193,7 +194,8 @@ module.exports = function (app) {
                     res.send({
                         "error": false,
                         "message": userSaved.cleanObjectAndAddHref(),
-                        links: [{"userList": "/users"}]});
+                        links: [{"userList": "/users"}]
+                    });
                 }
             });
 
@@ -240,11 +242,14 @@ module.exports = function (app) {
             //Borra de las listas de siguiendo ->  Creo que lo hace solo
 
 
+            //todo
             ///////////////////////////////////////////BORRA TODOS LOS PUNTOS
 
-            res.send({"error": false,
+            res.send({
+                "error": false,
                 "message": "User successfully deleted",
-                links: [{"userList": "/users"}]});
+                links: [{"userList": "/users"}]
+            });
         });
 
     });
@@ -253,47 +258,54 @@ module.exports = function (app) {
      * de que se pueda realizar el logueo
      **/
     router.post("/login", function (req, res) {
-        // Se comprueba que sea el admin
 
-        //Se comprueba que estén todos los campos
-        if (req.body.username && req.body.password) {
 
-            /*Se encripta la contraseña para compararla con la almacenada*/
-            var passHash = crypto.createHash('md5').update(req.body.password).digest('hex');
-
-            /* Se busca el usuario y se devuelve la password en caso de que exista*/
-            User.findOne({username: req.body.username}, function (err, results) {
-                if (err) {
-                    res.status(500).send({"error": true, "message": "Error retrieving data"});
-                }
-                else {
-                    if (results) {
-                        if (passHash == results.password) {
-                            /* Log in correcto */
-
-                            /*Se genera token de sesion */
-                            var token = jwt.sign({user: req.body.username}, 'shhhhh', {
-                                    expiresIn: "1h"
-                                } // expires in 1 hour
-                            );
-                            // Se actualiza la ultima fecha de acceso
-                            results.lastAccessDate = new Date();
-                            // Se guarda en la db
-                            results.save();
-
-                            res.send({"error": false, "message": token});
-                        } else {
-                            res.send({"error": true, "message": "Incorrect password"});
-                        }
-
-                    } else {
-                        res.status(500).send({"error": true, "message ": "The user does not exit"});
-                    }
-                }
-            });
-        } else {
-            res.status(500).send({"error": true, "message ": "Not a correct body, insert usernamde and password"});
+        if (!req.body.username || !req.body.password) {
+            res.status(400).send({"error": true, "message ": "Not a correct body, insert username and password"});
+            return;
         }
+
+        /*Se encripta la contraseña para compararla con la almacenada*/
+        var passHash = crypto.createHash('md5').update(req.body.password).digest('hex');
+
+        /* Se busca el usuario y se devuelve la password en caso de que exista*/
+        User.findOne({username: req.body.username}, function (err, result) {
+
+            if(err){
+                res.status(500).send({"error": true, "message": "Error retrieving data "});
+                return;
+            }
+
+
+            if (result) {
+                if (passHash == result.password) {
+                    /* Log in correcto */
+
+                    var userObject = result.cleanObjectAndAddHref();
+                    delete userObject.password;
+
+                    /*Se genera token de sesion, guardando dentro info de usuario */
+                    var token = jwt.sign({user: userObject}, app.get('jwtsecret'), {
+                            expiresIn: "1h"
+                        } // expires in 1 hour
+                    );
+
+                    // Se actualiza la ultima fecha de acceso
+                    result.lastAccessDate = new Date();
+                    // Se guarda en la db
+                    result.save();
+
+                    res.send({"error": false, "message": token});
+                } else {
+                    res.send({"error": true, "message": "Incorrect password"});
+                }
+
+            } else {
+                res.status(500).send({"error": true, "message ": "The user does not exist"});
+            }
+
+        });
+
 
     });
 

@@ -20,6 +20,7 @@ module.exports = function (app) {
      */
     router.get("/", function (req, res) {
 
+        console.log(req.user);
 
         Guest.find({}, 'mail', function (err, results) {
 
@@ -124,35 +125,44 @@ module.exports = function (app) {
 
     /**
      * PUT /:id
-     * Actualiza el mail de un invitado.
+     * Actualiza el password de un invitado.
      * Links.guestList -> Lista de invitados
      */
-    router.put("/:mail",function(req,res){
+    router.put("/:mail", function (req, res) {
 
         Guest.findOne({mail: req.params.mail}, 'mail', function (err, result) {
             if (err) {
                 res.status(500).send({"error": true, "message": "Error updating guest"});
+                return;
             }
-            else if (result == null) {
+            if (result == null) {
                 res.status(404).send({"error": true, "message": "Guest does not exists"});
+                return;
             }
-            else {
 
+
+            /*if(req.body.mail){
                 result.mail = req.body.mail;
-                result.save(function(err,updatedGuest){
-                    if (err) {
-                        res.status(500).send({"error": true, "message": "Error updating guest"});
-                        return;
-                    }
-                    res.send({
-                        error: false,
-                        message: updatedGuest.cleanGuestForDetail(),
-                        links: [{guestList: "/guests/"}]
-                    });
+            }*/
 
+            if(req.body.password){
+                result.password = crypto.createHash('md5').update(req.body.password).digest('hex');
+            }
+
+
+            result.save(function (err, updatedGuest) {
+                if (err) {
+                    res.status(500).send({"error": true, "message": "Error updating guest"});
+                    return;
+                }
+                res.send({
+                    error: false,
+                    message: updatedGuest.cleanGuestForDetail(),
+                    links: [{guestList: "/guests/"}]
                 });
 
-            }
+            });
+
 
         });
 
@@ -164,26 +174,27 @@ module.exports = function (app) {
      * Borra un invitado.
      * Links.guestList -> Lista de invitados
      */
-    router.delete("/:mail",function(req,res){
+    router.delete("/:mail", function (req, res) {
 
-        Guest.remove({mail: req.params.mail},function(err,result){
+        Guest.remove({mail: req.params.mail}, function (err, result) {
 
 
-            if(err){
-                res.status(500).send({"error":true,"message":"Error deleting guest"});
+            if (err) {
+                res.status(500).send({"error": true, "message": "Error deleting guest"});
                 return;
             }
 
 
-            if(result.result.n == 0){
+            if (result.result.n == 0) {
                 /* No existe el invitado */
-                res.status(500).send({"error":true,"message":"The guest does not exist in the db "});
+                res.status(500).send({"error": true, "message": "The guest does not exist in the db "});
                 return;
             }
             res.status(200).send({
-                error:"false",
-                message:"The guest has been deleted",
-                links: [{guestList: "/guests/"}]});
+                error: "false",
+                message: "The guest has been deleted",
+                links: [{guestList: "/guests/"}]
+            });
 
 
         });
