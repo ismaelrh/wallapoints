@@ -217,7 +217,7 @@ describe('Guest', function () {
      * es de éxito y comprueba el contenido del token.
      */
 
-    it('should login with guest and get correct JWT', function (done) {
+    it('POST guest/login with correct data should give correct JWT', function (done) {
         //Ahora probamos que se puede hacer login con ese pass
         chai.request(server)
             .post('/guests/login')
@@ -234,6 +234,32 @@ describe('Guest', function () {
 
 
                 checkGuestToken(token,"guest1@mail.com").should.equal(true);
+
+
+                done();
+
+            });
+
+    });
+
+
+    /**
+     * Hace login de un invitado con contraseña incorrecta y comprueba resultado.
+     */
+    it('POST guest/login with wrong password should give error', function (done) {
+        //Ahora probamos que se puede hacer login con ese pass
+        chai.request(server)
+            .post('/guests/login')
+            .send({mail:'guest1@mail.com',password:'wrongPassword'})
+            .end(function (err, res) {
+
+                res.should.have.status(401);
+                res.should.be.json;
+                res.body.should.be.a('object');
+                res.body.should.have.property('error');
+                res.body.error.should.equal(true);
+                res.body.should.have.property('message');
+                res.body.message.should.equal("Incorrect mail or password");
 
 
                 done();
