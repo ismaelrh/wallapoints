@@ -7,9 +7,10 @@ module.exports = function(app) {
 
 
   app.use("/users",require('./user')(app));
-  app.use("/posts",require('./post')(app));
+  app.use("/pois",require('./poi/poi')(app));
+  app.use("/pois/:id/ratings",require('./poi/rating')(app));
   app.use("/guests",require('./guest/guest')(app));
-  app.use("/guests/:guestMail/favourite",require('./guest/favourite')(app));
+  app.use("/guests/:guestMail/favs",require('./guest/favourite')(app));
   app.use("/guests/:guestMail/following",require('./guest/following')(app));
 
 

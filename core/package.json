@@ -12,6 +12,8 @@
     "body-parser": "^1.15.0",
     "crypto": "0.0.3",
     "express": "^4.13.4",
+    "express-jwt": "^3.3.0",
+    "express-unless": "^0.3.0",
     "jsonwebtoken": "^5.7.0",
     "mongoose": "^4.4.12",
     "mongoose-idexists": "^1.0.5",
