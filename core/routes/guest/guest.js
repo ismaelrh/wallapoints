@@ -128,7 +128,7 @@ module.exports = function (app) {
                 res.status(500).send({"error": true, "message": "Error retrieving data"});
             }
             else if (result == null) {
-                res.status(404).send({"error": true, "message": "User does not exists"});
+                res.status(404).send({"error": true, "message": "Guest does not exists"});
             }
             else {
                 res.send({
@@ -231,7 +231,7 @@ module.exports = function (app) {
                 return;
             }
             res.status(200).send({
-                error: "false",
+                error: false,
                 message: "The guest has been deleted",
                 links: [{guestList: "/guests/"}]
             });
