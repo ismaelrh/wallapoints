@@ -14,7 +14,7 @@ var Poi = mongoose.Schema({
 //(Opcional) definimos funciones que añadan algo de lógica al esquema
 
 //Compilamos modelo
-Poi = mongoose.model('DeletedUser', Poi);
+Poi = mongoose.model('Poi', Poi);
 
 //Exportamos sólo los modelos que queramos (puede haber modelos sin exportar)
-module.exports = User;
+module.exports = Poi;

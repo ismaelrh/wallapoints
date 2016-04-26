@@ -110,15 +110,15 @@ module.exports = function(app){
                 if (!err) {
                     if (user){
                         /* No hay error, el usuario existe, hay que actualizarlo */
-                        if (req.body.password !== undefined) {
+                        if (req.body.password != undefined) {
                             /* Updatear pass */
                             user.password = crypto.createHash('md5').update(req.body.password).digest('hex');
                         }
-                        if (req.body.email !== undefined) {
+                        if (req.body.email != undefined) {
                             /* Updatear email */
                             user.email = req.body.email;
                         }
-                        if (req.body.surname !== undefined) {
+                        if (req.body.surname != undefined) {
                             /* Updatear apellido */
                             user.surname = req.body.surname;
                         }
