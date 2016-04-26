@@ -1,15 +1,16 @@
 'use strict';
 
-
+/**
+ * Servicio que se encarga de la gestión de tokens de usuario.
+ */
 angular.module('frontend')
 
-    .service('UserService', ['jwtHelper','localStorageService', function (jwtHelper,localStorageService) {
+    .service('UserService', ['jwtHelper','localStorageService','$q', function (jwtHelper,localStorageService,$q) {
 
 
         var self = this;
 
         self.currentlyLogged = false; //Indicates if we have information about a token or not
-
         self.user = undefined;       //Current user's object
         self.token=undefined;       //Current token in text
 
@@ -38,6 +39,60 @@ angular.module('frontend')
             }
 
         };
+
+
+        /**
+         * Devuelve true si el usuario no está logueado, reject(Not Authenticated) en otro caso.
+         */
+        self.isAnonymous = function(){
+            if(self.currentlyLogged == false){
+                return true;
+            }
+            else{
+                return $q.reject('Not Authenticated');
+            }
+        };
+
+
+        /**
+         * Si no se pasa como parámetro nada, devuelve true si el usuario está autentificado como user. Si no, reject(not authenticated).
+         * Si se pasa como parámetro algo, se mira que sea con dicho username. Si ok, true. Si no, reject(forbidden).
+         * @returns {*}
+         */
+        self.isAuthenticatedUser = function(allowedUsername){
+
+            if(!self.currentlyLogged || !self.user.type == "user"){ //No autenticado o autenticado como guest
+                return $q.reject('Not Authenticated');
+            }
+
+            if(allowedUsername){ //Si se pasa como parámetro usuario, se comprueba que sea él
+                console.log("hola");
+                if(self.user && self.user.username==allowedUsername){
+                    return true;
+                }
+                else{
+                    return $q.reject('Forbidden');
+                }
+            }
+
+            return true; //Sólo queda que sea usuario logueado.
+
+
+        };
+
+
+        /**
+         * Devuelve true si el usuario está autenticado como invitado, reject('not authenticated') en otro caso.
+         */
+        self.isAuthenticatedGuest = function(){
+            if(self.currentlyLogged == true && self.user && self.user.type == "guest"){
+                return true;
+            }
+            else{
+                return $q.reject('Not Authenticated');
+            }
+        };
+
 
 
 

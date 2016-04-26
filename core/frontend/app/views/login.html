@@ -1,3 +1,14 @@
+<b>Logueado:</b> {{ctrl.isLogged()}}
+<div ng-if="ctrl.isLogged()">
+    <span><b>Tipo:</b> {{ctrl.getUserObject().type}}</span> <br/>
+    <span ng-if="ctrl.getUserObject().type == 'user'"><b>Usuario: </b>{{ctrl.getUserObject().username}}</span>
+    <span ng-if="ctrl.getUserObject().type == 'guest'"><b>Mail: </b>{{ctrl.getUserObject().mail}}</span>
+</div>
+
+<br/>
+<button ng-if="ctrl.isLogged()" ng-click="ctrl.logOut()">Cerrar sesión</button>
+
+
 <h3>Iniciar sesión como usuario</h3>
 <form>
 

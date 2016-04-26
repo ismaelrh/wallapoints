@@ -12,6 +12,14 @@ angular.module('frontend')
     self.guestToRegister = {};
     self.userToRegister = {};
 
+
+    self.isLogged = function(){
+        return UserService.currentlyLogged;
+    }
+
+    self.getUserObject = function(){
+        return UserService.user;
+    };
     /**
      * Hace login de usuario normal.
      */
@@ -76,6 +84,14 @@ angular.module('frontend')
             self.registerUserMessage = "Error al registrar: " + JSON.stringify(err);
             console.error(err);
         });
+
+    };
+
+
+    self.logOut = function(){
+
+        UserService.deleteCurrentToken();
+
 
     };
 

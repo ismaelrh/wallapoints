@@ -302,7 +302,7 @@ module.exports = function (app) {
                 }
 
             } else {
-                res.status(404).send({"error": true, "message ": "The user does not exist"});
+                res.status(404).send({"error": true, "message": "Incorrect username or password"});
             }
 
         });
