@@ -317,7 +317,7 @@ module.exports = function (app) {
 
                     res.send({"error": false, "message": token});
                 } else {
-                    res.send({"error": true, "message": "Incorrect password"});
+                    res.status(401).send({"error": true, "message": "Incorrect username or password"});
                 }
 
             } else {

@@ -21,8 +21,9 @@ module.exports = function(app){
      */
     function checkGuestExists(req,res,next){
 
+
         if( !(
-            (req.user.type == "guest" && req.user.mail == req.params.mail) ||
+            (req.user.type == "guest" && req.user.mail == req.params.guestMail) ||
             (req.user.type == "user" && req.user.username == "admin"))
         )
         {
@@ -102,7 +103,7 @@ module.exports = function(app){
 
 
         if(!req.params.poiId){
-            res.status(400).send({error:"true",message:"Please provide a poiId parameter"});
+            res.status(400).send({error:true,message:"Please provide a poiId parameter"});
             return;
         }
 
@@ -110,12 +111,12 @@ module.exports = function(app){
         Poi.findOne({_id:req.params.poiId},function(err,result){
 
             if(err){
-                res.status(500).send({error:"true",message:"Error while inserting favourite " + err});
+                res.status(500).send({error:true,message:"Error while inserting favourite " + err});
                 return;
             }
 
             if(!result){
-                res.status(404).send({error:"true",message:"No such poi"});
+                res.status(404).send({error:true,message:"No such poi"});
                 return;
             }
 
@@ -135,13 +136,13 @@ module.exports = function(app){
 
             guest.save(function(err,response){
                 if(err){
-                    res.status(500).send({error:"true",message:"Error while inserting favourite " + err});
+                    res.status(500).send({error:true,message:"Error while inserting favourite " + err});
                     return;
                 }
                 else{
 
-                    res.status(200).send({error:"false",
-                        message:{_id:result._id,name:result.name,lat: result.lat, long: result.long, href: "/poi/" + result._id},
+                    res.status(200).send({error:false,
+                        message:{_id:result._id,name:result.name,lat: result.lat, long: result.long, href: "/pois/" + result._id},
                         links: [{favouriteList: "/guests/" + guest.mail + "/favs"}]});
                     return;
                 }
@@ -176,10 +177,10 @@ module.exports = function(app){
             guest.favourite.splice(favIndex,1);
             guest.save(function(err,saved){
                 if(err){
-                    res.status(500).send({error:"true",message:"Error while deleting favourite"});
+                    res.status(500).send({error:true,message:"Error while deleting favourite"});
                 }
                 else{
-                    res.status(200).send({error:"false",
+                    res.status(200).send({error:false,
                         message:"Poi deleted from fav list",
                         links: [{favouriteList: "/guests/" + guest.mail + "/favs"}]});
                 }
@@ -187,7 +188,7 @@ module.exports = function(app){
 
         }
         else{ //No existe -> 404
-            res.status(404).send({error:"true",message:"Fav not found"});
+            res.status(404).send({error:true,message:"Fav not found"});
         }
 
 

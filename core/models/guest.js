@@ -39,6 +39,8 @@ GuestSchema.methods.cleanGuestForDetail = function(){
 
 
 
+
+
 //Compilamos modelo
 Guest = mongoose.model('Guest', GuestSchema);
 
