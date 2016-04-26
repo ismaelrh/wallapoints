@@ -23,6 +23,11 @@ module.exports = function (app) {
      */
     router.get("/", function (req, res) {
 
+        if(req.user.username != "admin"){
+            res.status(403).send({"error": true, "message": "Forbidden. You are not authorized."});
+            return;
+        }
+
         User.find({}, 'username email', function (err, results) {
 
             if (err) {
@@ -67,6 +72,11 @@ module.exports = function (app) {
      * Sólo el admin puede hacer post de un user
      */
     router.post("/", function (req, res) {
+
+        if(req.user.username != "admin"){
+            res.status(403).send({"error": true, "message": "Forbidden. You are not authorized."});
+            return;
+        }
 
         //Se comprueba que estén todos los campos
         if (!req.body.username || !req.body.email || !req.body.name || !req.body.surname) {
@@ -152,6 +162,10 @@ module.exports = function (app) {
      */
     router.put("/:username", function (req, res) {
 
+        if(req.user.type != "user" || req.user.username != req.params.username){
+            res.status(403).send({"error": true, "message": "Forbidden. You are not authorized."});
+            return;
+        }
 
         User.findOne({username: req.params.username}, function (err, user) {
 
@@ -210,6 +224,11 @@ module.exports = function (app) {
      * y lo borra de las listas de siguiendo (creo que esto se hace solo).
      */
     router.delete("/:username", function (req, res) {
+
+        if(req.user.username != "admin"){
+            res.status(403).send({"error": true, "message": "Forbidden. You are not authorized."});
+            return;
+        }
 
         User.remove({username: req.params.username}, function (err, result) {
 
@@ -311,5 +330,4 @@ module.exports = function (app) {
     });
 
     return router;
-
 };
