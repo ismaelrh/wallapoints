@@ -9,10 +9,7 @@
 2. Para ejecutarlo cada vez, ejecutar `node server.js` en el directorio 'core'.
 
 ##Cómo testear
-1. Ejecutar en una nueva terminal `npm test` dentro del directorio 'core'. Ejecutará los tests y se quedará esperando
-a que se modifique cualquier archivo del proyecto para volver a ejecutarlos de manera automática. **No es necesario tener
-ejecutando un servidor.**
-2. Pulsar `CTRL + C`  cuando se desee terminar.
+1. Ejecutar en una nueva terminal `mocha` dentro del directorio 'core'. Ejecutará los tests.
 
 ##Directorios:
 * **frontend** -> Contiene el frontend escrito en AngularJS.
