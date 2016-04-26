@@ -4,6 +4,8 @@
 
 var express = require('express');
 var crypto = require('crypto');
+var jwt = require('jsonwebtoken');
+
 
 module.exports = function (app) {
 
@@ -236,6 +238,63 @@ module.exports = function (app) {
 
 
         });
+    });
+
+
+    /* Método Post /users/login, intenta loguear a un usuario en el sistema y devuelve un JSON web token en caso
+     * de que se pueda realizar el logueo
+     **/
+    router.post("/login", function (req, res) {
+
+
+        if (!req.body.mail || !req.body.password) {
+            res.status(400).send({"error": true, "message ": "Not a correct body, insert mail and password"});
+            return;
+        }
+
+        /*Se encripta la contraseña para compararla con la almacenada*/
+        var passHash = crypto.createHash('md5').update(req.body.password).digest('hex');
+
+        /* Se busca el usuario y se devuelve la password en caso de que exista*/
+        Guest.findOne({mail: req.body.mail}, function (err, result) {
+
+            if(err){
+                res.status(500).send({"error": true, "message": "Error retrieving guests data "});
+                return;
+            }
+
+
+            if (result) {
+                if (passHash == result.password) {
+                    /* Log in correcto */
+
+                    var guestObject = result.cleanGuestForList();
+                    guestObject.type = "guest";
+                    delete guestObject.password;
+
+                    /*Se genera token de sesion, guardando dentro info de usuario */
+                    var token = jwt.sign(guestObject, app.get('jwtsecret'), {
+                            expiresIn: "1h"
+                        } // expires in 1 hour
+                    );
+
+                    // Se actualiza la ultima fecha de acceso
+                    result.lastAccessDate = new Date();
+                    // Se guarda en la db
+                    result.save();
+
+                    res.send({"error": false, "message": token});
+                } else {
+                    res.send({"error": true, "message": "Incorrect password"});
+                }
+
+            } else {
+                res.status(500).send({"error": true, "message ": "The guest does not exist"});
+            }
+
+        });
+
+
     });
 
     return router;
