@@ -101,7 +101,7 @@ module.exports = function (app) {
         newUser.save(function (err, result) {
 
             if (err) {
-                res.send({"error": true, "message": "Error saving data " + err});
+                res.status(500).send({"error": true, "message": "Error saving data " + err});
             }
             else {
                 //Se mostrará la contraseña en claro en la respuesta
@@ -302,7 +302,7 @@ module.exports = function (app) {
                 }
 
             } else {
-                res.status(500).send({"error": true, "message ": "The user does not exist"});
+                res.status(404).send({"error": true, "message ": "The user does not exist"});
             }
 
         });

@@ -86,7 +86,7 @@ module.exports = function (app) {
             newGuest.save(function (err, result) {
 
                 if (err) {
-                    res.send({"error": true, "message": "Error saving data " + err});
+                    res.status(500).send({"error": true, "message": "Error saving data " + err});
                     console.error(err);
                 }
                 else {

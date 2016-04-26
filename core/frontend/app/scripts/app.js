@@ -2,7 +2,9 @@
 
 // Declare app level module which depends on views, and services
 angular.module('frontend', [
-  'ngRoute'
+  'ngRoute',
+    'angular-jwt',
+    'LocalStorageModule'
 ]).
 config(['$routeProvider', function($routeProvider) {
 $routeProvider
@@ -18,5 +20,11 @@ $routeProvider
     controllerAs: 'ctrl'
   })
 
-    .otherwise({redirectTo: '/view1'});
+.when('/login', {
+    templateUrl: 'views/login.html',
+    controller: 'LoginCtrl',
+    controllerAs: 'ctrl'
+})
+
+    .otherwise({redirectTo: '/login'});
 }]);

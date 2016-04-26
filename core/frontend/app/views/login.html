@@ -1,0 +1,39 @@
+<h3>Iniciar sesión como usuario</h3>
+<form>
+
+    <input ng-model="ctrl.user.username" placeholder="username">
+    <input ng-model="ctrl.user.password" placeholder="password" type="password">
+    <button ng-click="ctrl.doLoginUser()">Login usuario</button>
+
+</form>
+{{ctrl.loginUserMessage}}
+<h3>Iniciar sesión como invitado</h3>
+<form>
+
+    <input ng-model="ctrl.guest.mail" placeholder="email">
+    <input ng-model="ctrl.guest.password" placeholder="password" type="password">
+    <button ng-click="ctrl.doLoginGuest()">Login invitado</button>
+
+</form>
+{{ctrl.loginGuestMessage}}
+<h3>Registrar nuevo usuario</h3>
+<form>
+
+    <input ng-model="ctrl.userToRegister.username" placeholder="username">
+    <input ng-model="ctrl.userToRegister.email" placeholder="email">
+    <input ng-model="ctrl.userToRegister.name" placeholder="name">
+    <input ng-model="ctrl.userToRegister.surname" placeholder="surname">
+    <button ng-click="ctrl.doRegisterUser()">Registrar usuario</button>
+
+</form>
+{{ctrl.registerUserMessage}}
+
+<h3>Registrar nuevo invitado</h3>
+<form>
+
+    <input ng-model="ctrl.guestToRegister.mail" placeholder="username">
+    <input ng-model="ctrl.guestToRegister.password" placeholder="password" type="password">
+    <button ng-click="ctrl.doRegisterGuest()">Registrar invitado</button>
+
+</form>
+{{ctrl.registerMessage}}
