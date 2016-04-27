@@ -32,6 +32,7 @@ angular.module('frontend')
     self.toggleRightPanel = function(){
         self.showRightPanel = !self.showRightPanel;
     };
+
     // uiGmapGoogleMapApi is a promise.
     // The "then" callback function provides the google.maps object.
     uiGmapGoogleMapApi.then(function(maps) {
@@ -41,6 +42,5 @@ angular.module('frontend')
 
 
 
-    console.log("You are on map ctrl");
 
 }]);

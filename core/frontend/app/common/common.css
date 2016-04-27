@@ -1,0 +1,22 @@
+/**
+ * CSS USADO POR VARIAS VISTAS, COMÚN.
+ */
+
+body { background: white; }
+
+/** Estilos propios de nav-bar para hacerla semi-transparente */
+.navbar-default {
+  background-color:rgba(0,0,0,0.8);
+  border-color: rgba(0,0,0,0.8);
+}
+.nav.navbar-nav.navbar-right li a{
+  color: white;
+}
+.nav.navbar-nav.navbar-right li a:hover{
+  color: gray;
+}
+
+.navbar-offset { margin-top: 50px; }
+
+
+

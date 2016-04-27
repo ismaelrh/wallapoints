@@ -1,3 +1,4 @@
+
 <div class="container">
     <nav class="navbar navbar-fixed-top navbar-default" role="navigation">
         <div class="navbar-inner container-fluid">
@@ -19,40 +20,43 @@
 
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                <li class="dropdown">
-                    <a class="dropdown-toggle" href="" data-toggle="dropdown" id="navLogin">Login/registro<span class="caret"></a>
-                    <div class="dropdown-menu pull-right" style="padding:17px;">
-                        <form>
-                            <div class="form-group">
-                                <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
-                            </div>
-
-                            <div class="form-group">
-                                <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
-                            </div>
-
-                            <div class="form-group">
-                                <button type="submit" class="btn btn-block btn-default">Sign in</button>
-                            </div>
-                        </form>
-                    </div>
-                </li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown">
-                        <a class="dropdown-toggle" href="" data-toggle="dropdown" id="navSearch">Buscar POIs<span class="caret"></a>
+                        <a class="dropdown-toggle" href="" data-toggle="dropdown" id="navLogin">Login/registro<span
+                                class="caret"></a>
                         <div class="dropdown-menu pull-right" style="padding:17px;">
                             <form>
                                 <div class="form-group">
-                                    <input type="text" class="form-control"  placeholder="Creador">
+                                    <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
                                 </div>
 
                                 <div class="form-group">
-                                    <input type="text" class="form-control"  placeholder="Fecha">
+                                    <input type="password" class="form-control" id="inputPassword3"
+                                           placeholder="Password">
                                 </div>
 
                                 <div class="form-group">
-                                    <input type="text" class="form-control"  placeholder="Keywords">
+                                    <button type="submit" class="btn btn-block btn-default">Sign in</button>
+                                </div>
+                            </form>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" href="" data-toggle="dropdown" id="navSearch">Buscar POIs<span
+                                class="caret"></a>
+                        <div class="dropdown-menu pull-right" style="padding:17px;">
+                            <form>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Creador">
+                                </div>
+
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Fecha">
+                                </div>
+
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Keywords">
                                 </div>
 
                                 <div class="form-group">
@@ -76,28 +80,32 @@
 
 <div class="overlaid-container">
 
-
-    <div class="row overlaid-row">  <!-- Fila de los menús laterales plegados -->
+    <div class="row overlaid-row">  <!-- Fila de los seleccionadores de paneles -->
 
         <div class="panel-selection btn-group btn-group-justified" role="group" aria-label="...">
             <div class="btn-group" role="group">
                 <div class="btn btn-default" ng-click="ctrl.toggleLeftPanel()">
-                <span class="glyphicon" ng-class="{'glyphicon-check':ctrl.showLeftPanel,'glyphicon-unchecked':!ctrl.showLeftPanel}"></span>&nbsp;Resultados
-            </div>
+                    <span class="glyphicon"
+                          ng-class="{'glyphicon-check':ctrl.showLeftPanel,'glyphicon-unchecked':!ctrl.showLeftPanel}"></span>
+                    &nbsp;Resultados
+                </div>
 
             </div>
             <div class="btn-group" role="group">
                 <div class="btn btn-default" ng-click="ctrl.toggleLeftPanel2()">
-                    <span class="glyphicon" ng-class="{'glyphicon-check':ctrl.showLeftPanel2,'glyphicon-unchecked':!ctrl.showLeftPanel2}"></span>&nbsp;Favs
+                    <span class="glyphicon"
+                          ng-class="{'glyphicon-check':ctrl.showLeftPanel2,'glyphicon-unchecked':!ctrl.showLeftPanel2}"></span>
+                    &nbsp;Favs
                 </div>
 
             </div>
             <div class="btn btn-default" ng-click="ctrl.toggleRightPanel()">
-                <span class="glyphicon" ng-class="{'glyphicon-check':ctrl.showRightPanel,'glyphicon-unchecked':!ctrl.showRightPanel}"></span>&nbsp;Info
+                <span class="glyphicon"
+                      ng-class="{'glyphicon-check':ctrl.showRightPanel,'glyphicon-unchecked':!ctrl.showRightPanel}"></span>
+                &nbsp;Info
             </div>
 
         </div>
-
 
 
     </div>
@@ -108,8 +116,8 @@
         <!-- Menú lateral izquierdo-->
         <div class="col-sm-4 col-md-3 sidebar">
 
-            <!-- Menú lateral izquierdo desplegado, mostrado cuando showLeftPanel == true -->
-            <div class="panel-group sidebar-body " id="accordion-left" >
+            <!-- Menú lateral izquierdo primero, mostrado cuando showLeftPanel == true -->
+            <div class="panel-group sidebar-body " id="accordion-left">
                 <div class="panel panel-primary" ng-show="ctrl.showLeftPanel">
                     <div class="panel-heading">
                         <h4 class="panel-title">
@@ -146,6 +154,8 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Menú lateral izquierdo segundo, mostrado cuando showLeftPanel2 == true -->
                 <div class="panel panel-primary" ng-show="ctrl.showLeftPanel2">
                     <div class="panel-heading">
                         <h4 class="panel-title">

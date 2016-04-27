@@ -19,7 +19,7 @@ angular.module('frontend', [
         $routeProvider
 
             .when('/view1', {
-                templateUrl: 'views/view1.html',
+                templateUrl: 'view1/view1.html',
                 controller: 'View1Ctrl',
                 controllerAs: 'ctrl',
                 resolve : {
@@ -29,7 +29,7 @@ angular.module('frontend', [
                 }
             })
             .when('/view2', {
-                templateUrl: 'views/view2.html',
+                templateUrl: 'view2/view2.html',
                 controller: 'View2Ctrl',
                 controllerAs: 'ctrl',
                 resolve : {
@@ -40,19 +40,19 @@ angular.module('frontend', [
 
             })
             .when('/login', {
-                templateUrl: 'views/login.html',
+                templateUrl: 'login/login.html',
                 controller: 'LoginCtrl',
                 controllerAs: 'ctrl'
             })
 
 
             .when('/map', {
-                templateUrl: 'views/map.html',
+                templateUrl: 'guestMap/guestMap.html',
                 controller: 'MapCtrl',
                 controllerAs: 'ctrl'
             })
             .when('/forbidden',{
-                templateUrl: 'views/forbidden.html',
+                templateUrl: 'forbidden/forbidden.html',
                 controller: 'ForbiddenCtrl',
                 controllerAs: 'ctrl'
             })
