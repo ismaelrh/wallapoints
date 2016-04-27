@@ -79,17 +79,26 @@
 
     <div class="row overlaid-row">  <!-- Fila de los menús laterales plegados -->
 
-        <!-- Menú lateral izquierdo plegado, oculto cuando showLeftPanel == true -->
-        <div class="mini-submenu mini-submenu-left bg-info" ng-hide="ctrl.showLeftPanel"
-             ng-click="ctrl.toggleLeftPanel()">
-            <span>Resultados y favoritos</span>
+        <div class="panel-selection btn-group btn-group-justified" role="group" aria-label="...">
+            <div class="btn-group" role="group">
+                <div class="btn btn-default" ng-click="ctrl.toggleLeftPanel()">
+                <span class="glyphicon" ng-class="{'glyphicon-check':ctrl.showLeftPanel,'glyphicon-unchecked':!ctrl.showLeftPanel}"></span>&nbsp;Resultados
+            </div>
+
+            </div>
+            <div class="btn-group" role="group">
+                <div class="btn btn-default" ng-click="ctrl.toggleLeftPanel2()">
+                    <span class="glyphicon" ng-class="{'glyphicon-check':ctrl.showLeftPanel2,'glyphicon-unchecked':!ctrl.showLeftPanel2}"></span>&nbsp;Favs
+                </div>
+
+            </div>
+            <div class="btn btn-default" ng-click="ctrl.toggleRightPanel()">
+                <span class="glyphicon" ng-class="{'glyphicon-check':ctrl.showRightPanel,'glyphicon-unchecked':!ctrl.showRightPanel}"></span>&nbsp;Info
+            </div>
+
         </div>
 
-        <!-- Menú lateral derecho plegado, oculto cuando showLeftPanel == true -->
-        <div class="mini-submenu mini-submenu-right bg-info" ng-hide="ctrl.showRightPanel"
-             ng-click="ctrl.toggleRightPanel()">
-            <span>Información POI/RUTA</span>
-        </div>
+
 
     </div>
 
@@ -100,8 +109,8 @@
         <div class="col-sm-4 col-md-3 sidebar">
 
             <!-- Menú lateral izquierdo desplegado, mostrado cuando showLeftPanel == true -->
-            <div class="panel-group sidebar-body " id="accordion-left" ng-show="ctrl.showLeftPanel">
-                <div class="panel panel-primary">
+            <div class="panel-group sidebar-body " id="accordion-left" >
+                <div class="panel panel-primary" ng-show="ctrl.showLeftPanel">
                     <div class="panel-heading">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" href="" data-target="#searchResults">
@@ -137,13 +146,16 @@
                         </div>
                     </div>
                 </div>
-                <div class="panel panel-primary">
+                <div class="panel panel-primary" ng-show="ctrl.showLeftPanel2">
                     <div class="panel-heading">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" href="" data-target="#guestData">
                                 <i class="fa fa-list-alt"></i>
                                 Yo
                             </a>
+                             <span class="pull-right slide-submenu">
+                    <span class="glyphicon glyphicon-chevron-left" ng-click="ctrl.toggleLeftPanel2()"></span>
+                  </span>
                         </h4>
                     </div>
                     <div id="guestData" class="panel-collapse collapse in">

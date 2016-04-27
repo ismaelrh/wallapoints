@@ -12,6 +12,7 @@ angular.module('frontend')
     };
 
     self.showLeftPanel = true;
+    self.showLeftPanel2 = true;
     self.showRightPanel = true;
     self.map = { center: { latitude: 45, longitude: -73 }, zoom: 8 };
 
@@ -22,6 +23,11 @@ angular.module('frontend')
     self.toggleLeftPanel = function(){
         self.showLeftPanel = !self.showLeftPanel;
     };
+
+    self.toggleLeftPanel2 = function(){
+        self.showLeftPanel2 = !self.showLeftPanel2;
+    };
+
 
     self.toggleRightPanel = function(){
         self.showRightPanel = !self.showRightPanel;

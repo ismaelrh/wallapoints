@@ -18,6 +18,14 @@ body { background: white; }
   text-align: center;
 }
 
+.panel-selection{
+  z-index: 40;
+  margin-bottom:5px;
+}
+
+.panel-selection .btn{
+  background-color:rgba(255,255,255,0.9);
+}
 .mini-submenu-left{
   float:left;
   position: relative;
