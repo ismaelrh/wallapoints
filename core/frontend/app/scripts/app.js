@@ -4,8 +4,18 @@
 angular.module('frontend', [
     'ngRoute',
     'angular-jwt',
-    'LocalStorageModule'
-]).config(['$routeProvider','$httpProvider', function ($routeProvider,$httpProvider) {
+    'LocalStorageModule',
+    'uiGmapgoogle-maps',
+    'ngAnimate',
+    'ui.bootstrap'
+]).config(['$routeProvider','$httpProvider', 'uiGmapGoogleMapApiProvider',function ($routeProvider,$httpProvider,uiGmapGoogleMapApiProvider) {
+
+        uiGmapGoogleMapApiProvider.configure({
+            //    key: 'your api key',
+            v: '3.20', //defaults to latest 3.X anyhow
+            libraries: 'weather,geometry,visualization'
+        });
+
         $routeProvider
 
             .when('/view1', {
@@ -35,6 +45,12 @@ angular.module('frontend', [
                 controllerAs: 'ctrl'
             })
 
+
+            .when('/map', {
+                templateUrl: 'views/map.html',
+                controller: 'MapCtrl',
+                controllerAs: 'ctrl'
+            })
             .when('/forbidden',{
                 templateUrl: 'views/forbidden.html',
                 controller: 'ForbiddenCtrl',

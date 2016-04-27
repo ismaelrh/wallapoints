@@ -1,0 +1,264 @@
+<div class="container">
+    <nav class="navbar navbar-fixed-top navbar-default" role="navigation">
+        <div class="navbar-inner container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#" style="color:white;">Wallalinks!</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">Home</a></li>
+
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" href="" data-toggle="dropdown" id="navLogin">Login/registro<span class="caret"></a>
+                    <div class="dropdown-menu pull-right" style="padding:17px;">
+                        <form>
+                            <div class="form-group">
+                                <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+                            </div>
+
+                            <div class="form-group">
+                                <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
+                            </div>
+
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-block btn-default">Sign in</button>
+                            </div>
+                        </form>
+                    </div>
+                </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" href="" data-toggle="dropdown" id="navSearch">Buscar POIs<span class="caret"></a>
+                        <div class="dropdown-menu pull-right" style="padding:17px;">
+                            <form>
+                                <div class="form-group">
+                                    <input type="text" class="form-control"  placeholder="Creador">
+                                </div>
+
+                                <div class="form-group">
+                                    <input type="text" class="form-control"  placeholder="Fecha">
+                                </div>
+
+                                <div class="form-group">
+                                    <input type="text" class="form-control"  placeholder="Keywords">
+                                </div>
+
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-block btn-default">Buscar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </li>
+                </ul>
+
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+</div>
+<div class="navbar-offset"></div>
+
+<ui-gmap-google-map id="map" center='ctrl.map.center' zoom='ctrl.map.zoom' options='ctrl.myOptions'>
+</ui-gmap-google-map>
+
+<!-- Menú lateral derecho plegado, mostrado cuando showRightPanel == false -->
+
+<div class="overlaid-container">
+
+
+    <div class="row overlaid-row">  <!-- Fila de los menús laterales plegados -->
+
+        <!-- Menú lateral izquierdo plegado, oculto cuando showLeftPanel == true -->
+        <div class="mini-submenu mini-submenu-left bg-info" ng-hide="ctrl.showLeftPanel"
+             ng-click="ctrl.toggleLeftPanel()">
+            <span>Resultados y favoritos</span>
+        </div>
+
+        <!-- Menú lateral derecho plegado, oculto cuando showLeftPanel == true -->
+        <div class="mini-submenu mini-submenu-right bg-info" ng-hide="ctrl.showRightPanel"
+             ng-click="ctrl.toggleRightPanel()">
+            <span>Información POI/RUTA</span>
+        </div>
+
+    </div>
+
+
+    <div class="row overlaid-row" style="margin:0px !important;"> <!-- Fila de los menús laterales desplegados -->
+
+        <!-- Menú lateral izquierdo-->
+        <div class="col-sm-4 col-md-3 sidebar">
+
+            <!-- Menú lateral izquierdo desplegado, mostrado cuando showLeftPanel == true -->
+            <div class="panel-group sidebar-body " id="accordion-left" ng-show="ctrl.showLeftPanel">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="" data-target="#searchResults">
+                                <span class="fa fa-list-alt"></span>
+                                Resultados de búsqueda
+                            </a>
+                  <span class="pull-right slide-submenu">
+                    <span class="glyphicon glyphicon-chevron-left" ng-click="ctrl.toggleLeftPanel()"></span>
+                  </span>
+                        </h4>
+                    </div>
+
+                    <div id="searchResults" class="panel-collapse in">
+
+                        <div class="panel-body">
+
+                            <div class="btn-group btn-group-justified" role="group"> <!-- Pestañas POI/RUTAS -->
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-default">POIs</button>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-default">Rutas</button>
+                                </div>
+                            </div>
+
+                            <ul class="list-group" style="max-height: 30vh; overflow-y: scroll;">
+                                <li class="list-group-item">Casa de Luis (@ismaro3)</li>
+                                <li class="list-group-item">Playa de Ibiza (@fiestero)</li>
+                                <li class="list-group-item">Casa de Luis (@ismaro3)</li>
+                                <li class="list-group-item">Playa de Ibiza (@fiestero)</li>
+                                <li class="list-group-item">Casa de Luis (@ismaro3)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="" data-target="#guestData">
+                                <i class="fa fa-list-alt"></i>
+                                Yo
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="guestData" class="panel-collapse collapse in">
+                        <div class="panel-body">
+
+
+                            <div class="btn-group btn-group-justified" role="group"> <!-- Pestañas POI/RUTAS -->
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-default">Usuarios seguidos</button>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-default">POIs favoritos</button>
+                                </div>
+                            </div>
+
+                            <ul class="list-group" style="max-height: 30vh; overflow-y: scroll;">
+                                <li class="list-group-item">Casa de Luis (@ismaro3)</li>
+                                <li class="list-group-item">Playa de Ibiza (@fiestero)</li>
+                                <li class="list-group-item">Casa de Luis (@ismaro3)</li>
+                                <li class="list-group-item">Playa de Ibiza (@fiestero)</li>
+                                <li class="list-group-item">Casa de Luis (@ismaro3)</li>
+                            </ul>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+
+        <!-- Menú lateral derecho, tiene offset para dejar en medio vacío-->
+        <div class="col-sm-4 col-sm-offset-4 col-md-3 col-md-offset-6 sidebar ">
+
+            <!-- Menú lateral derecho desplegado, mostrado cuando showRightPanel == true -->
+            <div class="panel-group sidebar-body" id="accordion-right" ng-show="ctrl.showRightPanel">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="" data-target="#poiInfo">
+                                <i class="fa fa-tasks"></i>
+                                Información del POI
+                            </a>
+
+                      <span class="pull-right slide-submenu" ng-click="ctrl.toggleRightPanel()">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                      </span>
+                        </h4>
+                    </div>
+                    <div id="poiInfo" class="panel-collapse collapse in">
+                        <div class="panel-body">
+
+                            <b>Nombre: </b> Prisióń de Madrid
+                            <br/>
+                            <b>Descripción: </b> Situado en pleno centro, sitio muy bonito
+                            <br/>
+                            <b>Creador: </b> Alberto Ruíz
+                            <br/>
+                            <b>Dirección: </b> Calle Génova 13
+
+                            <br/>
+                            <div class="row">
+                                <div class="btn-group btn-group-justified" role="group">
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-default"><span
+                                                class="glyphicon glyphicon-user"></span>Usuario
+                                        </button>
+                                    </div>
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-default"><span
+                                                class="glyphicon glyphicon-heart"></span>Fav
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+                                <div class="btn-group btn-group-justified" role="group">
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-default"><span
+                                                class="glyphicon glyphicon-star"></span>Puntuar
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="" data-target="#routeData">
+                                <i class="fa fa-tasks"></i>
+                                Ruta a seguir
+                            </a>
+
+
+                        </h4>
+                    </div>
+                    <div id="routeData" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <p>
+                                Se rellenará con indicaciones de la ruta cuando se seleccione una ruta.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+</div>

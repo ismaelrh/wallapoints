@@ -12,6 +12,8 @@
   <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
   <link rel="stylesheet" href="styles/app.css">
   <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 </head>
 <body>
 
@@ -20,7 +22,7 @@
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
   <![endif]-->
 
-  <div ng-view></div>
+  <ng-view></ng-view>
 
 
   <!-- In production use:
@@ -30,10 +32,16 @@
   <script src="bower_components/angular-route/angular-route.js"></script>
   <script src="bower_components/angular-jwt/dist/angular-jwt.min.js"></script>
   <script src="bower_components/angular-local-storage/dist/angular-local-storage.min.js"></script>
+  <script src='bower_components/lodash/dist/lodash.min.js'></script>
+  <script src='bower_components/angular-simple-logger/dist/angular-simple-logger.min.js'></script>
+  <script src='bower_components/angular-google-maps/dist/angular-google-maps.js'></script>
+  <script src='bower_components/angular-animate/angular-animate.min.js'></script>
+  <script src='bower_components/angular-bootstrap/ui-bootstrap.js'></script>
   <script src="scripts/app.js"></script>
   <script src="scripts/controllers/view1.js"></script>
   <script src="scripts/controllers/view2.js"></script>
   <script src="scripts/controllers/login.js"></script>
+  <script src="scripts/controllers/map.js"></script>
   <script src="scripts/controllers/forbidden.js"></script>
   <script src="scripts/services/userService.js"></script>
 </body>
