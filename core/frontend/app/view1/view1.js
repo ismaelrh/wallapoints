@@ -20,11 +20,11 @@ angular.module('frontend')
      */
     self.retrievePosts = function(){
 
-        $http.get('/posts').then(function(response){
+       /* $http.get('/posts').then(function(response){
             self.posts = response.data.message;
         }, function(err){
             console.log(err);
-        });
+        });*/
 
     };
 
@@ -35,14 +35,14 @@ angular.module('frontend')
      */
     self.addPost = function(){
 
-        $http.post('/posts', self.newPost).then(function(response){
+        /*$http.post('/posts', self.newPost).then(function(response){
 
             self.posts.push(response.data.message);
             self.newPost = {};
 
         }, function(err){
             console.error(err);
-        });
+        });*/
     };
 
 

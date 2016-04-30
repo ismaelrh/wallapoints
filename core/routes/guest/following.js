@@ -24,7 +24,7 @@ module.exports = function(app){
 
 
         if( !(
-            (req.user.type == "guest" && req.user.mail == req.params.mail) ||
+            (req.user.type == "guest" && req.user.mail == req.params.guestMail) ||
             (req.user.type == "user" && req.user.username == "admin"))
         )
         {
@@ -45,6 +45,7 @@ module.exports = function(app){
                 res.status(404).send({error:true,message:"Guest does not exist"});
                 return;
             }
+
 
             req.guest = result;
             next(); //El guest existe -> Pasamos control al siguiente middleware
@@ -67,7 +68,7 @@ module.exports = function(app){
 
         if(guest.following.length==0){ //Si array vacio -> no se realiza transformación
             res.status(200).send({
-                error:"false",
+                error:false,
                 message:guest.following,
                 links: [{guestInfo: "/guests/" + guest.mail}]
             });
@@ -80,6 +81,7 @@ module.exports = function(app){
 
                 finalArray.push({username: i.username, email: i.email, href: "/users/" + i.username});
                 if (idx === array.length - 1) {
+
                     res.send(
                         {
                              error: false,
@@ -105,7 +107,7 @@ module.exports = function(app){
 
 
         if(!req.params.username){
-            res.status(400).send({error:"true",message:"Please call this method with a username param"});
+            res.status(400).send({error:true,message:"Please call this method with a username param"});
             return;
         }
 
@@ -114,11 +116,11 @@ module.exports = function(app){
         User.findOne({username:req.params.username},function(err,result){
 
             if(err){
-                res.status(500).send({error:"true",message:"Error while inserting following"});
+                res.status(500).send({error:true,message:"Error while inserting following"});
                 return;
             }
             if(!result){
-                res.status(404).send({error:"true",message:"No such user"});
+                res.status(404).send({error:true,message:"No such user"});
                 return;
             }
 
@@ -133,16 +135,16 @@ module.exports = function(app){
             }
 
             if(!alreadyInserted){
-                guest.following.push(result);
+                guest.following.push(result._id);
             }
 
             guest.save(function(err,response){
                 if(err){
-                    res.status(500).send({error:"true",message:"Error while inserting following"});
+                    res.status(500).send({error:true,message:"Error while inserting following"});
                 }
                 else{
                     res.status(200).send(
-                        {error:"false",
+                        {error:false,
                             message:{username: result.username, email: result.email, href: "/users/" + result.username},
                             links: [{followingList: "/guests/" + guest.mail + "/following"}]});
                 }
@@ -182,11 +184,11 @@ module.exports = function(app){
             guest.following.splice(followingIndex,1);
             guest.save(function(err,saved){
                 if(err){
-                    res.status(500).send({error:"true",message:"Error while deleting following"});
+                    res.status(500).send({error:true,message:"Error while deleting following"});
                 }
                 else{
                     res.status(200).send({
-                        error:"false",
+                        error:false,
                         message:"The user has been unfollowed",
                         links: [{followingList: "/guests/" + guest.mail + "/following"}]});
 
@@ -195,7 +197,7 @@ module.exports = function(app){
 
         }
         else{ //No existe -> 404
-            res.status(404).send({error:"true",message:"Following not found"});
+            res.status(404).send({error:true,message:"Following not found"});
         }
 
 
