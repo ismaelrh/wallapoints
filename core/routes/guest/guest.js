@@ -274,7 +274,7 @@ module.exports = function (app) {
 
                     /*Se genera token de sesion, guardando dentro info de usuario */
                     var token = jwt.sign(guestObject, app.get('jwtsecret'), {
-                            expiresIn: "1h"
+                            expiresIn: "99h"
                         } // expires in 1 hour
                     );
 
