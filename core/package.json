@@ -12,6 +12,7 @@
     "express-jwt": "^3.3.0",
     "express-unless": "^0.3.0",
     "jsonwebtoken": "^5.7.0",
+    "lodash": "^4.11.1",
     "mongoose": "^4.4.12",
     "mongoose-idexists": "^1.0.5",
     "morgan": "^1.7.0",
@@ -21,7 +22,7 @@
     "chai": "^3.5.0",
     "chai-http": "^2.0.1",
     "mocha": "^2.4.5"
-  }, 
+  },
   "scripts": {
     "postinstall": "cd frontend ; npm install;"
   }

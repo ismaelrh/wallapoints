@@ -45,6 +45,16 @@ angular.module('frontend', [
                 controllerAs: 'ctrl'
             })
 
+            .when('/admin', {
+                templateUrl: 'adminPanel/adminPanel.html',
+                controller: 'AdminPanelCtrl',
+                controllerAs: 'ctrl',
+                resolve : {
+                    'auth' : function(UserService){
+                        return UserService.isAuthenticatedUser('admin');
+                    }
+                }
+            })
 
             .when('/map', {
                 templateUrl: 'guestMap/guestMap.html',
