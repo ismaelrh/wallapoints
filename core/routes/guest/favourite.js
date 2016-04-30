@@ -77,7 +77,7 @@ module.exports = function(app){
             var finalArray = [];
             guest.favourite.forEach(function (i, idx, array) {
 
-                finalArray.push({id: i._id, name: i.name, lat: i.lat, long: i.long, href: "/pois/" + i._id});
+                finalArray.push({_id: i._id, name: i.name, lat: i.lat, long: i.long, href: "/pois/" + i._id});
                 if (idx === array.length - 1) {
                     res.send(
                         {
