@@ -7,6 +7,18 @@ var RatingSchema = mongoose.Schema({
     points: {type: Number, required:true}
 });
 
+/**
+ * Devuelve un objeto imprimible en una lista de guests.
+ * Añade un href y elimina atributos como __v, _id y password.
+ */
+RatingSchema.methods.cleanRatingForList = function(){
+    var object = this.toJSON();
+    delete object.__v;
+    delete object._id;
+    delete object.poi;
+    return object;
+};
+
 //(Opcional) definimos funciones que añadan algo de lógica al esquema
 
 //Compilamos modelo

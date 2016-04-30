@@ -274,7 +274,7 @@ module.exports = function (app) {
 
                     /*Se genera token de sesion, guardando dentro info de usuario */
                     var token = jwt.sign(guestObject, app.get('jwtsecret'), {
-                            expiresIn: "1h"
+                            expiresIn: "99h"
                         } // expires in 1 hour
                     );
 
@@ -289,7 +289,7 @@ module.exports = function (app) {
                 }
 
             } else {
-                res.status(500).send({"error": true, "message ": "The guest does not exist"});
+                res.status(404).send({"error": true, "message ": "The guest does not exist"});
             }
 
         });

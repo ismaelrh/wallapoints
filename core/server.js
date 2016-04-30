@@ -26,6 +26,12 @@ app.set('dbUrl',process.env.MONGODB_URI || config.db[app.settings.env]);
 //Ponemos el puerto según modo. Primero prueba el de HEROKU, si no, fichero de config.
 app.set('port',process.env.PORT || config.port[app.settings.env]);
 
+//Servimos el frontend en "/"
+app.use(express.static('./frontend/app'));
+
+//Añadimos el middleware de gestor de acceso y JWT.
+require('./security/jwt-handler')(app);
+
 //Aceptaremos JSON y valores codificados en la propia URL
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
@@ -33,11 +39,9 @@ app.use(bodyParser.urlencoded({extended:true}));
 //Cargamos los modelos
 app.models = require('./models');
 
-//Servimos el frontend en "/"
-app.use(express.static('./frontend/app'));
 
-//Añadimos el middleware de gestor de acceso y JWT.
-require('./security/jwt-handler')(app);
+
+
 
 //Cargamos las rutas
 require('./routes')(app);

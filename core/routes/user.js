@@ -299,7 +299,7 @@ module.exports = function (app) {
                     delete userObject.passwordusers;
                     /*Se genera token de sesion, guardando dentro info de usuario */
                     var token = jwt.sign(userObject, app.get('jwtsecret'), {
-                            expiresIn: "1h"
+                            expiresIn: "999h"
                         } // expires in 1 hour
                     );
 
