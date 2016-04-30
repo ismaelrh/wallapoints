@@ -6,12 +6,12 @@ var express = require('express');
 
 module.exports = function(app){
 
-    var router = express.Router();
+    var router = express.Router({mergeParams: true});
 
     //Importamos el modelo de Userouter
     var Route = app.models.Route;
     var Poi =app.models.Poi;
-    var userLoged = "";
+
 
 
     /**
@@ -62,8 +62,9 @@ module.exports = function(app){
      */
     router.post("/", function (req, res) {
 
+        console.log(req.user);
 
-        if(req.user.type != "user" || req.user.username != "admin"){
+        if(req.user.type != "user"){
             res.status(403).send({"error": true, "message": "Forbidden. You are not authorized."});
             return;
         }

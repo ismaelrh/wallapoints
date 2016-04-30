@@ -11,11 +11,13 @@ angular.module('frontend')
         disableDefaultUI: true
     };
 
+    self.mapControl = {};
     self.showLeftPanel = true;
     self.showLeftPanel2 = true;
     self.showRightPanel = true;
-    self.map = { center: { latitude: 42.1365707, longitude: -0.4143509 }, zoom: 3 };
+    self.map = { center: { latitude: 42.1365707, longitude: -0.4143509 }, zoom: 3 ,control: {}};
     self.detailedPoi = undefined;
+    self.detailedRoute = undefined;
     self.pois = [];
 
     self.searchByDate = "";
@@ -300,6 +302,33 @@ angular.module('frontend')
 
     };
 
+    self.searchRoutes = function(){
+
+
+        var searchObject = {};
+
+        if(self.searchByCreator && self.searchByCreator.length > 0){
+            searchObject.creator = self.searchByCreator;
+        }
+
+        if(self.searchByDate && self.searchByDate.length > 0){
+            searchObject.date = self.searchByDate;
+        }
+
+        $http.post("/routes/search",searchObject)
+            .then(function(response){
+                console.log("Routes: ");
+                console.log(response.data.message);
+                self.routes = response.data.message;
+            })
+            .catch(function(error){
+                console.log("Error obtaining routes");
+            });
+
+
+
+    };
+
 
 
     self.registerGuest = function(){
@@ -333,13 +362,79 @@ angular.module('frontend')
         self.showRightPanel = !self.showRightPanel;
     };
 
+
+
+
     // uiGmapGoogleMapApi is a promise.
     // The "then" callback function provides the google.maps object.
     uiGmapGoogleMapApi.then(function(maps) {
 
-        console.log("mapa listo");
+
         self.getGuestDetails();
         self.searchPois();
+        self.searchRoutes();
+
+
+        var directionsDisplay = new maps.DirectionsRenderer();
+        var directionsService = new maps.DirectionsService();
+
+        self.getDirections = function (id) {
+
+            //Cogemos del backend los pois
+            $http.get("/routes/" + id)
+                .then(function(response){
+
+                    self.detailedRoute = response.data.message;
+
+                    var poiList = response.data.message.pois;
+                    if(poiList.length<2){
+                        alert("Need two or more points to calculate route");
+                        return;
+                    }
+
+                    //Punto inicial y final
+                    var originAddress = new maps.LatLng(poiList[0].lat, poiList[0].long);
+                    var destinationAddress = new maps.LatLng(poiList[poiList.length-1].lat, poiList[poiList.length-1].long);
+
+                    //Se agnaden los puntos intermedios
+                    var puntosIntermedios = [];
+                    for (var i = 1; i < poiList.length -1; i++) {
+
+                        puntosIntermedios.push({
+                            location: new maps.LatLng(poiList[i].lat,poiList[i].long),
+                            stopover: true
+                        });
+
+                    }
+
+                    var request = {
+                        origin: originAddress,
+                        destination: destinationAddress,
+                        waypoints: puntosIntermedios,
+                        optimizeWaypoints: false,
+                        travelMode: maps.DirectionsTravelMode.DRIVING
+                    };
+
+                    directionsService.route(request, function (response, status) {
+                        if (status === maps.DirectionsStatus.OK) {
+                            directionsDisplay.setDirections(response);
+                            directionsDisplay.setMap(self.mapControl.getGMap());
+                            directionsDisplay.setPanel(document.getElementById('directionsList'));
+                        } else {
+                            alert('Google route unsuccesfull!');
+                        }
+                    });
+                })
+                .catch(function(error){
+                    alert('Error retrieving route!');
+                });
+
+
+        };
+
+
+
+
     });
 
 
