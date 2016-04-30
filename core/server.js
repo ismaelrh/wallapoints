@@ -43,8 +43,6 @@ require('./security/jwt-handler')(app);
 require('./routes')(app);
 
 
-
-
 //Conectamos y lanzamos el servidor
 mongoose.connect(app.get('dbUrl'));
 mongoose.connection.once('open', function(){
