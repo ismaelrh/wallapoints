@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
-  "scripts": {
-    "postinstall": "cd frontend; npm install;"
-  },
   "author": "Ismael Rodríguez, Sergio Soro, David Vergara",
   "license": "Apache-2.0",
   "dependencies": {
@@ -26,6 +23,6 @@
     "mocha": "^2.4.5"
   }, 
   "scripts": {
-	"test" : "node_modules/.bin/mocha -w"
+    "postinstall": "cd frontend ; npm install;"
   }
 }
