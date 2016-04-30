@@ -36,7 +36,6 @@ angular.module('frontend')
     self.addPost = function(){
 
         $http.post('/posts', self.newPost).then(function(response){
-
             self.posts.push(response.data.message);
             self.newPost = {};
 

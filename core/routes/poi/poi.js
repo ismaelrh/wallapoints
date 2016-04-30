@@ -64,6 +64,7 @@ module.exports = function (app) {
         var creator = "usuario";
 
         //Se comprueba que estén todos los campos (multimediaUrl es opcional)
+
         if (!req.body.name || !req.body.description || !req.body.lat || !req.body.long) {
             res.status(400).send({
                 "error": true,

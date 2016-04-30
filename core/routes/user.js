@@ -278,12 +278,6 @@ module.exports = function (app) {
      **/
     router.post("/login", function (req, res) {
 
-
-        if (!req.body.username || !req.body.password) {
-            res.status(400).send({"error": true, "message ": "Not a correct body, insert username and password"});
-            return;
-        }
-
         /*Se encripta la contraseña para compararla con la almacenada*/
         var passHash = crypto.createHash('md5').update(req.body.password).digest('hex');
 
@@ -302,8 +296,7 @@ module.exports = function (app) {
 
                     var userObject = result.cleanObjectAndAddHref();
                     userObject.type = "user";
-                    delete userObject.password;
-
+                    delete userObject.passwordusers;
                     /*Se genera token de sesion, guardando dentro info de usuario */
                     var token = jwt.sign(userObject, app.get('jwtsecret'), {
                             expiresIn: "1h"
