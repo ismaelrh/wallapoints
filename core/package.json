@@ -13,6 +13,7 @@
     "express-unless": "^0.3.0",
     "jsonwebtoken": "^5.7.0",
     "mongoose": "^4.4.12",
+    "mongoose-idexists": "^1.0.5",
     "morgan": "^1.7.0",
     "googlemaps":"^1.4.0",
     "randomstring": "^1.1.4"
