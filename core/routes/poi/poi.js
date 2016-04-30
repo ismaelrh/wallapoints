@@ -3,6 +3,14 @@
  */
 
 var express = require('express');
+var GoogleMapsAPI = require('googlemaps');
+var publicConfig = {
+    key: 'AIzaSyBUPexZRNdGWU0u151pYbdPKK4Ib8DPZCA',
+    stagger_time:       1000, // for elevationPath
+    encode_polylines:   false,
+    secure:             true, // use https
+};
+var gmAPI = new GoogleMapsAPI(publicConfig);
 
 
 module.exports = function (app) {
@@ -59,7 +67,6 @@ module.exports = function (app) {
      */
     router.post("/", function (req, res) {
 
-
         //todo: coger creador de la sesión
         var creator = "usuario";
 
@@ -73,40 +80,53 @@ module.exports = function (app) {
             return;
         }
 
+        // reverse geocode API
+        var reverseGeocodeParams = {
+            "latlng":        req.body.lat+","+req.body.long,
+            "result_type":   "postal_code",
+            "language":      "en",
+            "location_type": "APPROXIMATE"
+        };
 
-        var keywords = [];
-        if (req.body.keywords) {
-            keywords = req.body.keywords;
-        }
-
-
-        var newPoi = new Poi(
-            {
-                name: req.body.name,
-                description: req.body.description,
-                multimediaUrl: req.body.multimediaUrl,
-                keywords: keywords,
-                lat: req.body.lat,
-                long: req.body.long,
-                creator: creator
+        // Realiza una petición al API Google Maps Geocoding para obtener la direccion
+        gmAPI.reverseGeocode(reverseGeocodeParams, function(err, result){
+            var formatted_address = 'unknown';
+            if (result != undefined){
+                formatted_address = result.results[0].formatted_address;
             }
-        );
 
-        newPoi.save(function (err, result) {
+            var keywords = [];
+            if (req.body.keywords) {
+                keywords = req.body.keywords;
+            }
 
-            if (err) {
-                res.send({"error": true, "message": "Error saving data"});
-            }
-            else {
-                res.send({
-                    "error": false,
-                    "message": result.cleanObjectAndAddHref(),
-                    links: [{"poiList": "/pois"}]
-                });
-            }
+            var newPoi = new Poi(
+                {
+                    name: req.body.name,
+                    description: req.body.description,
+                    multimediaUrl: req.body.multimediaUrl,
+                    keywords: keywords,
+                    lat: req.body.lat,
+                    long: req.body.long,
+                    formatted_address: formatted_address,
+                    creator: creator
+                }
+            );
+
+            newPoi.save(function (err, result) {
+
+                if (err) {
+                    res.send({"error": true, "message": "Error saving data"});
+                }
+                else {
+                    res.send({
+                        "error": false,
+                        "message": result.cleanObjectAndAddHref(),
+                        links: [{"poiList": "/pois"}]
+                    });
+                }
+            });
         });
-
-
     });
 
 
