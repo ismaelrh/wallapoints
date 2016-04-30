@@ -2,7 +2,7 @@
 
 angular.module('frontend')
 
-.controller('LoginCtrl', ['$http','UserService',function($http,UserService) {
+.controller('LoginCtrl', ['$http','SessionService',function($http,SessionService) {
 
 
     var self = this; //Para no perder la variable this, la guardamos en self (de lo contrario se sobreescribe)
@@ -14,11 +14,11 @@ angular.module('frontend')
 
 
     self.isLogged = function(){
-        return UserService.currentlyLogged;
+        return SessionService.currentlyLogged;
     }
 
     self.getUserObject = function(){
-        return UserService.user;
+        return SessionService.user;
     };
     /**
      * Hace login de usuario normal.
@@ -29,8 +29,8 @@ angular.module('frontend')
 
             var jwtToken = response.data.message;
 
-            UserService.setNewToken(jwtToken);
-            self.loginUserMessage = "Ok, bienvenido " + UserService.user.username;
+            SessionService.setNewToken(jwtToken);
+            self.loginUserMessage = "Ok, bienvenido " + SessionService.user.username;
 
         }, function(err){
             self.loginUserMessage = "Error " + err.data.message;
@@ -49,8 +49,8 @@ angular.module('frontend')
 
             var jwtToken = response.data.message;
 
-            UserService.setNewToken(jwtToken);
-            self.loginGuestMessage = "Ok, bienvenido " + UserService.user.mail;
+            SessionService.setNewToken(jwtToken);
+            self.loginGuestMessage = "Ok, bienvenido " + SessionService.user.mail;
 
         }, function(err){
             self.loginGuestMessage = "Error " + err.data.message;
@@ -90,7 +90,7 @@ angular.module('frontend')
 
     self.logOut = function(){
 
-        UserService.deleteCurrentToken();
+        SessionService.deleteCurrentToken();
 
 
     };

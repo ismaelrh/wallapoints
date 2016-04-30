@@ -5,7 +5,7 @@
  */
 angular.module('frontend')
 
-    .service('UserService', ['jwtHelper','localStorageService','$q',
+    .service('SessionService', ['jwtHelper','localStorageService','$q',
         function (jwtHelper,localStorageService,$q) {
 
 

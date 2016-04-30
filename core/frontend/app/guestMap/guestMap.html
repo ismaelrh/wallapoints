@@ -90,6 +90,7 @@
 <div class="navbar-offset"></div>
 
 
+
 <ui-gmap-google-map id="map" center='ctrl.map.center' zoom='ctrl.map.zoom' options='ctrl.myOptions' control="ctrl.mapControl">
     <!-- Resultados de la búsqueda -->
     <ui-gmap-marker ng-repeat="poi in ctrl.pois"
@@ -185,10 +186,10 @@
                             </div>
 
                             <ul class="list-group" style="max-height: 30vh; overflow-y: scroll;" ng-show="ctrl.poiListEnabled" >
-                                <li href="" class="list-group-item" ng-repeat="poi in ctrl.pois"  ng-click="ctrl.loadDetailsAndCenter(poi)">{{poi.name}}</li>
+                                <li href="" class="list-group-item" ng-repeat="poi in ctrl.pois"  ng-click="ctrl.showPoiDetail(poi._id); ctrl.centerMapInPoi(poi);">{{poi.name}}</li>
                             </ul>
                             <ul class="list-group" style="max-height: 30vh; overflow-y: scroll;" ng-show="!ctrl.poiListEnabled" >
-                                <li href="" class="list-group-item" ng-repeat="route in ctrl.routes" ng-click="ctrl.getDirections(route._id)" >{{route.name}}</li>
+                                <li href="" class="list-group-item" ng-repeat="route in ctrl.routes" ng-click="ctrl.showAndCalculateRoute(route._id)" >{{route.name}}</li>
 
                             </ul>
                         </div>
@@ -213,6 +214,7 @@
 
 
                             <div class="btn-group btn-group-justified" role="group"> <!-- Pestañas POI/RUTAS -->
+
                                 <div class="btn-group" role="group">
                                     <button type="button" class="btn btn-default"
                                             ng-click="ctrl.followingListEnabled = false;"
@@ -230,7 +232,7 @@
 
                             <ul class="list-group" style="max-height: 30vh; overflow-y: scroll;"
                                 ng-if="!ctrl.followingListEnabled">
-                                <li class="list-group-item" ng-repeat="fav in ctrl.favs" ng-click="ctrl.loadDetailsAndCenter(fav)">
+                                <li class="list-group-item" ng-repeat="fav in ctrl.favs" ng-click="ctrl.showPoiDetail(fav._id); ctrl.centerMapInPoi(fav);">
                                     {{fav.name}}
                                 </li>
                             </ul>
@@ -252,10 +254,9 @@
 
         <!-- Menú lateral derecho, tiene offset para dejar en medio vacío-->
         <div class="col-sm-4 col-sm-offset-4 col-md-3 col-md-offset-6 sidebar ">
-
             <!-- Menú lateral derecho desplegado, mostrado cuando showRightPanel == true -->
             <div class="panel-group sidebar-body" id="accordion-right" ng-show="ctrl.showRightPanel">
-                <div class="panel panel-primary" ng-if="ctrl.detailedPoi">
+                <div class="panel panel-primary" ng-if="ctrl.showingRoute || ctrl.showingPoi">
                     <div class="panel-heading">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" href="" data-target="#poiInfo">
@@ -269,7 +270,8 @@
                         </h4>
                     </div>
                     <div id="poiInfo" class="panel-collapse collapse in">
-                        <div class="panel-body">
+
+                        <div class="panel-body" ng-if="ctrl.showingPoi">
 
                             <b>Id: </b> {{ctrl.detailedPoi._id}}
                             <br/>
@@ -315,23 +317,33 @@
 
                             </div>
                         </div>
+
+                        <div class="panel-body"  ng-if="ctrl.showingRoute">
+                            <b>Nombre: </b> {{ctrl.detailedRoute.name}}
+                            <br/>
+                            <b>Creador: </b> {{ctrl.detailedRoute.creator}}
+                            <br/>
+                            <b>Puntos que la componen: </b>
+                            <ol>
+                                <li ng-repeat="poi in ctrl.detailedRoute.pois">{{poi.name}}</li>
+                            </ol>
+                        </div>
                     </div>
                 </div>
-                <div class="panel panel-primary">
+                <div class="panel panel-primary" ng-if="ctrl.showingRoute">
                     <div class="panel-heading">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" href="" data-target="#routeData" >
                                 <i class="fa fa-tasks"></i>
                                 Ruta a seguir
                             </a>
-
-
-
                         </h4>
                     </div>
-                    <div id="routeData" class="panel-collapse collapse in" style="max-height: 80vh; overflow-y: scroll;">
+                    <div id="routeData" class="panel-collapse collapse in" style="max-height: 50vh; overflow-y: scroll;">
                         <div class="panel-body" id="directionsList">
+                            <span ng-if="ctrl.routeError" style="color:red;"><b>{{ctrl.routeError}}</b></span>
                         </div>
+
                     </div>
                 </div>
             </div>
