@@ -3,6 +3,7 @@
  */
 
 var express = require('express');
+var ObjectID = require('mongodb').ObjectID;
 
 
 module.exports = function (app) {
@@ -137,9 +138,14 @@ module.exports = function (app) {
         // req.poi.creator ya tiene el creador por el metodo checkPoiExists
         console.log("Put /pois/:id/ratings/mean");
 
+        var oid = new ObjectID(req.params.id);
+
         Rating.aggregate(
+            {
+                $match: {poi: oid}
+            },
             { $group: {
-                _id: req.params.id,
+                _id: '$poi',
                 pointsAvg: { $avg: '$points'}
             }}
         ,function (err, results) {

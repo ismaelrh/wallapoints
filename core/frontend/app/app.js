@@ -45,6 +45,11 @@ angular.module('frontend', [
                 controller: 'LoginCtrl',
                 controllerAs: 'ctrl'
             })
+            .when('/statistics', {
+                templateUrl: 'statistic/statisticPanel.html',
+                controller: 'StatisticCtrl',
+                controllerAs: 'ctrl'
+            })
 
             .when('/admin', {
                 templateUrl: 'adminPanel/adminPanel.html',
