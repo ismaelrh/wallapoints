@@ -44,6 +44,11 @@ angular.module('frontend', [
                 controller: 'LoginCtrl',
                 controllerAs: 'ctrl'
             })
+            .when('/statistics', {
+                templateUrl: 'guestMap/guestMap.html',
+                controller: 'MapCtrl',
+                controllerAs: 'ctrl'
+            })
 
 
             .when('/map', {
