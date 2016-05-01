@@ -154,9 +154,13 @@ module.exports = function (app) {
                 res.send({"error": true, "message": "Error getting mean"});
             }
             else {
+                var message = {_id: 'undefinec',pointsAvg: 0};
+                if(results[0] != undefined){
+                    message = results[0];
+                }
                 res.status(200).send({
                     error: "false",
-                    message: results[0],
+                    message: message,
                     links: [{"poiInfo": "/poi/:"+req.params.id}]
                 });
             }

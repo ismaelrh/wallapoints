@@ -16,6 +16,12 @@ angular.module('frontend')
     };
 
     self.users = []; //Lista de users
+    self.dates = ['2006', '2007', '2008', '2009', '2010', '2011', '2012']; //Lista de fechas de dias de registro y baja
+    self.usersSeries = ['Alta', 'Baja'];
+    self.userData = [
+        [65, 59, 80, 81, 56, 55, 40],
+        [28, 48, 40, 19, 86, 27, 90]
+    ];
 
     self.userDetailed ={
         username: "",
@@ -25,6 +31,21 @@ angular.module('frontend')
         registerDate: "",
         lastAccessDate: "",
         href: ""
+    };
+
+    self.UsersRegister = function(){
+        $http.get('/stats/users/date').then(function(response){
+            self.dates=response.data.message;
+            $http.get('/stats/users/data').then(function(response){
+                self.userData=response.data.message;
+                console.log(response.data.message);
+            },  function(err){
+                console.error(err);
+            });
+            console.log(response.data.message);
+        },  function(err){
+            console.error(err);
+        });
     };
 
     self.showUsers = function(){
@@ -95,6 +116,7 @@ angular.module('frontend')
 
     //Para empezar, traemos los users.
     self.showUsers();
+    self.UsersRegister();
 
 
 }]);

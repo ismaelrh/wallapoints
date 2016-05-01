@@ -8,7 +8,10 @@ angular.module('frontend', [
     'uiGmapgoogle-maps',
     'ngAnimate',
     'ui.bootstrap',
-    'angularUtils.directives.dirPagination'
+    'angularUtils.directives.dirPagination',
+    'chart.js',
+    'dndLists'
+
 ]).config(['$routeProvider','$httpProvider', 'uiGmapGoogleMapApiProvider',function ($routeProvider,$httpProvider,uiGmapGoogleMapApiProvider) {
 
         uiGmapGoogleMapApiProvider.configure({
@@ -71,6 +74,30 @@ angular.module('frontend', [
                         return SessionService.isAuthenticatedUser('admin');
                     }
                 }
+            })
+
+            .when('/adminMap', {
+                templateUrl: 'adminMap/adminMap.html',
+                controller: 'AdminMapCtrl',
+                controllerAs: 'ctrl',
+                resolve : {
+                    'auth' : function(SessionService){
+                        return SessionService.isAuthenticatedUser('admin');
+                    }
+                }
+
+            })
+
+            .when('/userMap', {
+                templateUrl: 'userMap/userMap.html',
+                controller: 'UserMapCtrl',
+                controllerAs: 'ctrl',
+                resolve : {
+                    'auth' : function(SessionService){
+                        return SessionService.isAuthenticatedUser();
+                    }
+                }
+
             })
 
             .when('/map', {

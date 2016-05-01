@@ -18,72 +18,12 @@
                     <li class="active"><a href="#">Home</a></li>
 
                 </ul>
-                <ul class="nav navbar-nav navbar-right" ng-if="ctrl.guest==undefined">
-                    <!-- Solo login/registro si no logueado -->
-                    <li class="dropdown">
-                        <a class="dropdown-toggle" href="" data-toggle="dropdown" id="navLogin">Login/registro<span
-                                class="caret"></a>
-                        <div class="dropdown-menu pull-right" style="padding:17px;">
-                            <form>
-                                <div class="form-group">
-                                    <input type="text" class="form-control" ng-model="ctrl.loginData.mail"
-                                           placeholder="Email">
-                                </div>
 
-
-                                <div class="form-group">
-                                    <input type="password" class="form-control" ng-model="ctrl.loginData.password"
-                                           placeholder="Password">
-                                </div>
-
-
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-block"
-                                            ng-class="{'btn-success':ctrl.guest}" ng-click="ctrl.loginGuest()">Sign in
-                                    </button>
-                                </div>
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-block"
-                                            ng-class="{'btn-success':ctrl.guest}" ng-click="ctrl.registerGuest()">
-                                        Register
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </li>
-                </ul>
 
                 <ul class="nav navbar-nav navbar-right" ng-if="ctrl.guest!=undefined"> <!-- Solo logout si logueado -->
                     <li><a href="" ng-click="ctrl.logoutGuest()">Salir ({{ctrl.guest.mail}}) </a></li>
                 </ul>
 
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="dropdown">
-                        <a class="dropdown-toggle" href="" data-toggle="dropdown" id="navSearch">Buscar POIs<span
-                                class="caret"></a>
-                        <div class="dropdown-menu pull-right" style="padding:17px;">
-                            <form>
-                                <div class="form-group">
-                                    <input type="text" class="form-control"  ng-model="ctrl.searchByCreator" placeholder="Creator">
-                                </div>
-
-                                <div class="form-group">
-                                    <input type="date" class="form-control" ng-model="ctrl.searchByDate" placeholder="Date">
-                                    {{ctrl.searchByDate}}
-                                </div>
-
-                                <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="Keywords">
-                                </div>
-
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-block btn-default" ng-click="ctrl.searchPois()">Buscar</button>
-                                    <button type="submit" class="btn btn-block btn-default" ng-click="ctrl.clearSearch(); ctrl.searchPois();">Limpiar</button>
-                                </div>
-                            </form>
-                        </div>
-                    </li>
-                </ul>
 
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
@@ -125,14 +65,6 @@
                     <span class="glyphicon"
                           ng-class="{'glyphicon-check':ctrl.showLeftPanel,'glyphicon-unchecked':!ctrl.showLeftPanel}"></span>
                     &nbsp;Resultados
-                </div>
-
-            </div>
-            <div class="btn-group" role="group" ng-if="ctrl.guest">
-                <div class="btn btn-default" ng-click="ctrl.toggleLeftPanel2()">
-                    <span class="glyphicon"
-                          ng-class="{'glyphicon-check':ctrl.showLeftPanel2,'glyphicon-unchecked':!ctrl.showLeftPanel2}"></span>
-                    &nbsp;Favs
                 </div>
 
             </div>
@@ -187,13 +119,13 @@
                                 </div>
                             </div>
 
-                            <ul class="list-group" style="max-height: 30vh; overflow-y: scroll;"
+                            <ul class="list-group" style="max-height: 90vh; overflow-y: scroll;"
                                 ng-show="ctrl.poiListEnabled">
                                 <li href="" class="list-group-item" ng-repeat="poi in ctrl.pois"
                                     ng-click="ctrl.showPoiDetail(poi._id); ctrl.centerMapInPoi(poi);"><a href="">{{poi.name}}</a>
                                 </li>
                             </ul>
-                            <ul class="list-group" style="max-height: 30vh; overflow-y: scroll;"
+                            <ul class="list-group" style="max-height: 90vh; overflow-y: scroll;"
                                 ng-show="!ctrl.poiListEnabled">
                                 <li href="" class="list-group-item" ng-repeat="route in ctrl.routes"
                                     ng-click="ctrl.showAndCalculateRoute(route._id); ctrl.showUserDetail(route.creator)">
@@ -205,58 +137,6 @@
                     </div>
                 </div>
 
-                <!-- Menú lateral izquierdo segundo, mostrado cuando showLeftPanel2 == true -->
-                <div class="panel panel-primary" ng-show="ctrl.showLeftPanel2 && ctrl.guest">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                            <a data-toggle="collapse" href="" data-target="#guestData">
-                                <i class="fa fa-list-alt"></i>
-                                Yo
-                            </a>
-                             <span class="pull-right slide-submenu">
-                    <span class="glyphicon glyphicon-chevron-left" ng-click="ctrl.toggleLeftPanel2()"></span>
-                  </span>
-                        </h4>
-                    </div>
-                    <div id="guestData" class="panel-collapse collapse in">
-                        <div class="panel-body">
-
-
-                            <div class="btn-group btn-group-justified" role="group"> <!-- Pestañas POI/RUTAS -->
-
-                                <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-default"
-                                            ng-click="ctrl.followingListEnabled = false;"
-                                            ng-class="{'active':!ctrl.followingListEnabled}">POIs favoritos
-                                    </button>
-                                </div>
-                                <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-default"
-                                            ng-click="ctrl.followingListEnabled = true;"
-                                            ng-class="{'active':ctrl.followingListEnabled}">Usuarios seguidos
-                                    </button>
-                                </div>
-
-                            </div>
-
-                            <ul class="list-group" style="max-height: 30vh; overflow-y: scroll;"
-                                ng-if="!ctrl.followingListEnabled">
-                                <li class="list-group-item" ng-repeat="fav in ctrl.favs"
-                                    ng-click="ctrl.showPoiDetail(fav._id); ctrl.centerMapInPoi(fav);">
-                                    <a href="">{{fav.name}}</a>
-                                </li>
-                            </ul>
-                            <ul class="list-group" style="max-height: 30vh; overflow-y: scroll;"
-                                ng-if="ctrl.followingListEnabled">
-                                <li class="list-group-item" ng-repeat="poi in ctrl.following"
-                                    ng-click="ctrl.hideAllRightPanels(); ctrl.showUserDetail(poi.username)">
-                                    <a href="">{{poi.username}}</a>
-                                </li>
-                            </ul>
-
-                        </div>
-                    </div>
-                </div>
             </div>
 
 
@@ -298,19 +178,16 @@
                             <br/>
 
 
-
-                                    <button type="button" class="btn btn-default btn-block"
-                                            ng-click="ctrl.toggleFav(ctrl.detailedPoi._id)"  ng-if="ctrl.guest"><span
-                                            class="glyphicon"
-                                            ng-class='{"glyphicon-star":ctrl.detailedPoi.isFav,
+                            <button type="button" class="btn btn-default btn-block"
+                                    ng-click="ctrl.toggleFav(ctrl.detailedPoi._id)" ng-if="ctrl.guest"><span
+                                    class="glyphicon"
+                                    ng-class='{"glyphicon-star":ctrl.detailedPoi.isFav,
                                             "glyphicon-star-empty":!ctrl.detailedPoi.isFav}'></span>Fav
-                                    </button>
-
-
+                            </button>
 
 
                             <div star-rating ng-model="ctrl.detailedPoi.guestRating" max="5"
-                                 on-rating-select="ctrl.changeGuestRating(rating)"  ng-if="ctrl.guest"></div>
+                                 on-rating-select="ctrl.changeGuestRating(rating)" ng-if="ctrl.guest"></div>
                             Average rating: {{ctrl.detailedPoi.avgRating}}
                             <div class="row">
                                 <div class="btn-group btn-group-justified" role="group">
@@ -359,7 +236,8 @@
                                 <br/>
 
                                 <button type="button" class="btn btn-default btn-block"
-                                        ng-click="ctrl.toggleFollowing(ctrl.detailedPoi.creator)"  ng-if="ctrl.guest"><span
+                                        ng-click="ctrl.toggleFollowing(ctrl.detailedPoi.creator)"
+                                        ng-if="ctrl.guest"><span
                                         class="glyphicon glyphicon-user"></span>
                                     <span ng-if="ctrl.detailedPoi.isFollowing">Unfollow</span>
                                     <span ng-if="!ctrl.detailedPoi.isFollowing">Follow</span>
