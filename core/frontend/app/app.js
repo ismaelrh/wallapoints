@@ -65,6 +65,17 @@ angular.module('frontend', [
                 }
             })
 
+            .when('/editUser/:idUser', {
+                templateUrl: 'editUser/editUser.html',
+                controller: 'EditUserCtrl',
+                controllerAs: 'ctrl',
+                resolve : {
+                    'auth' : function(SessionService){
+                        return SessionService.isAuthenticatedUser('admin');
+                    }
+                }
+            })
+
             .when('/adminMap', {
                 templateUrl: 'adminMap/adminMap.html',
                 controller: 'AdminMapCtrl',
