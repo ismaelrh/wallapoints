@@ -50,8 +50,8 @@ angular.module('frontend', [
                 controller: 'AdminPanelCtrl',
                 controllerAs: 'ctrl',
                 resolve : {
-                    'auth' : function(UserService){
-                        return UserService.isAuthenticatedUser('admin');
+                    'auth' : function(SessionService){
+                        return SessionService.isAuthenticatedUser('admin');
                     }
                 }
             })
