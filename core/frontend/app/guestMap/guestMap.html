@@ -306,12 +306,12 @@
 
                             </div>
 
+                            <div star-rating ng-model="ctrl.detailedPoi.guestRating" max="5" on-rating-select="ctrl.changeGuestRating(rating)"></div>
+                            Average rating: {{ctrl.detailedPoi.avgRating}}
                             <div class="row">
                                 <div class="btn-group btn-group-justified" role="group">
                                     <div class="btn-group" role="group">
-                                        <button type="button" class="btn btn-default"><span
-                                                class="glyphicon glyphicon-star"></span>Puntuar
-                                        </button>
+
                                     </div>
                                 </div>
 
