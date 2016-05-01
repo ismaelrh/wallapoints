@@ -23,8 +23,8 @@ angular.module('frontend', [
                 controller: 'View1Ctrl',
                 controllerAs: 'ctrl',
                 resolve : {
-                    'auth' : function(UserService){
-                        return UserService.isAuthenticatedUser();
+                    'auth' : function(SessionService){
+                        return SessionService.isAuthenticatedUser();
                     }
                 }
             })
@@ -33,8 +33,8 @@ angular.module('frontend', [
                 controller: 'View2Ctrl',
                 controllerAs: 'ctrl',
                 resolve : {
-                    'auth' : function(UserService){
-                        return UserService.isAuthenticatedUser('admin');
+                    'auth' : function(SessionService){
+                        return SessionService.isAuthenticatedUser('admin');
                     }
                 }
 
@@ -75,12 +75,12 @@ angular.module('frontend', [
          *  En cada respuesta, si código es 401 manda a login, si es 403 manda a forbidden.
          *  todo: tal vez en el ultimo caso podría sacarse una alertita de que no está permitida la acción.
          */
-        $httpProvider.interceptors.push(['$q', '$location', 'UserService', function ($q, $location, UserService) {
+        $httpProvider.interceptors.push(['$q', '$location', 'SessionService', function ($q, $location, SessionService) {
             return {
                 'request': function (config) {
                     config.headers = config.headers || {};
-                    if (UserService.token) {
-                        config.headers.Authorization = 'Bearer ' + UserService.token;
+                    if (SessionService.token) {
+                        config.headers.Authorization = 'Bearer ' + SessionService.token;
                     }
                     return config;
                 },
