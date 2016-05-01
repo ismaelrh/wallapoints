@@ -70,7 +70,7 @@
 
             <div class="col-md-12 ">
 
-                <div class="table-responsive toggle-circle-filled">
+                <div class="table-responsive container-fluid">
                     <table class="table table-bordered table-striped"><!-- Tabla de resultados -->
                         <thead>
                             <tr>
@@ -82,10 +82,14 @@
                         </thead>
                         <tbody>
 
-                        <tr ng-repeat="subject in ctrl.users">
+                        <tr pagination-id="Pagination" dir-paginate="subject in ctrl.users | itemsPerPage: 10 ">
                             <td>{{subject.username}}</td>
                             <td class="options hidden-xs">{{subject.email}}</td>
-                            <td>DELETE</td>
+                            <td><button  class="btn btn-success "  ng-click=ctrl.addUser()><span class="glyphicon glyphicon-eye-open"></span>
+                            </button>
+                                <button  class="btn btn-success "  ng-click=ctrl.addUser()><span class="glyphicon glyphicon-pencil" ></span></button>
+                                <button  class="btn btn-success "  ng-click=ctrl.deleteUser(subject.username)><span class="glyphicon glyphicon-trash" ></span></button>
+                            </td>
 
                             <!-- <td>{{post.text}}
                                  <button style="float:right" ng-click="ctrl.deletePost(post._id)"><span>Delete</span></button>
@@ -93,6 +97,7 @@
                         </tr>
                         </tbody>
                     </table>
+                    <dir-pagination-controls pagination-id="Pagination" ></dir-pagination-controls>
                 </div>
 
             </div>

@@ -7,7 +7,10 @@ angular.module('frontend', [
     'LocalStorageModule',
     'uiGmapgoogle-maps',
     'ngAnimate',
-    'ui.bootstrap'
+    'ui.bootstrap',
+    'angularUtils.directives.dirPagination',
+    'chart.js'
+
 ]).config(['$routeProvider','$httpProvider', 'uiGmapGoogleMapApiProvider',function ($routeProvider,$httpProvider,uiGmapGoogleMapApiProvider) {
 
         uiGmapGoogleMapApiProvider.configure({
