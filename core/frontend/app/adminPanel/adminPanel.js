@@ -4,8 +4,9 @@ angular.module('frontend')
 
 .controller('AdminPanelCtrl', ['$http',function($http) {
 
-
     var self = this; //Para no perder la variable this, la guardamos en self (de lo contrario se sobreescribe)
+
+    self.errorYaExiste ="";
 
     self.newUser = { //User a añadir
         username: "",
@@ -46,16 +47,18 @@ angular.module('frontend')
 
     self.addUser = function(){
         $http.post('/users', self.newUser).then(function(response){
+            self.errorYaExiste="";
             self.userAdded ={
-                username: reponse.mesage.username,
-                email: response.message.email,
-                href: response.message.href
+                username: response.data.message.username,
+                email: response.data.message.email,
+                href: response.data.message.href
             };
 
-            self.users.push(userAdded);
+            self.users.push(self.userAdded);
             self.newPost = {};
             console.log(data.message);
         },  function(err){
+            self.errorYaExiste="Insert another unsername, already exists int the system";
             console.error(err);
         });
     };
