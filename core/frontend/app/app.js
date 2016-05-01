@@ -45,8 +45,8 @@ angular.module('frontend', [
                 controllerAs: 'ctrl'
             })
             .when('/statistics', {
-                templateUrl: 'guestMap/guestMap.html',
-                controller: 'MapCtrl',
+                templateUrl: 'statistic/statisticPanel.html',
+                controller: 'StatisticCtrl',
                 controllerAs: 'ctrl'
             })
 
@@ -55,8 +55,8 @@ angular.module('frontend', [
                 controller: 'AdminPanelCtrl',
                 controllerAs: 'ctrl',
                 resolve : {
-                    'auth' : function(UserService){
-                        return UserService.isAuthenticatedUser('admin');
+                    'auth' : function(SessionService){
+                        return SessionService.isAuthenticatedUser('admin');
                     }
                 }
             })
