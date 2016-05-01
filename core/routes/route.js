@@ -162,7 +162,7 @@ module.exports = function(app){
                 result.save(function (err, result) {
 
                     if (err) {
-                        res.send({"error": true, "message": "Error saving data " + err});
+                        res.status(500).send({"error": true, "message": "Error saving data " + err});
                         console.error(err);
                     }
                     else {
@@ -199,9 +199,18 @@ module.exports = function(app){
                 else {
 
                     var finalArray = [];
+                    if(result.pois.length==0 ){
+                        res.send(
+                            {
+                                error: false,
+                                message: [],
+                                links: [{guestInfo: "/routes/"}]
+                            });
+                        return;
+                    }
                     result.pois.forEach(function (i, idx, array) {
 
-                        finalArray.push({id: i._id, name: i.name, lat: i.lat, long: i.long, href: "/pois/" + i._id});
+                        finalArray.push({_id: i._id, name: i.name, lat: i.lat, long: i.long, href: "/pois/" + i._id});
                         if (idx === array.length - 1) {
                             res.send(
                                 {

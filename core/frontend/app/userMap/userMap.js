@@ -32,6 +32,7 @@ angular.module('frontend')
             self.creatorError = false;
             self.searchByDate = "";
             self.searchByCreator = "";
+            self.selectPoiForRoute = false;
 
             self.followingListEnabled = false;
             self.poiListEnabled = true;
@@ -40,6 +41,7 @@ angular.module('frontend')
 
 
             self.colapse = false;
+
 
 
             self.favs = [];
@@ -52,14 +54,19 @@ angular.module('frontend')
 
                     console.log(e.latLng.lat() + " - " + e.latLng.lng());
 
-                    self.editingPoi.lat = e.latLng.lat();
-                    self.editingPoi.long = e.latLng.lng();
+                    if(self.showingPoiCreating || self.showingPoiEditing){
+                        self.editingPoi.lat = e.latLng.lat();
+                        self.editingPoi.long = e.latLng.lng();
+                    }
+
                     $scope.$apply();
 
 
 
                 }
             };
+
+
 
 
             //Se empieza a hacer declaraciones una vez ha cargado el objeto de mapa -> maps es el objecto google.maps
@@ -74,7 +81,25 @@ angular.module('frontend')
                     click: function (marker, eventName, model) {
 
 
-                        self.showPoiDetail(model.control._id);
+                        if(!self.selectPoiForRoute){
+                            self.showPoiDetail(model.control._id);
+                        }
+                        else{
+
+                            //Check it is not repeated
+                            /*var contains = false;
+                            for(var i = 0; !contains && i < self.editingRoute.pois.length; i++){
+                                if(self.editingRoute.pois[i]._id == model.control_id){
+                                    contains = true;
+                                }
+                            }*/
+
+                            console.log(model.control);
+                            self.editingRoute.pois.push(model.control);
+
+
+                        }
+
 
 
                     },
@@ -105,6 +130,7 @@ angular.module('frontend')
                  */
                 self.showPoiDetail = function (_id) {
 
+                    self.hideAllRightPanels();
                     self.showingPoiEditing = false;
                     return PoiService.loadDetailPoi(_id)
                         .then(function (detailedPoi) {
@@ -213,19 +239,35 @@ angular.module('frontend')
 
 
 
+
                 self.showRouteCreating = function(){
+                    self.hideAllRightPanels();
                     self.showingRouteCreating = true;
                     self.editingRoute = {};
+                    self.editingRoute.pois = [];
+                    self.selectPoiForRoute = true;
                 }
 
                 self.showPoiCreating = function(){
+                    self.hideAllRightPanels();
 
                     self.showingPoiCreating = true;
                     self.editingPoi = {};
                     self.editingPoi.keywordList = "";
                 };
 
+
+                self.showRouteEditing = function(){
+
+                    self.showingRouteEditing = true;
+                    self.editingRoute = {};
+                    self.selectPoiForRoute = true;
+                    angular.copy(self.detailedRoute,self.editingRoute);
+
+                };
+
                 self.showPoiEditing = function(){
+
                     self.showingPoiEditing = true;
                     self.editingPoi = {};
                     //Copiamos usuario a editar a 'editingPoi'
@@ -254,6 +296,9 @@ angular.module('frontend')
                     self.pois.push({_id:poi._id,name:poi.name,lat:poi.lat,long:poi.long})
                 };
 
+                self.addRouteToList = function(route){
+                    self.routes.push({_id:route._id,name:route.name})
+                }
 
 
                 self.updateDetailedPoiInList = function(){
@@ -271,18 +316,44 @@ angular.module('frontend')
                 };
 
 
+                self.updateDetailedRouteInList = function(){
+
+                    var found = false;
+                    for(var i = 0; !found && i < self.routes.length; i++){
+                        console.log(self.routes[i]._id);
+                        if(self.routes[i]._id == self.detailedRoute._id){
+                            self.routes[i].name = self.detailedRoute.name;
+                            self.routes[i].pois = self.detailedRoute.pois;
+                        }
+
+                    }
+                };
+
+
                 self.removePoiInList = function(poiId){
 
                     var found = false;
                     for(var i = 0; !found && i < self.pois.length; i++){
                         if(self.pois[i]._id == poiId){
-                            self.pois.splice(self.pois,i);
+                            self.pois.splice(i,1);
                         }
 
                     }
 
                 };
 
+
+                self.removeRouteInList = function(routeId){
+
+                    var found = false;
+                    for(var i = 0; !found && i < self.routes.length; i++){
+                        if(self.routes[i]._id == routeId){
+                            self.routes.splice(i,1);
+                        }
+
+                    }
+
+                };
 
 
                 self.removeCurrentPoi = function(){
@@ -300,6 +371,25 @@ angular.module('frontend')
 
                         });
                 };
+
+                self.removeCurrentRoute = function(){
+                    var routeId = self.detailedRoute._id;
+                    $http.delete("/routes/" + routeId)
+                        .then(function(response){
+
+                            //Se ha borrado el POI
+                            self.removeRouteInList(routeId);
+                            self.showingRouteEditing = false;
+                            self.showingRouteCreating = false;
+                            self.showingRoute = false;
+
+                        })
+                        .catch(function(response){
+
+                        });
+                };
+
+
                 self.hidePoiEditing   = function(save){
 
                     if(!save){
@@ -362,6 +452,73 @@ angular.module('frontend')
 
                 };
 
+                self.hideRouteCreating  = function(save){
+
+                    if(!save){
+                        self.showingRouteCreating = false;
+                    }
+                    else{ //Se guarda
+
+
+                        //Formamos array de pois que se envía
+                        for(var i = 0; i < self.editingRoute.pois.length; i++ ){
+
+                            self.editingRoute.pois[i] = {_id:self.editingRoute.pois[i]._id};
+                        }
+
+
+                        $http.post("/routes",self.editingRoute)
+                            .then(function(response){
+
+                                console.log("ruta añadida");
+                                //OK:
+
+                                self.detailedRoute = response.data.message;
+                                self.showingRouteCreating = false;
+                                self.addRouteToList(self.detailedRoute);
+                            })
+                            .then(function(error){
+
+                            });
+
+
+                    }
+
+                };
+
+                self.hideRouteEditing  = function(save){
+
+                    if(!save){
+                        self.showingRouteEditing = false;
+                    }
+                    else{ //Se guarda
+
+                        console.log(self.editingRoute.pois);
+
+                        //Formamos array de pois que se envía
+                        for(var i = 0; i < self.editingRoute.pois.length; i++ ){
+                            self.editingRoute.pois[i] = {_id:self.editingRoute.pois[i]._id};
+                        }
+
+
+                        $http.put("/routes/" + self.editingRoute._id,{name:self.editingRoute.name,pois:self.editingRoute.pois})
+                            .then(function(response){
+
+
+                                self.detailedRoute = self.editingRoute;
+                                self.showingRouteEditing = false;
+                                self.updateDetailedRouteInList(self.detailedRoute);
+                                self.showAndCalculateRoute(self.detailedRoute._id);
+                            })
+                            .then(function(error){
+
+                            });
+
+
+                    }
+
+                };
+
 
 
                 /**
@@ -402,23 +559,13 @@ angular.module('frontend')
 
                     self.showingPoi = false;
                     self.showingRoute = false;
+                    self.showingPoiCreating = false;
+                    self.showingRouteCreating = false;
+                    self.showingRouteEditing = false;
+                    self.showingPoiEditing = false;
                 };
 
-                self.showUserDetail = function(creatorUsername){
 
-                    return $http.get("/users/" + creatorUsername)
-                        .then(function(response){
-                            self.detailedUser = response.data.message;
-                            self.creatorError = false;
-
-                        })
-                        .catch(function(response){
-
-
-                            self.creatorError = "Error showing creator data";
-                            console.log(response);
-                        });
-                };
 
 
 
@@ -459,6 +606,8 @@ angular.module('frontend')
                  */
                 self.showAndCalculateRoute = function (id) {
 
+
+                    self.hideAllRightPanels();
 
                     self.showingRoute = true;
                     self.showingPoi = false;

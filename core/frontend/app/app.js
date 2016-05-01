@@ -9,7 +9,8 @@ angular.module('frontend', [
     'ngAnimate',
     'ui.bootstrap',
     'angularUtils.directives.dirPagination',
-    'chart.js'
+    'chart.js',
+    'dndLists'
 
 ]).config(['$routeProvider','$httpProvider', 'uiGmapGoogleMapApiProvider',function ($routeProvider,$httpProvider,uiGmapGoogleMapApiProvider) {
 
