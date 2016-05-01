@@ -148,10 +148,9 @@ module.exports = function (app) {
                 res.send({"error": true, "message": "Error getting mean"});
             }
             else {
-
                 res.status(200).send({
                     error: "false",
-                    message: results,
+                    message: results[0],
                     links: [{"poiInfo": "/poi/:"+req.params.id}]
                 });
             }
@@ -174,11 +173,11 @@ module.exports = function (app) {
             return;
         }
         console.log(req.params.id);
-        Rating.find({poi: req.params.id}, "mail points", function (err, results) {
+        Rating.findOne({poi: req.params.id}, "mail points", function (err, results) {
             if (err) {
                 res.status(500).send({"error": true, "message": "Error retrieving poi list"});
             }
-            else if(results.length == 0){
+            else if(results == null){
                 res.status(404).send({
                     error: "true",
                     message: "Undefined Ratings for this poi",
@@ -210,10 +209,10 @@ module.exports = function (app) {
             return;
         }
         // parametro point necesario
-        if (!req.body.points) {
+        if (!req.body.rating) {
             res.status(400).send({
                 "error": true,
-                "message": "You have to fill new point"
+                "message": "You have to fill new rating"
             });
             return;
         }
@@ -225,8 +224,8 @@ module.exports = function (app) {
                 return;
             }
 
-            if (req.body.points) {
-                rating.points = req.body.points;
+            if (req.body.rating) {
+                rating.points = req.body.rating;
             }
 
             rating.save(function (err, results) {

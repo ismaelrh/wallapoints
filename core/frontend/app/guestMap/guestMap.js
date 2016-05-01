@@ -12,6 +12,7 @@ angular.module('frontend')
         };
 
 
+        self.as = 0;
         self.guest = SessionService.user;
 
         self.mapControl = {};
@@ -138,9 +139,13 @@ angular.module('frontend')
                         //Miramos si está siguiendo del usuario
                         self.detailedPoi.isFollowing = userIsInFollowingList(self.detailedPoi.creator);
 
+                        self.detailedPoi.guestRating = 0;
                         //Ponemos que se está mostrando la info de Poi, no de ruta
                         self.showingRoute = false;
                         self.showingPoi = true;
+
+                        self.getGuestRating(self.detailedPoi._id);
+                        self.getMeanRating(self.detailedPoi._id);
 
                         //Borramos cualquier posible direction
                         self.clearDirections();
@@ -272,7 +277,76 @@ angular.module('frontend')
             };
 
 
-            //todo: pasar a un servicio
+
+
+            self.getMeanRating = function(poiId){
+                $http.get("/pois/" + poiId + "/ratings/mean")
+                    .then(function(response){
+                        
+                        self.detailedPoi.avgRating = response.data.message.pointsAvg;
+                    })
+                    .catch(function(response){
+
+                        console.log("Error with average");
+                        self.detailedPoi.avgRating = "Error";
+
+                        console.log(response);
+                    });
+            };
+
+            self.getGuestRating = function(poiId){
+                $http.get("/pois/"+poiId+"/ratings/" + self.guest.mail)
+                    .then(function(response){
+
+                        self.detailedPoi.guestRating = response.data.message.points;
+                        console.log(response);
+                    })
+                    .catch(function(error){
+
+                        if(error.status==404){
+                            //No existe rating por parte de ese invitado -> se pone a 0
+                            self.detailedPoi.guestRating = 0;
+                        }
+                        //console.log(error);
+                    });
+            };
+
+
+            self.changeGuestRating = function(newRating){
+
+                console.log("new rating");
+                console.log(newRating);
+                //Si no hay rating -> POST
+                if(self.detailedPoi.guestRating==0){
+                    $http.post("/pois/" + self.detailedPoi._id + "/ratings",{rating:newRating})
+                        .then(function(response){
+                            self.detailedPoi.guestRating = response.data.message.points;
+                            self.getMeanRating(self.detailedPoi._id);
+                            console.log(response);
+                        })
+                        .catch(function(error){
+                            console.log(error);
+                        });
+                }
+                else{
+                    $http.put("/pois/" + self.detailedPoi._id + "/ratings/" + self.guest.mail,{rating:newRating})
+                        .then(function(response){
+                            self.detailedPoi.guestRating = response.data.message.points;
+                            self.getMeanRating(self.detailedPoi._id);
+                            console.log(response);
+                        })
+                        .catch(function(error){
+                            console.log(error);
+                        });
+                }
+
+
+                //Si hay rating -> PUT
+
+
+            };
+
+            //todo: pasar a upn servicio
             self.logoutGuest = function () {
                 SessionService.deleteCurrentToken();
                 self.guest = null;
