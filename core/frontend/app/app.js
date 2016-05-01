@@ -8,7 +8,9 @@ angular.module('frontend', [
     'uiGmapgoogle-maps',
     'ngAnimate',
     'ui.bootstrap',
-    'angularUtils.directives.dirPagination'
+    'angularUtils.directives.dirPagination',
+    'chart.js'
+
 ]).config(['$routeProvider','$httpProvider', 'uiGmapGoogleMapApiProvider',function ($routeProvider,$httpProvider,uiGmapGoogleMapApiProvider) {
 
         uiGmapGoogleMapApiProvider.configure({
