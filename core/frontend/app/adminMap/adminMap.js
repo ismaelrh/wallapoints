@@ -2,7 +2,7 @@
 
 angular.module('frontend')
 
-    .controller('MapCtrl', ['$http', 'SessionService', 'uiGmapGoogleMapApi', '$scope', 'PoiService',
+    .controller('AdminMapCtrl', ['$http', 'SessionService', 'uiGmapGoogleMapApi', '$scope', 'PoiService',
         function ($http, SessionService, uiGmapGoogleMapApi, $scope, PoiService) {
 
 
@@ -14,7 +14,6 @@ angular.module('frontend')
 
 
         self.as = 0;
-        self.guest = SessionService.user;
 
         self.mapControl = {};
         self.showLeftPanel = true;
@@ -75,51 +74,6 @@ angular.module('frontend')
 
 
 
-            /**
-             * Privada: devuelve true si el guest actual tiene en su lista de favoritos el poi con poiId.
-             */
-            function poiIsInFavList(poiId) {
-                var isFav = false;
-                for (var i = 0; !isFav && i < self.favs.length; i++) {
-                    if (self.favs[i]._id == poiId) {
-                        isFav = true;
-                    }
-                }
-                return isFav;
-
-            }
-
-            /**
-             * Privada: devuelve true si el guest actual tiene en su lista de siguiendo el usuario con username.
-             */
-            function userIsInFollowingList(username) {
-                var isFollowing = false;
-                for (var i = 0; !isFollowing && i < self.following.length; i++) {
-                    if (self.following[i].username == username) {
-                        isFollowing = true;
-                    }
-                }
-                return isFollowing;
-            }
-
-
-            function deleteFromLocalFavList(poiId) {
-
-                for (var i = 0; i < self.favs.length; i++) {
-                    if (self.favs[i]._id == poiId) {
-                        self.favs.splice(i, 1);
-                    }
-                }
-
-            }
-
-            function deleteFromLocalFollowingList(username) {
-                for (var i = 0; i < self.following.length; i++) {
-                    if (self.following[i].username == username) {
-                        self.following.splice(i, 1);
-                    }
-                }
-            }
 
 
             /**
@@ -135,11 +89,7 @@ angular.module('frontend')
                         //Obtenemos Poi detallado
                         self.detailedPoi = detailedPoi;
 
-                        //Miramos si es favorito del invitado
-                        self.detailedPoi.isFav = poiIsInFavList(self.detailedPoi._id);
 
-                        //Miramos si está siguiendo del usuario
-                        self.detailedPoi.isFollowing = userIsInFollowingList(self.detailedPoi.creator);
 
                         self.detailedPoi.guestRating = 0;
                         //Ponemos que se está mostrando la info de Poi, no de ruta
@@ -147,9 +97,6 @@ angular.module('frontend')
                         self.showingPoi = true;
                         self.showingCreator = true;
 
-                        if(self.guest){
-                            self.getGuestRating(self.detailedPoi._id);
-                        }
 
                         self.getMeanRating(self.detailedPoi._id);
 
@@ -183,7 +130,7 @@ angular.module('frontend')
                 self.searchByCreator = null;
                 self.searchByDate = null;
 
-            }
+            };
 
             /**
              * Busca pois según searchByCreator y searchByDate.
@@ -241,76 +188,11 @@ angular.module('frontend')
             };
 
 
-            /**
-             * Cambia el estado de favorito de un poi, para el invitado actual.
-             */
-            self.toggleFav = function (poiId) {
 
-                //Buscamos si ya está como favorito
-
-                var isFav = poiIsInFavList(self.detailedPoi._id);
-
-                if (isFav) { //Está en favoritos -> Se borra
-
-                    PoiService.unsetFav(self.guest.mail, self.detailedPoi._id)
-                        .then(function (success) {
-
-                            //Borramos de favoritos localmente
-                            self.detailedPoi.isFav = false;
-                            deleteFromLocalFavList(self.detailedPoi._id);
-
-                        });
-                }
-                else { //No está en favoritos -> se añade
-
-                    PoiService.setFav(self.guest.mail, self.detailedPoi._id)
-                        .then(function (success) {
-
-                            //Añadimos a fav localmente
-                            self.detailedPoi.isFav = true;
-                            self.favs.push(self.detailedPoi);
-
-                        });
-                }
-
-            };
-
-            /**
-             * Cambia el estado de 'siguiendo' de un usuario, para el invitado actual.
-             */
-            self.toggleFollowing = function (username) {
-
-
-                //Buscamos si ya está como 'siguiendo'
-                var isFollowing = userIsInFollowingList(self.detailedPoi.creator);
-
-                if (isFollowing) { //Está siguiendo, por lo que quita de siguienod
-                    PoiService.unfollowUser(self.guest.mail, self.detailedPoi.creator)
-                        .then(function (success) {
-
-                            //Borramos de lista local de siguiendo
-                            self.detailedPoi.isFollowing = false;
-                            deleteFromLocalFollowingList(self.detailedPoi.creator);
-
-                        });
-                }
-                else { //No siguiendo, lo añade a siguienod
-
-                    PoiService.followUser(self.guest.mail, self.detailedPoi.creator)
-                        .then(function (success) {
-
-                            //Añadimos a lista local de siguiendo
-                            self.detailedPoi.isFollowing = true;
-                            self.following.push({username: username});
-
-                        });
-                }
-
-            };
 
 
             /**
-             * Devuelve array con pois de self.pois y self.favs, pero sin repetir.
+             * Devuelve array con pois de self.pois
              */
             self.getShownPois = function(){
 
@@ -320,19 +202,6 @@ angular.module('frontend')
                     shownArray.push(self.pois[i]);
                 }
 
-                for(var j = 0; j < self.favs.length; j++){
-                    var isRepeated = false;
-                    for(var k = 0; !isRepeated && k < shownArray.length; k++){
-
-                        if(shownArray[k]._id == self.favs[j]._id){
-                            isRepeated = true;
-                        }
-                    }
-                    if(!isRepeated){
-                        shownArray.push(self.favs[j]);
-                    }
-                }
-                console.log(shownArray);
                 return shownArray;
 
             };
@@ -353,57 +222,6 @@ angular.module('frontend')
                     });
             };
 
-            self.getGuestRating = function(poiId){
-                $http.get("/pois/"+poiId+"/ratings/" + self.guest.mail)
-                    .then(function(response){
-
-                        self.detailedPoi.guestRating = response.data.message.points;
-                        console.log(response);
-                    })
-                    .catch(function(error){
-
-                        if(error.status==404){
-                            //No existe rating por parte de ese invitado -> se pone a 0
-                            self.detailedPoi.guestRating = 0;
-                        }
-                        //console.log(error);
-                    });
-            };
-
-
-            self.changeGuestRating = function(newRating){
-
-                console.log("new rating");
-                console.log(newRating);
-                //Si no hay rating -> POST
-                if(self.detailedPoi.guestRating==0){
-                    $http.post("/pois/" + self.detailedPoi._id + "/ratings",{rating:newRating})
-                        .then(function(response){
-                            self.detailedPoi.guestRating = response.data.message.points;
-                            self.getMeanRating(self.detailedPoi._id);
-                            console.log(response);
-                        })
-                        .catch(function(error){
-                            console.log(error);
-                        });
-                }
-                else{
-                    $http.put("/pois/" + self.detailedPoi._id + "/ratings/" + self.guest.mail,{rating:newRating})
-                        .then(function(response){
-                            self.detailedPoi.guestRating = response.data.message.points;
-                            self.getMeanRating(self.detailedPoi._id);
-                            console.log(response);
-                        })
-                        .catch(function(error){
-                            console.log(error);
-                        });
-                }
-
-
-                //Si hay rating -> PUT
-
-
-            };
 
 
 
@@ -432,80 +250,7 @@ angular.module('frontend')
 
 
 
-            //todo: pasar a upn servicio
-            self.logoutGuest = function () {
-                SessionService.deleteCurrentToken();
-                self.guest = null;
 
-            };
-
-            /**
-             * Hace log-in, obtiene datos de usuario, favs y followings.
-             */
-            //todo: pasar a un servicio
-            self.loginGuest = function () {
-
-                $http.post("/guests/login", {mail: self.loginData.mail, password: self.loginData.password})
-                    .then(function (response) {
-                        var jwtToken = response.data.message;
-
-                        SessionService.setNewToken(jwtToken);
-                        self.guest = SessionService.user;
-                        //Todo: alertas
-                        console.log("Guest logged-in: " + self.guest.mail);
-                        return self.getGuestDetails();
-
-
-                    })
-                    .catch(function (response) {
-
-                        //Todo: alerta
-                        console.log("Error loggin guest");
-                    });
-
-
-            };
-
-            //todo: pasar a servicio
-            self.getGuestDetails = function () {
-                return $http.get("/guests/" + self.guest.mail + "/favs")
-                    .then(function (response) {
-                        self.favs = response.data.message;
-                        console.log("Got favs: " + self.favs.length);
-                        console.log(self.favs);
-                        return $http.get("/guests/" + self.guest.mail + "/following");
-                    })
-                    .then(function (response) {
-                        console.log("Got following: " + self.following.length);
-
-                        self.following = response.data.message;
-                    })
-                    .catch(function (response) {
-
-                        //Todo: alerta
-                        console.log("Error obtaining details");
-                    });
-            };
-
-
-            //todo: pasar a servicio
-            self.registerGuest = function () {
-
-                $http.post("/guests", {mail: self.loginData.mail, password: self.loginData.password})
-                    .then(function (response) {
-
-                        //Now, log-in
-                        console.log("Guest registered: " + self.loginData.mail);
-                        self.loginGuest();
-
-                        //Todo: alerta
-
-                    }, function (response) {
-
-                        //Todo: alerta
-                        console.log("Error registerings guest");
-                    });
-            };
 
             self.toggleLeftPanel = function () {
                 self.showLeftPanel = !self.showLeftPanel;
@@ -521,10 +266,6 @@ angular.module('frontend')
             };
 
 
-            //Iniciar
-            if(self.guest){
-                self.getGuestDetails();
-            }
 
             self.searchPois();
             self.searchRoutes();

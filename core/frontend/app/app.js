@@ -61,6 +61,30 @@ angular.module('frontend', [
                 }
             })
 
+            .when('/adminMap', {
+                templateUrl: 'adminMap/adminMap.html',
+                controller: 'AdminMapCtrl',
+                controllerAs: 'ctrl',
+                resolve : {
+                    'auth' : function(SessionService){
+                        return SessionService.isAuthenticatedUser('admin');
+                    }
+                }
+
+            })
+
+            .when('/userMap', {
+                templateUrl: 'userMap/userMap.html',
+                controller: 'UserMapCtrl',
+                controllerAs: 'ctrl',
+                resolve : {
+                    'auth' : function(SessionService){
+                        return SessionService.isAuthenticatedUser();
+                    }
+                }
+
+            })
+
             .when('/map', {
                 templateUrl: 'guestMap/guestMap.html',
                 controller: 'MapCtrl',
