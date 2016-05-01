@@ -15,7 +15,7 @@ app.use(jwt({ secret: app.get('jwtsecret')})
     .unless({
         path:[ //Aqui se colocan rutas que no necesitan autenticación
             { url: "/users/login", methods: ['POST']  },  //Login
-            { url: "/users", methods: ['POST']  }, //Descomentar para poder añadir usuarios, comentar en producción
+          //  { url: "/users", methods: ['POST']  }, //Descomentar para poder añadir usuarios, comentar en producción
             { url: /\/users\/.+/, methods: ['GET']  },    //Get a info usuario
             { url: "/pois", methods: ['GET']  },          //GET Lista de pois
             { url: "/pois/search", methods: ['POST']  }, //POST busqueda de POIs
