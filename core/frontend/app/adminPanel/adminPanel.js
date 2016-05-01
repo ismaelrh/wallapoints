@@ -79,7 +79,7 @@ angular.module('frontend')
             //Remove from local array
             if(index>-1){
                 self.users.splice(index,1);
-                console.error("User deleted");
+                console.log("User deleted");
             }
 
 
@@ -87,11 +87,6 @@ angular.module('frontend')
             console.error(err);
         });
     };
-
-    self.submitForm=function(content){
-
-    };
-
 
     //Para empezar, traemos los users.
     self.showUsers();
