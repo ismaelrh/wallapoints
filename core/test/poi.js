@@ -157,7 +157,6 @@ describe('Favourite', function () {
                 res.body.message[2].lat.should.equal(1.23);
                 res.body.message[2].long.should.equal(3.21);
 
-
                 done();
             });
     });

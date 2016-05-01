@@ -206,8 +206,6 @@ describe('Guest', function () {
                     done();
                 });
 
-
-
             });
     });
 
