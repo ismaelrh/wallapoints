@@ -1,50 +1,65 @@
-<b>Logueado:</b> {{ctrl.isLogged()}}
-<div ng-if="ctrl.isLogged()">
-    <span><b>Tipo:</b> {{ctrl.getUserObject().type}}</span> <br/>
-    <span ng-if="ctrl.getUserObject().type == 'user'"><b>Usuario: </b>{{ctrl.getUserObject().username}}</span>
-    <span ng-if="ctrl.getUserObject().type == 'guest'"><b>Mail: </b>{{ctrl.getUserObject().mail}}</span>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Wallapoints</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div ng-if="ctrl.isLogged()"  class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="button">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" ng-click="ctrl.logOut()" aria-expanded="false">Close Session <span class="caret"></span></a>
+                </li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+
+<div class="container">
+    <div class="col-md-offset-4 col-md-4 col-sm-offset-2 col-sm-8">
+        <div class="row">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <strong>Login User</strong>
+                </div>
+                <div class="panel-body">
+                    <form name="userForm" role="form" ng-submit="ctrl.submitForm(userForm.$valid)" novalidate>
+                        <br/>
+                        <div class="form-group input-group">
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-pencil"></span></span>
+                            <input type="text" name="username" class="form-control" ng-model="ctrl.loginUser.username" placeholder="Username" required>
+                        </div>
+                        <p ng-show="userForm.username.$invalid && !userForm.username.$pristine" class="help-block">A username is required.</p>
+
+                        <div class="form-group input-group">
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-pencil"></span></span>
+                            <input type="password" name="password" class="form-control" ng-model="ctrl.loginUser.password" placeholder="Password" required>
+                        </div>
+                        <p ng-show="userForm.name.$invalid && !userForm.name.$pristine" class="help-block">A password is required</p>
+
+
+                        <button type="submit" class="btn btn-success " ng-disabled="userForm.$invalid" ng-click=ctrl.login()>Log in</button>
+                        <hr />
+                        <p>{{ctrl.errorPassword}}</p>
+                        <p>Don't you have a user account?</p>
+                        <p>Log in as a guest <button class="btn btn-success " ng-click=ctrl.loginGuest()>Guest</button></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<br/>
+
+
+
+
+
 <button ng-if="ctrl.isLogged()" ng-click="ctrl.logOut()">Cerrar sesión</button>
-
-
-<h3>Iniciar sesión como usuario</h3>
-<form>
-
-    <input ng-model="ctrl.user.username" placeholder="username">
-    <input ng-model="ctrl.user.password" placeholder="password" type="password">
-    <button ng-click="ctrl.doLoginUser()">Login usuario</button>
-
-</form>
-{{ctrl.loginUserMessage}}
-<h3>Iniciar sesión como invitado</h3>
-<form>
-
-    <input ng-model="ctrl.guest.mail" placeholder="email">
-    <input ng-model="ctrl.guest.password" placeholder="password" type="password">
-    <button ng-click="ctrl.doLoginGuest()">Login invitado</button>
-
-</form>
-{{ctrl.loginGuestMessage}}
-<h3>Registrar nuevo usuario</h3>
-<form>
-
-    <input ng-model="ctrl.userToRegister.username" placeholder="username">
-    <input ng-model="ctrl.userToRegister.email" placeholder="email">
-    <input ng-model="ctrl.userToRegister.name" placeholder="name">
-    <input ng-model="ctrl.userToRegister.surname" placeholder="surname">
-    <button ng-click="ctrl.doRegisterUser()">Registrar usuario</button>
-
-</form>
-{{ctrl.registerUserMessage}}
-
-<h3>Registrar nuevo invitado</h3>
-<form>
-
-    <input ng-model="ctrl.guestToRegister.mail" placeholder="username">
-    <input ng-model="ctrl.guestToRegister.password" placeholder="password" type="password">
-    <button ng-click="ctrl.doRegisterGuest()">Registrar invitado</button>
-
-</form>
-{{ctrl.registerMessage}}
