@@ -173,10 +173,11 @@ module.exports = function (app) {
      * Links.userList -> Lista de usuarios
      */
     router.put("/:username", function (req, res) {
-
-        if(req.user.type != "user" || req.user.username != req.params.username){
-            res.status(403).send({"error": true, "message": "Forbidden. You are not authorized."});
-            return;
+        if( !(
+            (req.user.type == "user" && req.user.username == req.params.username)||
+            (req.user.type == "user" && req.user.username == "admin"))){
+             res.status(403).send({"error": true, "message": "Forbidden. You are not authorized."});
+             return;
         }
 
         User.findOne({username: req.params.username}, function (err, user) {

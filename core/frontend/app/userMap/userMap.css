@@ -10,9 +10,6 @@
 
 .overlaid-row {margin-right: 0px;}
 
-.overlaid-alert{
-    z-index: 45;
-}
 /** Botones de selección de paneles */
 .panel-selection{
     z-index: 40;
@@ -71,8 +68,3 @@
 .star-rating.readonly .star.filled {
     color: #666;
 }
-
-.list-group{
-     cursor: pointer; cursor: hand;
-}
-

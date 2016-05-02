@@ -2,20 +2,18 @@
 
 angular.module('frontend')
 
-.controller('LoginCtrl', ['$http','SessionService',function($http,SessionService) {
+.controller('LoginCtrl', ['$http','SessionService', '$location', function($http,SessionService,$location) {
 
 
     var self = this; //Para no perder la variable this, la guardamos en self (de lo contrario se sobreescribe)
 
-    self.user = {};
-    self.guest = {};
-    self.guestToRegister = {};
-    self.userToRegister = {};
-
+    //Fields login
+    self.loginUser={};
+    self.errorPassword="";
 
     self.isLogged = function(){
         return SessionService.currentlyLogged;
-    }
+    };
 
     self.getUserObject = function(){
         return SessionService.user;
@@ -23,76 +21,34 @@ angular.module('frontend')
     /**
      * Hace login de usuario normal.
      */
-    self.doLoginUser = function(){
 
-        $http.post('/users/login', self.user).then(function(response){
-
+    self.login =function(){
+        $http.post('/users/login', self.loginUser).then(function(response){
+            self.errorPassword ="";
             var jwtToken = response.data.message;
 
             SessionService.setNewToken(jwtToken);
-            self.loginUserMessage = "Ok, bienvenido " + SessionService.user.username;
+
+            if(SessionService.user.username== "admin"){
+                $location.path("/admin/")
+            } else{
+                self.loginUserMessage = "Ok, bienvenido " + SessionService.user.username;
+            }
 
         }, function(err){
-            self.loginUserMessage = "Error " + err.data.message;
+            self.errorPassword="Incorrect username or password";
             console.error(err);
         });
-
     };
 
-
-    /**
-     * Hace login de invitado registrado
-     */
-    self.doLoginGuest = function(){
-
-        $http.post('/guests/login', self.guest).then(function(response){
-
-            var jwtToken = response.data.message;
-
-            SessionService.setNewToken(jwtToken);
-            self.loginGuestMessage = "Ok, bienvenido " + SessionService.user.mail;
-
-        }, function(err){
-            self.loginGuestMessage = "Error " + err.data.message;
-            console.error(err);
-        });
-
+    self.loginGuest =function(){
+        //Llamada al mapa de guest
     };
 
-    self.doRegisterGuest = function(){
-        $http.post('/guests', self.guestToRegister).then(function(response){
-
-
-            self.registerMessage = "Invitado registrado correctamente";
-
-        }, function(err){
-
-            self.registerMessage = "Error al registrar: " + JSON.stringify(err);
-            console.error(err);
-        });
-
-    };
-
-    self.doRegisterUser = function(){
-        $http.post('/users', self.userToRegister).then(function(response){
-
-
-            self.registerUserMessage = "Usuario registrado. Contraseña: " + response.data.message.password;
-
-        }, function(err){
-
-            self.registerUserMessage = "Error al registrar: " + JSON.stringify(err);
-            console.error(err);
-        });
-
-    };
 
 
     self.logOut = function(){
-
         SessionService.deleteCurrentToken();
-
-
     };
 
 

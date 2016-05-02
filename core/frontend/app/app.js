@@ -9,7 +9,8 @@ angular.module('frontend', [
     'ngAnimate',
     'ui.bootstrap',
     'angularUtils.directives.dirPagination',
-    'chart.js'
+    'chart.js',
+    'dndLists'
 
 ]).config(['$routeProvider','$httpProvider', 'uiGmapGoogleMapApiProvider',function ($routeProvider,$httpProvider,uiGmapGoogleMapApiProvider) {
 
@@ -62,6 +63,41 @@ angular.module('frontend', [
                         return SessionService.isAuthenticatedUser('admin');
                     }
                 }
+            })
+
+            .when('/editUser/:idUser', {
+                templateUrl: 'editUser/editUser.html',
+                controller: 'EditUserCtrl',
+                controllerAs: 'ctrl',
+                resolve : {
+                    'auth' : function(SessionService){
+                        return SessionService.isAuthenticatedUser('admin');
+                    }
+                }
+            })
+
+            .when('/adminMap', {
+                templateUrl: 'adminMap/adminMap.html',
+                controller: 'AdminMapCtrl',
+                controllerAs: 'ctrl',
+                resolve : {
+                    'auth' : function(SessionService){
+                        return SessionService.isAuthenticatedUser('admin');
+                    }
+                }
+
+            })
+
+            .when('/userMap', {
+                templateUrl: 'userMap/userMap.html',
+                controller: 'UserMapCtrl',
+                controllerAs: 'ctrl',
+                resolve : {
+                    'auth' : function(SessionService){
+                        return SessionService.isAuthenticatedUser();
+                    }
+                }
+
             })
 
             .when('/map', {

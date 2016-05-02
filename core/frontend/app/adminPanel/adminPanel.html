@@ -14,39 +14,13 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#"><span class="glyphicon glyphicon-inbox" aria-hidden="true"></span> Administración <span class="sr-only">(current)</span></a></li>
-                <li><a href="#"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;Acceso</a></li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">Action</a></li>
-                        <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">Separated link</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">One more separated link</a></li>
-                    </ul>
-                </li>
+                <li class="active"><a href="#"><span class="glyphicon glyphicon-inbox" aria-hidden="true"></span> Admin Panel <span class="sr-only">(current)</span></a></li>
+                <li><a href="#"><span class="glyphicon glyphicon-globe" aria-hidden="true"></span>&nbsp;Admin Map</a></li>
+                <li><a href="#"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span>&nbsp;Statistics</a></li>
             </ul>
-            <form class="navbar-form navbar-left" role="search">
-                <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Search">
-                </div>
-                <button type="submit" class="btn btn-default">Submit</button>
-            </form>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">Link</a></li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">Action</a></li>
-                        <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">Separated link</a></li>
-                    </ul>
-                </li>
+                <li><a href="#" ng-click="ctrl.logOut()">&nbsp;Close Session</a></li>
+
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
@@ -59,9 +33,22 @@
 
     <div class=" col-md-8 col-sm-12 ">
         <div class="row">
+            <div class="col-md-offset-3 col-md-6 col-sm-12">
+                <div class="panel panel-default" ng-show="ctrl.showUserDetailPanel">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">User details</h3>
+                    </div>
+                    <div class="panel-body">
+                        <p><strong>Username: </strong>{{ctrl.userPanel.username}}</p></br>
+                        <p><strong>Email: </strong>{{ctrl.userPanel.email}}</p></br>
+                        <p><strong>Name: </strong>{{ctrl.userPanel.name}}</p></br>
+                        <p><strong>Surname: </strong>{{ctrl.userPanel.surname}}</p></br>
+                        <p><strong>Resgister Date: </strong>{{ctrl.userPanel.registerDate}}</p></br>
+                        <p ng-if="ctrl.userPanel.lastAccessDate"><strong>Last Access Date: </strong>{{ctrl.userPanel.lastAccessDate}}</p>
+                        <p ng-if="!ctrl.userPanel.lastAccessDate"><strong>Last Access Date: </strong>Never accessed</p>
+                    </div>
+                </div>
 
-            <div class="col-md-offset-3 col-md-6 col-sm-12  bg-success">
-                <p>aqui va editar</p>
             </div>
 
         </div>
@@ -85,10 +72,13 @@
                         <tr pagination-id="Pagination" dir-paginate="subject in ctrl.users | itemsPerPage: 10 ">
                             <td>{{subject.username}}</td>
                             <td class="options hidden-xs">{{subject.email}}</td>
-                            <td><button  class="btn btn-success "  ng-click=ctrl.addUser()><span class="glyphicon glyphicon-eye-open"></span>
+                            <td><button  class="btn btn-success "  ng-click=ctrl.showUserDetailed(subject.username)><span class="glyphicon glyphicon-eye-open"></span>
                             </button>
-                                <button  class="btn btn-success "  ng-click=ctrl.addUser()><span class="glyphicon glyphicon-pencil" ></span></button>
-                                <button  class="btn btn-success "  ng-click=ctrl.deleteUser(subject.username)><span class="glyphicon glyphicon-trash" ></span></button>
+
+                                <button ng-if="subject.username=='admin'" class="btn btn-success" ng-disabled=true ><span class="glyphicon glyphicon-pencil" ></span></button>
+                                <button ng-if="subject.username=='admin'"  class="btn btn-success" ng-disabled=true><span class="glyphicon glyphicon-trash" ></span></button>
+                                <button ng-if="subject.username!='admin'"  class="btn btn-success "  ng-click=ctrl.editUser(subject.username)><span class="glyphicon glyphicon-pencil" ></span></button>
+                                <button ng-if="subject.username!='admin'"  class="btn btn-success "  ng-click=ctrl.deleteUser(subject.username)><span class="glyphicon glyphicon-trash" ></span></button>
                             </td>
 
                             <!-- <td>{{post.text}}
@@ -144,6 +134,7 @@
                         <button type="submit" class="btn btn-success " ng-disabled="userForm.$invalid" ng-click=ctrl.addUser()>Register</button>
                         <hr />
                         <p>{{ctrl.errorYaExiste}}</p>
+                        <p>{{ctrl.passwordCreated}}</p>
                     </form>
                 </div>
             </div>

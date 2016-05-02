@@ -71,12 +71,10 @@
                                 </div>
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-block btn-default"
-                                            ng-click="ctrl.searchPois()">
-                                        <span class="glyphicon glyphicon-search"></span>&nbsp;Search
+                                            ng-click="ctrl.searchPois()">Search
                                     </button>
                                     <button type="submit" class="btn btn-block btn-default"
-                                            ng-click="ctrl.clearSearch(); ctrl.searchPois();">
-                                        <span class="glyphicon glyphicon-remove"></span>&nbsp;Clear
+                                            ng-click="ctrl.clearSearch(); ctrl.searchPois();">Clear
                                     </button>
                                 </div>
                             </form>
@@ -94,19 +92,17 @@
 
 <!-- Mapa -->
 <ui-gmap-google-map id="map" center='ctrl.map.center' zoom='ctrl.map.zoom' options='ctrl.map.options'
-                    control="ctrl.map.control" >
+                    control="ctrl.map.control">
     <!-- Resultados de la búsqueda -->
     <ui-gmap-marker ng-repeat="poi in ctrl.getShownPois()"
                     idKey='{key:poi._id}'
                     events="ctrl.markersEvents "
                     control="poi"
-                    options='{"label": ctrl.getMarkerLabel(poi)}'
+                    options='{"title": "Raul"}'
                     coords='{latitude:poi.lat,longitude:poi.long}'>
-        <!-- Se muestra ventanita si ratón encima, se está viendo el detalle de ese poi, o se está viendo una ruta que contiene ese poi -->
-        <ui-gmap-window
-                show="(ctrl.map.hoverPoiList.indexOf(poi._id) > -1) || (ctrl.showingPoi && ctrl.detailedPoi._id == poi._id) || (ctrl.showingRoute && ctrl.isPoiOnDetailedRoute(poi))">
+        <ui-gmap-window show="show">
             <div>
-                <b>{{poi.name}}</b>
+                <p><b>{{poi.name}}</b></p>
             </div>
         </ui-gmap-window>
     </ui-gmap-marker>
@@ -146,13 +142,6 @@
 
         <div class="col-sm-4 col-md-3 sidebar">   <!-- Menú lateral izquierdo-->
 
-            <div class="alert  overlaid-alert"
-                 ng-class="{'alert-danger':ctrl.alert.type=='danger','alert-warning':ctrl.alert.type=='warning', 'alert-success':ctrl.alert.type=='success'}"
-                role="alert" ng-if="ctrl.alert.show">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <strong>{{ctrl.alert.title}}</strong> {{ctrl.alert.message}}
-            </div>
-
             <div class="panel-group sidebar-body " id="accordion-left">
 
                 <div class="panel panel-primary" ng-show="ctrl.resultsPanelActivated"> <!-- Panel "Search Results" -->
@@ -191,21 +180,14 @@
                             <ul class="list-group" style="max-height: 30vh; overflow-y: scroll;"
                                 ng-show="ctrl.poiListEnabled"> <!-- Lista de POIs resultados -->
                                 <li href="" class="list-group-item" ng-repeat="poi in ctrl.pois"
-                                    ng-click="ctrl.showPoiDetail(poi._id); ctrl.centerMapInPoi(poi);">{{poi.name}}
-                                     <span class="pull-right">
-                                            <span class="glyphicon glyphicon-chevron-right"></span>
-                                    </span>
+                                    ng-click="ctrl.showPoiDetail(poi._id); ctrl.centerMapInPoi(poi);"><a href="">{{poi.name}}</a>
                                 </li>
                             </ul>
                             <ul class="list-group" style="max-height: 30vh; overflow-y: scroll;"
                                 ng-show="!ctrl.poiListEnabled"> <!-- Lista de rutas resultados -->
                                 <li href="" class="list-group-item" ng-repeat="route in ctrl.routes"
                                     ng-click="ctrl.showAndCalculateRoute(route._id); ctrl.showUserDetail(route.creator)">
-                                    {{route.name}}
-                                    <span class="pull-right">
-                                        <span class="glyphicon glyphicon-chevron-right"></span>
-                                    </span>
-
+                                    <a href=""> {{route.name}}</a>
                                 </li>
                             </ul>
                         </div>
@@ -233,14 +215,14 @@
                                     <button type="button" class="btn btn-default"
                                             ng-click="ctrl.followingListEnabled = false;"
                                             ng-class="{'active':!ctrl.followingListEnabled}">
-                                        <span class="glyphicon glyphicon-star"></span>&nbsp;Favs
+                                        <span class="glyphicon glyphicon-star"></span>&nbsp;Favourite POIs
                                     </button>
                                 </div>
                                 <div class="btn-group" role="group">
                                     <button type="button" class="btn btn-default"
                                             ng-click="ctrl.followingListEnabled = true;"
                                             ng-class="{'active':ctrl.followingListEnabled}">
-                                        <span class="glyphicon glyphicon-thumbs-up"></span>&nbsp;Following
+                                        <span class="glyphicon glyphicon-thumbs-up"></span>&nbsp;Users following
                                     </button>
                                 </div>
                             </div>
@@ -248,20 +230,14 @@
                                 ng-if="!ctrl.followingListEnabled"> <!-- Lista de POIS favoritos -->
                                 <li class="list-group-item" ng-repeat="fav in ctrl.favs"
                                     ng-click="ctrl.showPoiDetail(fav._id); ctrl.centerMapInPoi(fav);">
-                                    {{fav.name}}
-                                     <span class="pull-right">
-                                            <span class="glyphicon glyphicon-chevron-right"></span>
-                                    </span>
+                                    <a href="">{{fav.name}}</a>
                                 </li>
                             </ul>
                             <ul class="list-group" style="max-height: 30vh; overflow-y: scroll;"
                                 ng-if="ctrl.followingListEnabled"> <!-- Lista de usuarios siguiendo -->
                                 <li class="list-group-item" ng-repeat="poi in ctrl.following"
                                     ng-click="ctrl.hideAllRightPanels(); ctrl.showUserDetail(poi.username)">
-                                    {{poi.username}}
-                                     <span class="pull-right">
-                                            <span class="glyphicon glyphicon-chevron-right"></span>
-                                    </span>
+                                    <a href="">{{poi.username}}</a>
                                 </li>
                             </ul>
                         </div>
@@ -269,7 +245,6 @@
                 </div>
             </div>
         </div>
-
 
         <!-- Menú lateral derecho, tiene offset para dejar en medio vacío-->
         <div class="col-sm-4 col-sm-offset-4 col-md-3 col-md-offset-6 sidebar ">
@@ -309,7 +284,7 @@
                                     ng-class='{"glyphicon-star":ctrl.detailedPoi.isFav,
                         "glyphicon-star-empty":!ctrl.detailedPoi.isFav}'></span>Fav
                             </button>
-                            <button type="button" class="btn btn-default  btn-block"
+                            <button type="button" class="btn btn-default btn-block"
                                     ng-click="ctrl.shareCurrentPoi()" ng-if="ctrl.guest"><span
                                     class=" glyphicon glyphicon-share-alt"></span>Share
                             </button>
@@ -360,7 +335,7 @@
                 <div class="panel panel-primary" ng-if="ctrl.showingCreator"> <!-- Panel de info de creador -->
                     <div class="panel-heading">
                         <h4 class="panel-title">
-                            <a data-toggle="collapse" href="" data-target="#userInfo">
+                            <a data-toggle="collapse" href="" data-target="#poiInfo">
                                 <i class="glyphicon glyphicon-info-sign"></i>
                                 User information
                             </a>
@@ -378,11 +353,11 @@
                                 <b>Email:</b> {{ctrl.detailedUser.email}}
                                 <br/>
                                 <button type="button" class="btn btn-default btn-block"
-                                        ng-click="ctrl.toggleFollowing(ctrl.detailedUser.username)"
+                                        ng-click="ctrl.toggleFollowing(ctrl.detailedPoi.creator)"
                                         ng-if="ctrl.guest"><span
                                         class="glyphicon glyphicon-user"></span>
-                                    <span ng-if="ctrl.userIsInFollowingList(ctrl.detailedUser.username)">Unfollow</span>
-                                    <span ng-if="!ctrl.userIsInFollowingList(ctrl.detailedUser.username)">Follow</span>
+                                    <span ng-if="ctrl.detailedPoi.isFollowing">Unfollow</span>
+                                    <span ng-if="!ctrl.detailedPoi.isFollowing">Follow</span>
                                 </button>
                             </div>
                             <span ng-if="ctrl.creatorError" style="color:red;"><b>{{ctrl.creatorError}}</b></span>
@@ -399,7 +374,7 @@
                         </h4>
                     </div>
                     <div id="routeData" class="panel-collapse collapse in"
-                         style="max-height: 40vh; overflow-y: scroll;">
+                         style="max-height: 50vh; overflow-y: scroll;">
                         <div class="panel-body" id="directionsList">
                             <span ng-if="ctrl.routeError" style="color:red;"><b>{{ctrl.routeError}}</b></span>
                         </div>
