@@ -10,6 +10,7 @@ module.exports = {
   Post: require('./post.js'),
   User: require('./user.js'),
   DeletedUser: require('./deletedUser.js'),
+  CreatedUser: require('./createdUser.js'),
   Guest: require('./guest.js'),
   Rating: require('./rating.js'),
   Poi: require('./poi.js'),

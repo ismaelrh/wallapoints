@@ -81,46 +81,5 @@
 
     </div>
 
-    <div class="col-md-offset-1 col-md-3 col-sm-12">
-        <div class="row">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <strong>   Register User </strong>
-                </div>
-                <div class="panel-body">
-                    <form name="userForm" role="form" ng-submit="ctrl.submitForm(userForm.$valid)" novalidate>
-                        <br/>
-                        <div class="form-group input-group">
 
-                            <span class="input-group-addon"><span class="glyphicon glyphicon-pencil"></span></span>
-                            <input type="text" name="username" class="form-control" ng-model="ctrl.newUser.username" placeholder="Username" ng-minlength="4" ng-maxlength="10" required>
-
-                        </div>
-                        <p ng-show="userForm.username.$invalid && !userForm.username.$pristine" class="help-block">A username with long>=4 and <=10 is required.</p>
-                        <div class="form-group input-group">
-                            <span class="input-group-addon"><span class="glyphicon glyphicon-pencil"></span></span>
-                            <input type="text" name="name" class="form-control" ng-model="ctrl.newUser.name" placeholder="Name" required>
-                        </div>
-                        <p ng-show="userForm.name.$invalid && !userForm.name.$pristine" class="help-block">A name is required</p>
-
-                        <div class="form-group input-group">
-                            <span class="input-group-addon"><span class="glyphicon glyphicon-pencil"></span></span>
-                            <input type="text" name="surname" class="form-control" ng-model="ctrl.newUser.surname" placeholder="Surname" required>
-                        </div>
-                        <p ng-show="userForm.surname.$invalid && !userForm.surname.$pristine" class="help-block">A surname is required</p>
-                        <div class="form-group input-group">
-                            <span class="input-group-addon">@</span>
-                            <input type="email" name="email" class="form-control"  ng-model="ctrl.newUser.email" placeholder="Your Email" required/>
-                        </div>
-                        <p ng-show="userForm.email.$invalid && !userForm.email.$pristine" class="help-block">Enter a valid email.</p>
-
-
-                        <button type="submit" class="btn btn-success " ng-disabled="userForm.$invalid" ng-click=ctrl.addUser()>Register</button>
-                        <hr />
-                        <p>{{ctrl.errorYaExiste}}</p>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
