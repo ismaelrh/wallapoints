@@ -35,14 +35,9 @@ angular.module('frontend')
 
     self.UsersRegister = function(){
         $http.get('/stats/users/date').then(function(response){
-            self.dates=response.data.message;
-            $http.get('/stats/users/data').then(function(response){
-                self.userData=response.data.message;
-                console.log(response.data.message);
-            },  function(err){
-                console.error(err);
-            });
-            console.log(response.data.message);
+            self.dates=response.data.message.dates;
+            self.userData=response.data.message.userData;
+
         },  function(err){
             console.error(err);
         });

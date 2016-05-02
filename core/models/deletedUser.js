@@ -12,4 +12,4 @@ var DeletedUserSchema = mongoose.Schema({
 DeletedUser = mongoose.model('DeletedUser', DeletedUserSchema);
 
 //Exportamos sólo los modelos que queramos (puede haber modelos sin exportar)
-module.exports = User;
+module.exports = DeletedUser;
