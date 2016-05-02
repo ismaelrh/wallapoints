@@ -123,22 +123,14 @@ module.exports = function(app){
      * pasados en el payload
      */
     router.put("/:_id", function (req, res) {
-
-        if( !(
-            (req.user.type == "user" && req.user.username == req.params.guestMail) ||
-            (req.user.type == "user" && req.user.username == "admin"))
-        )
-        {
-            res.status(403).send({"error": true, "message": "Forbidden. You are not authorized."});
-            return;
-        }
-
+        
 
 
 
         Route.findOne({_id: req.params._id})
             .populate('pois')
             .exec(function (err, result){
+
                 if (err) {
                     res.status(500).send({"error": true, "message": "Error retrieving data"});
                 }
