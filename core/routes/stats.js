@@ -11,6 +11,8 @@ module.exports = function (app) {
 
     var User = app.models.User;
     var DeletedUser = app.models.DeletedUser;
+    var CreatedUser = app.models.CreatedUser;
+
 
 
     /**
@@ -22,15 +24,14 @@ module.exports = function (app) {
         console.log("Put /pois/:id/ratings/mean");
         var today = new Date();
         today.setHours(today.getHours() - 360);
-        console.log(today.toString());
-        User.aggregate(
+        CreatedUser.aggregate(
             {   //agrega los valores de fecha mayores de today
-                $match: {registerDate: {'$gt' : today}}
+                $match: {createDate: {'$gt' : today}}
             },
             { $group: {
-                _id: {year : { $year : "$registerDate" },
-                    month : { $month : "$registerDate" },
-                    day : { $dayOfMonth : "$registerDate"}
+                _id: {year : { $year : "$createDate" },
+                    month : { $month : "$createDate" },
+                    day : { $dayOfMonth : "$createDate"}
                 },
                 count: {$sum: 1}
             }}
@@ -40,15 +41,14 @@ module.exports = function (app) {
                     res.send({"error": true, "message": "Error getting mean"});
                 }
                 else {
-                    console.log(altas);
                     DeletedUser.aggregate(
                         {   //agrega los valores de fecha mayores de today
                             $match: {deleteDate: {'$gt' : today}}
                         },
                         { $group: {
-                            _id: {year : { $year : "$registerDate" },
-                                month : { $month : "$registerDate" },
-                                day : { $dayOfMonth : "$registerDate"}
+                            _id: {year : { $year : "$deleteDate" },
+                                month : { $month : "$deleteDate" },
+                                day : { $dayOfMonth : "$deleteDate"}
                             },
                             count: {$sum: 1}
                         }}
@@ -58,7 +58,6 @@ module.exports = function (app) {
                                 res.send({"error": true, "message": "Error getting mean"});
                             }
                             else {
-                                console.log(bajas);
                                 var message = procesarUsers(altas, bajas);
                                 console.log(message);
                                 res.status(200).send({
@@ -74,20 +73,22 @@ module.exports = function (app) {
     });
 
     function procesarUsers(altas, bajas) {
-        console.log(altas);
-        console.log(bajas);
-        var fecha187 = new Date();
+        var today = new Date();
         var arrayAltas = [];
         var arrayBajas = [];
         var arrayFechas = [];
-        fecha187.setHours(fecha187.getHours()-360);
+
         var cuentaA = altas.length - 1;
         var cuentaB = bajas.length - 1;
-        for (var i = 0; i <= 360; i=i + 24){
-            var d = fecha187.getDate();
+        // desde el dia actual hasta el dia marcado
+        var dias = 15;
+        today.setHours(today.getHours()-24*dias);
+
+        for (var i = 0; i <= 24*dias; i=i + 24){
+            var d = today.getDate();
             // se suma 1 dado que los meses van de 1-12 y se obtienen de 0-11
-            var m = fecha187.getUTCMonth() + 1;
-            var y = fecha187.getFullYear();
+            var m = today.getUTCMonth() + 1;
+            var y = today.getFullYear();
             //introducimos la fecha en el array de fechas
             arrayFechas.push(d+"-"+m+"-"+y);
             if(altas[cuentaA] != undefined){
@@ -105,21 +106,21 @@ module.exports = function (app) {
             }
             if(bajas[cuentaB] != undefined){
                 // si coincide con el dia de bajas, metemos el numero de bajas en el array de bajas
-                if(altas[cuentaB]._id.day == d){
-                    arrayBajas.push(altas[cuentaB].count);
+                if(bajas[cuentaB]._id.day == d){
+                    arrayBajas.push(bajas[cuentaB].count);
                     cuentaB--;
+                }
+                else{
+                    arrayBajas.push(0);
                 }
             }
             else{
                 arrayBajas.push(0);
             }
 
-            fecha187.setHours(fecha187.getHours()+24);
+            today.setHours(today.getHours()+24);
 
         }
-        console.log(arrayAltas);
-        console.log(arrayBajas);
-        console.log(arrayFechas);
         //devuelve el array de fechas y dos arrays de altas y fechas que coinciden en indice con el de fechas
         return {dates:arrayFechas, userData:[arrayAltas,arrayBajas]}
 
