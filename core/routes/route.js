@@ -123,7 +123,7 @@ module.exports = function(app){
      * pasados en el payload
      */
     router.put("/:_id", function (req, res) {
-        
+
 
 
 
@@ -133,9 +133,11 @@ module.exports = function(app){
 
                 if (err) {
                     res.status(500).send({"error": true, "message": "Error retrieving data"});
+                    return;
                 }
                 else if (result == null || result == undefined) {
                     res.status(404).send({"error": true, "message": "Route does not exists"});
+                    return;
                 }
 
                 //Si no es admin o no es el creador -> Error
@@ -241,37 +243,49 @@ module.exports = function(app){
      */
     router.delete("/:_id", function (req, res) {
 
-        if( !(
-            (req.user.type == "guest" && req.user.mail == req.params.mail) ||
-            (req.user.type == "user" && req.user.username == "admin"))
-        )
-        {
-            res.status(403).send({"error": true, "message": "Forbidden. You are not authorized."});
-            return;
-        }
-
-        Route.remove({_id: req.params._id}, function (err, result) {
+        Route.findOne({_id:req.params.id},function(err,result){
 
 
-            if (err) {
+            if(err){
                 res.status(500).send({"error": true, "message": "Error deleting guest"});
                 return;
             }
-
-
-            if (result.result.n == 0) {
-                /* No existe la route */
-                res.status(500).send({"error": true, "message": "The route does not exist in the db "});
+            if(result==null){
+                res.status(404).send({"error": true, "message": "The route does not exist in the db "});
                 return;
             }
-            res.status(200).send({
-                error: false,
-                message: "The route has been deleted",
-                links: [{guestList: "/routes/"}]
+
+            Route.remove({_id: req.params._id}, function (err, result) {
+
+
+                if (err) {
+                    res.status(500).send({"error": true, "message": "Error deleting guest"});
+                    return;
+                }
+
+                //Si no es admin o no es el creador -> Error
+                if( !(
+                    (req.user.type == "user" && req.user.username == result.creator) ||
+                    (req.user.type == "user" && req.user.username == "admin"))
+                )
+                {
+                    res.status(403).send({"error": true, "message": "Forbidden. You are not authorized."});
+                    return;
+                }
+
+
+                res.status(200).send({
+                    error: false,
+                    message: "The route has been deleted",
+                    links: [{guestList: "/routes/"}]
+                });
+
+
             });
-
-
         });
+
+
+
     });
 
     /**
