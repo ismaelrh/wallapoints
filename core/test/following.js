@@ -57,7 +57,7 @@ describe('Following', function () {
 
 
 
-        //Primero guardamos los poi
+        //Primero guardamos los usuarios
         user1.save(function(err,savedObject){
 
 
@@ -133,7 +133,7 @@ describe('Following', function () {
             });
     });
 
-
+ 
     /**
      * Quita de siguiendo el user2 creado, y posteriormente comprobar en BD que se ha dejado de seguir.
      */
