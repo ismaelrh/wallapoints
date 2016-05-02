@@ -42,7 +42,8 @@ angular.module('frontend')
             //Variables de búsqueda
             self.search = {
                 creator: "",
-                date: ""
+                date: "",
+                keywords: ""
             };
 
 
@@ -76,23 +77,35 @@ angular.module('frontend')
                 self.markersEvents = {
                     click: function (marker, eventName, model) {
 
-                        self.showPoiDetail(model.control._id);
+
+                            self.showPoiDetail(model.control._id);
+
+
 
                     },
                     mouseover: function (marker, eventName, model) {
 
-                        self.map.hoverPoiList.push(model.control._id);
+                        if(model.control){
+                            self.map.hoverPoiList.push(model.control._id);
+                        }
+
 
                     },
                     mouseout: function (marker, eventName, model) {
-                        var index = self.map.hoverPoiList.indexOf(model.control._id);
-                        if(index>-1){
-                            self.map.hoverPoiList.splice(index,1);
+                        if(model.control){
+                            var index = self.map.hoverPoiList.indexOf(model.control._id);
+                            if(index>-1){
+                                self.map.hoverPoiList.splice(index,1);
+                            }
                         }
+
 
                     }
                 };
 
+                self.logOut = function(){
+                    SessionService.logOut();
+                };
 
 
                 function showAlert(type,message){
@@ -198,6 +211,7 @@ angular.module('frontend')
                 self.clearSearch = function () {
                     self.search.creator = "";
                     self.search.date = "";
+                    self.search.keywords = "";
 
                 };
 
@@ -218,30 +232,45 @@ angular.module('frontend')
                         searchObject.date = self.search.date;
                     }
 
+                    if(self.search.keywords && self.search.keywords.length > 0){
+                        //Formamos array de keywords a partir de lista separada por comas
+                        searchObject.keywords = self.search.keywords.split(",");
+                        for(var i = 0; i < searchObject.keywords.length; i++){
+                            searchObject.keywords[i] = searchObject.keywords[i].trim();
+                        }
+
+                        //Cuando no se pone ninguna keyword, que quede vacío el array
+                        if(searchObject.keywords.length == 1 && searchObject.keywords[0].length==0){
+                            searchObject.keywords = [];
+                        }
+                    }
+
                     PoiService.searchPois(searchObject)
                         .then(function (resultPois) {
                             self.pois = resultPois;
+
+
+                            //Buscamos rutas de los pois mostrados
+                            self.searchRoutes(self.pois);
+
                         });
+
+
+
 
                 };
 
                 /**
-                 * Busca routes según search.creator y search.date.
+                 * Busca routes que contengan al menos uno de los pois pasados.
                  */
-                self.searchRoutes = function () {
+                self.searchRoutes = function (listaPois) {
 
-
-                    var searchObject = {};
-
-                    if (self.search.creator && self.search.creator.length > 0) {
-                        searchObject.creator = self.search.creator;
+                    var arrayToSend = [];
+                    for(var i = 0; i < listaPois.length;i++){
+                        arrayToSend.push(listaPois[i]._id);
                     }
 
-                    if (self.search.date && self.search.date.length > 0) {
-                        searchObject.date = self.search.date;
-                    }
-
-                    PoiService.searchRoutes(searchObject)
+                    PoiService.searchRoutes({pois:arrayToSend})
                         .then(function (routeList) {
                             self.routes = routeList;
                         });
@@ -347,6 +376,9 @@ angular.module('frontend')
 
                             self.detailedRoute = detailedRoute;
 
+                            //Cargamos detalles
+                            self.showUserDetail(self.detailedRoute.creator);
+
                             var poiList = detailedRoute.pois;
                             if (poiList.length < 2) {
                                 alert("Need two or more points to calculate route");
@@ -384,6 +416,14 @@ angular.module('frontend')
                                     directionsDisplay.setDirections(response);
                                     directionsDisplay.setMap(self.map.control.getGMap());
                                     directionsDisplay.setPanel(document.getElementById('directionsList'));
+
+                                    //Para cada punto de la ruta, mostramos un marker
+                                    self.routeMarkers = [];
+                                    for(var i = 0; i < self.detailedRoute.pois.length; i++){
+                                        self.detailedRoute.pois[i].order = "" + String.fromCharCode(65+i);
+                                        self.routeMarkers.push(self.detailedRoute.pois[i]);
+                                    }
+
                                 } else {
 
                                     self.routeError = "Can not calculate route!";
@@ -398,7 +438,6 @@ angular.module('frontend')
 
                 //Iniciar
                 self.searchPois();
-                self.searchRoutes();
 
 
 

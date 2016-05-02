@@ -15,11 +15,14 @@ var generateUserToken = require('./common').generateUserToken;
 var Poi = require("../models").Poi;
 
 
-describe('Favourite', function () {
+describe('Poi', function () {
 
+    var poi1_id;
+    var poi2_id;
     before(function (done) {
 
         Poi.collection.drop();
+
 
         //Insertamos un poi
         var poi1 = new Poi({
@@ -50,15 +53,15 @@ describe('Favourite', function () {
             poi1_id = savedObject._id;
             poi2.save(function (err, savedObject2) {
                 poi2_id = savedObject2._id;
-
+                done();
             });
 
         });
 
-        done();
+
     });
 
-    //Al acabar este fichero de tests, limpiamos colección de invitados
+    //Al acabar este fichero de tests, limpiamos colección de pois
     after(function (done) {
 
         Poi.collection.drop();

@@ -269,26 +269,36 @@ module.exports = function(app){
 
     /**
      * POST /search
-     * Crea recurso 'search' que se encarga de devolver una lista de Routes dependiendo
-     * de los parámetros de búsqueda introducidos
+     * Crea recurso 'search' que se encarga de devolver una lista de Routes según
+     * objeto de búsqueda
+     * pois: lista de ids de pois. De esta forma, se devolverán rutas que pasen por alguno de los pois.
+     * creator: creador.
+     * Se aplica AND a las condiciones
      */
     router.post("/search", function (req, res) {
 
         var searchObject = {};
-        if(req.body.date){
-            searchObject.date = req.body.date;
-        }
+
 
         if(req.body.creator){
             searchObject.creator = req.body.creator;
         }
 
+        if(req.body.pois){
+            var poisList = req.body.pois;
+            searchObject.pois = {$in: poisList};
 
-        Route.find(searchObject,"_id name creator", function (err, results) {
+        }
+
+
+        var query = Route.find( searchObject ,{_id:1,name:1} );
+
+
+        query.exec( function (err, results) {
 
 
             if (err) {
-                res.status(500).send({"error": true, "message": "Error searching Routes"});
+                res.status(500).send({"error": true, "message": "Error searching Routes " + err});
                 return;
             }
 

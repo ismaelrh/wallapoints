@@ -83,20 +83,38 @@ module.exports = function (app) {
             //Se calcula el hash
             newGuest.password = crypto.createHash('md5').update(newGuest.password).digest('hex');
 
-            newGuest.save(function (err, result) {
+            //Se mira si ya existía
+            Guest.findOne({mail:newGuest.mail},function(err,response){
 
                 if (err) {
-                    res.status(500).send({"error": true, "message": "Error saving data " + err});
-                    console.error(err);
+                    res.status(500).send({"error": true, "message": "Error checking guest existence"});
+                    return;
                 }
-                else {
-                    res.send({
-                        error: false,
-                        message: result.cleanGuestForDetail(),
-                        links: [{guestList: "/guests/"}]
-                    });
+
+                if(response!=null){
+                    res.status(400).send({"error": true, "message": "Mail already registered"});
+                    return;
                 }
+
+                newGuest.save(function (err, result) {
+
+                    if (err) {
+
+                        res.status(500).send({"error": true, "message": "Error registering guest" });
+                        console.error(err);
+                    }
+                    else {
+                        res.send({
+                            error: false,
+                            message: result.cleanGuestForDetail(),
+                            links: [{guestList: "/guests/"}]
+                        });
+                    }
+                });
+
             });
+
+
 
         }
     )

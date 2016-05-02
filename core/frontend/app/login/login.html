@@ -25,27 +25,30 @@
                     <form name="userForm" role="form" ng-submit="ctrl.submitForm(userForm.$valid)" novalidate>
                         <br/>
                         <div class="form-group input-group">
-                            <span class="input-group-addon"><span class="glyphicon glyphicon-pencil"></span></span>
+                            <span class="input-group-addon">Username</span>
                             <input type="text" name="username" class="form-control" ng-model="ctrl.loginUser.username" placeholder="Username" required>
                         </div>
                         <p ng-show="userForm.username.$invalid && !userForm.username.$pristine" class="help-block">A username is required.</p>
 
                         <div class="form-group input-group">
-                            <span class="input-group-addon"><span class="glyphicon glyphicon-pencil"></span></span>
+                            <span class="input-group-addon">Password&nbsp;</span>
                             <input type="password" name="password" class="form-control" ng-model="ctrl.loginUser.password" placeholder="Password" required>
                         </div>
                         <p ng-show="userForm.name.$invalid && !userForm.name.$pristine" class="help-block">A password is required</p>
 
 
-                        <button type="submit" class="btn btn-success btn-block" ng-disabled="userForm.$invalid" ng-click=ctrl.login()>Log in</button>
+                        <button type="submit" class="btn btn-success btn-block" ng-disabled="userForm.$invalid" ng-click=ctrl.login()>
+                            <span class="glyphicon glyphicon-log-in"></span>&nbsp;Log in</button>
+
                         <hr />
                         <p>{{ctrl.errorPassword}}</p>
                     </form>
                 </div>
             </div>
         </div>
-        <p>You don't have a creator account?</p>
-        <button type="submit" class="btn btn-info btn-block" ng-disabled="userForm.$invalid" ng-click=ctrl.login()>Enter as a viewer</button>
+        <button type="button" class="btn btn-default btn-block" ng-click=ctrl.goGuestMap()>
+            <span class="glyphicon glyphicon-eye-open"></span>&nbsp;Enter as a viewer</button>
+
     </div>
 </div>
 

@@ -32,7 +32,7 @@ angular.module('frontend')
             if(SessionService.user.username== "admin"){
                 $location.path("/admin/")
             } else{
-                self.loginUserMessage = "Ok, bienvenido " + SessionService.user.username;
+                $location.path("/userMap");
             }
 
         }, function(err){
@@ -41,10 +41,12 @@ angular.module('frontend')
         });
     };
 
-    self.loginGuest =function(){
-        //Llamada al mapa de guest
-    };
 
+
+    self.goGuestMap = function(){
+
+        $location.path("/map");
+    };
 
 
     self.logOut = function(){

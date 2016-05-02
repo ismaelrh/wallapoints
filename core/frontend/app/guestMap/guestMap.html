@@ -10,32 +10,37 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#" style="color:white;">Wallapoints!</a>
+                <a class="navbar-brand"  style="color:white;">Wallapoints!</a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Home</a></li>
+                    <li class="active"><a href=""><span class="glyphicon glyphicon-globe"></span>&nbsp; View POIs</a></li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <!-- Solo logout si logueado -->
+                    <li><a href="" ng-click="ctrl.logoutGuest()"><span class="glyphicon glyphicon-log-out"></span>&nbsp; Exit</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right" ng-if="ctrl.guest==undefined">
+
+
+
+
                     <!-- Solo login/registro si no logueado -->
                     <li class="dropdown">
-                        <a class="dropdown-toggle" href="" data-toggle="dropdown" id="navLogin">Login/registro<span
-                                class="caret"></a>
+                        <a class="dropdown-toggle" href="" data-toggle="dropdown">
+                            <span class="glyphicon glyphicon-user"></span>&nbsp;Create viewer profile<span
+                                class="caret"></span></a>
                         <div class="dropdown-menu pull-right" style="padding:17px;">
-                            <form>
+                            <form name="createProfile">
                                 <div class="form-group">
-                                    <input type="text" class="form-control" ng-model="ctrl.loginData.mail"
+                                    <input type="text" class="form-control"  id="createMail" name="createMail" ng-model="ctrl.loginData.mail"
                                            placeholder="Email">
                                 </div>
                                 <div class="form-group">
-                                    <input type="password" class="form-control" ng-model="ctrl.loginData.password"
+                                    <input type="password" class="form-control"  id="createPass" name="createPass" ng-model="ctrl.loginData.password"
                                            placeholder="Password">
-                                </div>
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-block"
-                                            ng-class="{'btn-success':ctrl.guest}" ng-click="ctrl.loginGuest()">Sign in
-                                    </button>
                                 </div>
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-block"
@@ -46,28 +51,48 @@
                             </form>
                         </div>
                     </li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" href="" data-toggle="dropdown">
+                            <span class="glyphicon glyphicon-log-in"></span>&nbsp;Enter to viewer profile<span
+                                class="caret"></span></a>
+                        <div class="dropdown-menu pull-right" style="padding:17px;">
+                            <form name="enterProfile">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="enterMail" name="enterMail" ng-model="ctrl.loginData.mail"
+                                           placeholder="Email">
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" class="form-control" id="enterPass" name="enterPass" ng-model="ctrl.loginData.password"
+                                           placeholder="Password">
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-block"
+                                            ng-class="{'btn-success':ctrl.guest}" ng-click="ctrl.loginGuest()">Sign in
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </li>
                 </ul>
-                <ul class="nav navbar-nav navbar-right" ng-if="ctrl.guest!=undefined">
-                    <!-- Solo logout si logueado -->
-                    <li><a href="" ng-click="ctrl.logoutGuest()">Logout ({{ctrl.guest.mail}}) </a></li>
-                </ul>
+
+
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown">
-                        <a class="dropdown-toggle" href="" data-toggle="dropdown" id="navSearch">Search POIs<span
-                                class="caret"></a>
+                        <a class="dropdown-toggle" href="" data-toggle="dropdown" id="navSearch">
+                            <span class="glyphicon glyphicon-search"></span>&nbsp;Search POIs<span
+                                class="caret"></span></a>
                         <div class="dropdown-menu pull-right" style="padding:17px;">
                             <form>
                                 <div class="form-group">
-                                    <input type="text" class="form-control" ng-model="ctrl.searchByCreator"
+                                    <input type="text" class="form-control" ng-model="ctrl.search.creator"
                                            placeholder="Creator">
                                 </div>
                                 <div class="form-group">
-                                    <input type="date" class="form-control" ng-model="ctrl.searchByDate"
+                                    <input type="date" class="form-control" ng-model="ctrl.search.date"
                                            placeholder="Date">
-                                    {{ctrl.searchByDate}}
                                 </div>
                                 <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="Keywords">
+                                    <input type="text" class="form-control" ng-model="ctrl.search.keywords" placeholder="Keywords">
                                 </div>
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-block btn-default"
@@ -104,7 +129,21 @@
                     coords='{latitude:poi.lat,longitude:poi.long}'>
         <!-- Se muestra ventanita si ratón encima, se está viendo el detalle de ese poi, o se está viendo una ruta que contiene ese poi -->
         <ui-gmap-window
-                show="(ctrl.map.hoverPoiList.indexOf(poi._id) > -1) || (ctrl.showingPoi && ctrl.detailedPoi._id == poi._id) || (ctrl.showingRoute && ctrl.isPoiOnDetailedRoute(poi))">
+                show="(ctrl.map.hoverPoiList.indexOf(poi._id) > -1) || (ctrl.showingPoi && ctrl.detailedPoi._id == poi._id)">
+            <div>
+                <b>{{poi.name}}</b>
+            </div>
+        </ui-gmap-window>
+    </ui-gmap-marker>
+    <!-- Marcadores de ruta. Se muestran aunque el punto de la ruta no esté en buscados -->
+    <ui-gmap-marker ng-repeat="poi in ctrl.routeMarkers" ng-if="ctrl.showingRoute"
+                    idKey='{key:poi._id}'
+                    events="ctrl.markersEvents "
+                    control="poi"
+                    options='{"label": poi.order}'
+                    coords='{latitude:poi.lat,longitude:poi.long}'>
+        <ui-gmap-window
+                show="ctrl.showingRoute && ctrl.isPoiOnDetailedRoute(poi)">
             <div>
                 <b>{{poi.name}}</b>
             </div>
@@ -200,7 +239,7 @@
                             <ul class="list-group" style="max-height: 30vh; overflow-y: scroll;"
                                 ng-show="!ctrl.poiListEnabled"> <!-- Lista de rutas resultados -->
                                 <li href="" class="list-group-item" ng-repeat="route in ctrl.routes"
-                                    ng-click="ctrl.showAndCalculateRoute(route._id); ctrl.showUserDetail(route.creator)">
+                                    ng-click="ctrl.showAndCalculateRoute(route._id)">
                                     {{route.name}}
                                     <span class="pull-right">
                                         <span class="glyphicon glyphicon-chevron-right"></span>

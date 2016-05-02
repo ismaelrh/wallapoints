@@ -11,6 +11,10 @@ angular.module('frontend')
 
             //Invitado logueado actualmente
             self.guest = SessionService.user;
+            //Si no es guest, tratamos como no autentificado
+            if(self.guest && self.guest.type!="guest"){
+                self.guest = undefined;
+            }
 
             //Datos de formulario de login/registro de invitado
             self.loginData = {};
@@ -87,14 +91,20 @@ angular.module('frontend')
                     },
                     mouseover: function (marker, eventName, model) {
 
-                        self.map.hoverPoiList.push(model.control._id);
+                        if(model.control){
+                            self.map.hoverPoiList.push(model.control._id);
+                        }
+
 
                     },
                     mouseout: function (marker, eventName, model) {
-                        var index = self.map.hoverPoiList.indexOf(model.control._id);
-                        if(index>-1){
-                            self.map.hoverPoiList.splice(index,1);
+                        if(model.control){
+                            var index = self.map.hoverPoiList.indexOf(model.control._id);
+                            if(index>-1){
+                                self.map.hoverPoiList.splice(index,1);
+                            }
                         }
+
 
                     }
                 };
@@ -287,6 +297,7 @@ angular.module('frontend')
                 self.clearSearch = function () {
                     self.search.creator = "";
                     self.search.date = "";
+                    self.search.keywords = "";
 
                 };
 
@@ -307,30 +318,45 @@ angular.module('frontend')
                         searchObject.date = self.search.date;
                     }
 
+                    if(self.search.keywords && self.search.keywords.length > 0){
+                        //Formamos array de keywords a partir de lista separada por comas
+                        searchObject.keywords = self.search.keywords.split(",");
+                        for(var i = 0; i < searchObject.keywords.length; i++){
+                            searchObject.keywords[i] = searchObject.keywords[i].trim();
+                        }
+
+                        //Cuando no se pone ninguna keyword, que quede vacío el array
+                        if(searchObject.keywords.length == 1 && searchObject.keywords[0].length==0){
+                            searchObject.keywords = [];
+                        }
+                    }
+
                     PoiService.searchPois(searchObject)
                         .then(function (resultPois) {
                             self.pois = resultPois;
+
+                            //Mezclamos con fav y buscamos aquellas rutas que contenga, o el resultado, o los favs
+                            var todosPoi = self.getShownPois();
+                            self.searchRoutes(todosPoi);
+
                         });
+
+
+
 
                 };
 
                 /**
-                 * Busca routes según search.creator y search.date.
+                 * Busca routes que contengan al menos uno de los pois pasados.
                  */
-                self.searchRoutes = function () {
+                self.searchRoutes = function (listaPois) {
 
-
-                    var searchObject = {};
-
-                    if (self.search.creator && self.search.creator.length > 0) {
-                        searchObject.creator = self.search.creator;
+                    var arrayToSend = [];
+                    for(var i = 0; i < listaPois.length;i++){
+                        arrayToSend.push(listaPois[i]._id);
                     }
 
-                    if (self.search.date && self.search.date.length > 0) {
-                        searchObject.date = self.search.date;
-                    }
-
-                    PoiService.searchRoutes(searchObject)
+                    PoiService.searchRoutes({pois:arrayToSend})
                         .then(function (routeList) {
                             self.routes = routeList;
                         });
@@ -527,8 +553,7 @@ angular.module('frontend')
                  * Cierra sesión de invitado
                  */
                 self.logoutGuest = function () {
-                    SessionService.deleteCurrentToken();
-                    self.guest = null;
+                    SessionService.logOut();
 
                 };
 
@@ -547,6 +572,9 @@ angular.module('frontend')
                             showAlert("success","Welcome :)");
                             return self.getGuestDetails();
 
+                        })
+                        .catch(function(exception){
+                            //Este error salta cuando nos dan 401 -> Incorrect mail or password
                         });
 
 
@@ -579,6 +607,10 @@ angular.module('frontend')
 
                             self.loginGuest();
 
+                        })
+                        .catch(function(exception){
+
+                            //Error al registrar, no hacemos log-in (El servicio ha propagado el error)
                         });
                 };
 
@@ -616,6 +648,7 @@ angular.module('frontend')
                     self.showingPoi = false;
 
                     self.routeError = false;
+
                     //Cogemos del backend los pois
                     return PoiService.loadDetailRoute(id)
                         .then(function (detailedRoute) {
@@ -625,6 +658,8 @@ angular.module('frontend')
 
 
                             self.detailedRoute = detailedRoute;
+
+                            self.showUserDetail(self.detailedRoute.creator);
 
                             var poiList = detailedRoute.pois;
                             if (poiList.length < 2) {
@@ -663,6 +698,14 @@ angular.module('frontend')
                                     directionsDisplay.setDirections(response);
                                     directionsDisplay.setMap(self.map.control.getGMap());
                                     directionsDisplay.setPanel(document.getElementById('directionsList'));
+
+
+                                    //Para cada punto de la ruta, mostramos un marker
+                                    self.routeMarkers = [];
+                                    for(var i = 0; i < self.detailedRoute.pois.length; i++){
+                                        self.detailedRoute.pois[i].order = "" + String.fromCharCode(65+i);
+                                        self.routeMarkers.push(self.detailedRoute.pois[i]);
+                                    }
                                 } else {
 
                                     self.routeError = "Can not calculate route!";
@@ -682,7 +725,7 @@ angular.module('frontend')
                 }
 
                 self.searchPois();
-                self.searchRoutes();
+
 
 
 

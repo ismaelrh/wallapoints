@@ -97,6 +97,10 @@ angular.module('frontend')
 
 
 
+            self.logOut = function(){
+                SessionService.logOut();
+            };
+
 
 
             //Se empieza a hacer declaraciones una vez ha cargado el objeto de mapa -> maps es el objecto google.maps
@@ -110,8 +114,14 @@ angular.module('frontend')
                 self.markersEvents = {
                     click: function (marker, eventName, model) {
 
-                        if(!self.selectPoiForRoute){ //Modo normal -> Se muestran detalles
-                            self.showPoiDetail(model.control);
+                        if(!self.selectPoiForRoute){ //Modo normal -> Se muestran detalles (Si está dentro de las del usuario)
+
+                            if(poiIsInList(model.control._id)){ //Solo si el punto es del usuario se muestran detalles
+                                //Podria ser que en un futuro se permitan crear rutas con puntos de otros usuarios, por eso
+                                //se deja esto aquí.
+                                self.showPoiDetail(model.control);
+                            }
+
                         }
                         else{ //Modo selección de POIs para editar/crear ruta -> Se añade POI a lista
 
@@ -124,19 +134,35 @@ angular.module('frontend')
                     },
                     mouseover: function (marker, eventName, model) {
 
-                        self.map.hoverPoiList.push(model.control._id);
+
+                            self.map.hoverPoiList.push(model.control._id);
+
+
 
                     },
                     mouseout: function (marker, eventName, model) {
-                        var index = self.map.hoverPoiList.indexOf(model.control._id);
-                        if(index>-1){
-                            self.map.hoverPoiList.splice(index,1);
-                        }
+
+
+                            var index = self.map.hoverPoiList.indexOf(model.control._id);
+                            if(index>-1){
+                                self.map.hoverPoiList.splice(index,1);
+                            }
+
+
 
                     }
                 };
 
 
+                function poiIsInList(poiId){
+                    var found = false;
+                    for(var i = 0; !found && i < self.pois.length;i++){
+                        if(self.pois[i]._id == poiId){
+                            found = true;
+                        }
+                    }
+                    return found;
+                }
 
                 function showAlert(type,message){
                     self.alert.show = true;
@@ -708,6 +734,7 @@ angular.module('frontend')
 
                             self.detailedRoute = detailedRoute;
 
+
                             var poiList = detailedRoute.pois;
                             if (poiList.length < 2) {
                                 alert("Need two or more points to calculate route");
@@ -745,6 +772,14 @@ angular.module('frontend')
                                     directionsDisplay.setDirections(response);
                                     directionsDisplay.setMap(self.map.control.getGMap());
                                     directionsDisplay.setPanel(document.getElementById('directionsList'));
+
+                                    //Para cada punto de la ruta, mostramos un marker
+                                    self.routeMarkers = [];
+                                    for(var i = 0; i < self.detailedRoute.pois.length; i++){
+                                        self.detailedRoute.pois[i].order = "" + String.fromCharCode(65+i);
+                                        self.routeMarkers.push(self.detailedRoute.pois[i]);
+                                    }
+
                                 } else {
 
                                     self.routeError = "Can not calculate route!";
@@ -758,6 +793,7 @@ angular.module('frontend')
                 };
 
 
+                self.search.creator = self.user.username;
 
                 self.searchPois();
                 self.searchRoutes();

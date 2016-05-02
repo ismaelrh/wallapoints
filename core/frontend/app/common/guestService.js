@@ -32,8 +32,17 @@ angular.module('frontend')
                     })
                     .catch(function (exception) {
 
-                        broadcastAlert("Could not login Guest");
-                        console.error(exception);
+
+                        if(exception.status == 401){
+                            //Si error 401 -> Datos incorrectos. Hacemos throw para que el controlador lo trate.
+                            broadcastAlert(exception.data.message);
+                            throw exception;
+                        }
+                        else{
+                            console.error(exception);
+                            broadcastAlert("Could not login Guest");
+                        }
+
                     });
 
             };
@@ -70,8 +79,10 @@ angular.module('frontend')
                         return response.data.message;
                     })
                     .catch(function (exception) {
-                        broadcastAlert("Could not register guest");
+                        //Si error al registrar -> Puede que ya exista, hacemos throw para que el controlador lo trate
+                        broadcastAlert(exception.data.message);
                         console.error(exception);
+                        throw exception;
                     });
             };
 

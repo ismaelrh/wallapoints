@@ -13,6 +13,7 @@ var publicConfig = {
 var gmAPI = new GoogleMapsAPI(publicConfig);
 
 
+
 module.exports = function (app) {
 
     var router = express.Router();
@@ -67,8 +68,13 @@ module.exports = function (app) {
      */
     router.post("/", function (req, res) {
 
-        //todo: coger creador de la sesión
-        var creator = "usuario";
+        if(req.user.type=="guest"){
+            res.status(403).send({"error": true, "message": "Forbidden. You are not authorized."});
+        }
+
+
+        var creator = req.user.username;
+
 
         //Se comprueba que estén todos los campos (multimediaUrl es opcional)
 
@@ -136,10 +142,23 @@ module.exports = function (app) {
      */
     router.delete("/", function (req, res) {
 
+
+
+
         if (!req.body.creator) {
             res.status(400).send({"error": true, "message": "You have to fill the creator parameter"});
             return;
         }
+
+        if( !(
+            (req.user.type == "user" && req.user.username == req.body.creator) ||
+            (req.user.type == "user" && req.user.username == "admin"))
+        )
+        {
+            res.status(403).send({"error": true, "message": "Forbidden. You are not authorized."});
+            return;
+        }
+
 
 
         Poi.remove({creator: req.body.creator}, function (err, results) {
@@ -202,13 +221,24 @@ module.exports = function (app) {
      */
     router.put("/:id", function (req, res) {
 
+
+
         Poi.findOne({_id: req.params.id}, function (err, poi) {
+
 
             if (err) {
                 res.status(500).send({"error": true, "message": "Error retrieving poi to update"});
                 return;
             }
 
+            if( !(
+                (req.user.type == "user" && req.user.username == poi.creator) ||
+                (req.user.type == "user" && req.user.username == "admin"))
+            )
+            {
+                res.status(403).send({"error": true, "message": "Forbidden. You are not authorized."});
+                return;
+            }
 
             if (req.body.name) {
                 poi.name = req.body.name;
@@ -254,28 +284,52 @@ module.exports = function (app) {
      * Links.poiList -> lista de pois
      */
     router.delete("/:id", function (req, res) {
-        /* cambiar a usuario que creo el poi */
 
-        Poi.remove({_id: req.params.id}, function (err, result) {
 
+
+
+        Poi.findOne({_id:req.params.id},function(err,poi){
 
             if (err) {
                 res.status(500).send({"error": true, "message": "Error deleting poi"});
                 return;
             }
 
-            if (result.result.n == 0) {
-                res.status(500).send({"error": true, "message": "The poi does not exist in the db"});
+            if(poi==null){
+                res.status(404).send({"error": true, "message": "The poi does not exist in the db"});
+            }
+
+
+            if( !(
+                (req.user.type == "user" && req.user.username == poi.creator) ||
+                (req.user.type == "user" && req.user.username == "admin"))
+            )
+            {
+                res.status(403).send({"error": true, "message": "Forbidden. You are not authorized."});
                 return;
             }
 
-            res.send({"error": false,
-                "message": "Poi deleted successfully",
-                links: [{"poiList": "/pois"}]
+            Poi.remove({_id: req.params.id}, function (err, result) {
+
+
+                if (err) {
+                    res.status(500).send({"error": true, "message": "Error deleting poi"});
+                    return;
+                }
+
+
+                res.send({"error": false,
+                    "message": "Poi deleted successfully",
+                    links: [{"poiList": "/pois"}]
+                });
+
+
             });
 
-
         });
+
+
+
 
 
     });
@@ -290,11 +344,27 @@ module.exports = function (app) {
 
         var searchObject = {};
         if(req.body.date){
+            var date = new Date(req.body.date);
             searchObject.date = req.body.date;
+            var month = date.getUTCMonth(); //months from 1-12
+            var day = date.getUTCDate() +1;
+            var year = date.getUTCFullYear();
+
+            var start = new Date(year,month,day,0,0,0,0);
+            var end = new Date(year,month,day+1,23,59,59,99);
+
+
+            console.log("Searching for " + new Date(year,month,day));
+            searchObject.date = {"$gte": new Date(year,month,day,0,0,0), "$lte": new Date(year,month,day,23,59,59)};
+            //Extraemos dia, año y mes
         }
 
         if(req.body.creator){
             searchObject.creator = req.body.creator;
+        }
+
+        if(req.body.keywords && req.body.keywords.length > 0){
+            searchObject.keywords = {$all: req.body.keywords}
         }
 
 

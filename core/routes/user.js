@@ -1,7 +1,7 @@
 /**
  * Módulo de router que maneja las peticiones de user.
  */
-
+var http = require("http");
 var express = require('express');
 var randomstring = require('randomstring');
 var crypto = require('crypto');
@@ -284,10 +284,21 @@ module.exports = function (app) {
             });
 
 
-            //Borra de las listas de siguiendo ->  Creo que lo hace solo
-
+            //Borra de las listas de siguiendo ->  Lo hace solo
+            //Borrar todos los puntos y rutas del usuario
 
             //todo
+            var options = {
+                host: 'localhost',
+                path: '/users/' + req.params.username,
+                port:8888,
+                method: 'DELETE'
+            };
+
+            http.request(options,function(response){
+                console.log("http");
+                console.log(response);
+            }).end();
             ///////////////////////////////////////////BORRA TODOS LOS PUNTOS
             console.log("SIIIIIIIIIIIIIIIIIIIIIIIIIIII")
 

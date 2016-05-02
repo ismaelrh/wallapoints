@@ -96,8 +96,7 @@ angular.module('frontend')
     };
 
     self.logOut = function(){
-        SessionService.deleteCurrentToken();
-        $location.path("/");
+        SessionService.logOut();
     };
 
     //Para empezar, traemos los users.

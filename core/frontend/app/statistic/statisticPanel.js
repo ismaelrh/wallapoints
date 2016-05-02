@@ -2,7 +2,7 @@
 
 angular.module('frontend')
 
-.controller('StatisticCtrl', ['$http',function($http) {
+.controller('StatisticCtrl', ['$http','SessionService',function($http,SessionService) {
 
     var self = this; //Para no perder la variable this, la guardamos en self (de lo contrario se sobreescribe)
 
@@ -18,6 +18,9 @@ angular.module('frontend')
         });
     };
 
+    self.logOut = function(){
+        SessionService.logOut();
+    };
 
 
 

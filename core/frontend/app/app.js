@@ -80,8 +80,6 @@ angular.module('frontend', [
 
             })
 
-
-
             .when('/map', {
                 templateUrl: 'guestMap/guestMap.html',
                 controller: 'MapCtrl',
@@ -99,7 +97,6 @@ angular.module('frontend', [
          *  HTTP Interceptor.
          *  En cada request, envía el token de autorización si presente.
          *  En cada respuesta, si código es 401 manda a login, si es 403 manda a forbidden.
-         *  todo: tal vez en el ultimo caso podría sacarse una alertita de que no está permitida la acción.
          */
         $httpProvider.interceptors.push(['$q', '$location', 'SessionService', function ($q, $location, SessionService) {
             return {
@@ -112,16 +109,18 @@ angular.module('frontend', [
                 },
                 'responseError': function (response) {
 
-                    //Cuando en una respuesta nos llega 401 -> Es que necesitamos login
+                    //Cuando en una respuesta nos llega 401 -> O datos incorrectos o necesitamos autenticarnos
                     if (response.status === 401) {
-                        console.log("Requires authentication! Redirecting to login...");
-                        $location.path('/login');
+
+                        //Si el token está caducado -> Vamos a login
+
+                        if(SessionService.token && SessionService.isTokenExpired()){
+                            console.log("Expired token! Redirecting to login...");
+                            $location.path('/login');
+                        }
+
                     }
 
-                    //Cuando en una respuesta nos llega 403 -> Es que NO tenemos permiso
-                    else if (response.status === 403){
-                        $location.path('/forbidden');
-                    }
                     return $q.reject(response);
                 }
             };

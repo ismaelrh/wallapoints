@@ -10,8 +10,7 @@ var PoiSchema = mongoose.Schema({
     long: {type: Number, required:true},
     formatted_address:{type: String},
     date: {type: Date, default: Date.now },
-    creator: {type: String, required:true},
-    ratings: {type: Array, "default": []}
+    creator: {type: String, required:true}
 });
 
 
