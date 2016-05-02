@@ -119,16 +119,21 @@ module.exports = function(app){
         }
     );
 
-    /* Actualiza una ruta si existe con eel name y la lista de pois
+    /* Actualiza una ruta si existe con el name y la lista de pois
      * pasados en el payload
      */
     router.put("/:_id", function (req, res) {
 
-
-        if (req.user.type != "user" || req.user.username != "admin") {
+        if( !(
+            (req.user.type == "user" && req.user.username == req.params.guestMail) ||
+            (req.user.type == "user" && req.user.username == "admin"))
+        )
+        {
             res.status(403).send({"error": true, "message": "Forbidden. You are not authorized."});
             return;
         }
+
+
 
 
         Route.findOne({_id: req.params._id})
@@ -139,6 +144,16 @@ module.exports = function(app){
                 }
                 else if (result == null || result == undefined) {
                     res.status(404).send({"error": true, "message": "Route does not exists"});
+                }
+
+                //Si no es admin o no es el creador -> Error
+                if( !(
+                    (req.user.type == "user" && req.user.username == result.creator) ||
+                    (req.user.type == "user" && req.user.username == "admin"))
+                )
+                {
+                    res.status(403).send({"error": true, "message": "Forbidden. You are not authorized."});
+                    return;
                 }
 
                 if (req.body.name) {
