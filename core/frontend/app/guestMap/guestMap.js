@@ -2,8 +2,8 @@
 
 angular.module('frontend')
 
-    .controller('MapCtrl', ['$http', 'SessionService', 'uiGmapGoogleMapApi', '$scope', 'PoiService', '$rootScope','GuestService',
-        function ($http, SessionService, uiGmapGoogleMapApi, $scope, PoiService,$rootScope,GuestService) {
+    .controller('MapCtrl', ['SessionService', 'uiGmapGoogleMapApi', '$scope', 'PoiService', '$rootScope','GuestService','UserService',
+        function (SessionService, uiGmapGoogleMapApi, $scope, PoiService,$rootScope,GuestService,UserService) {
 
 
             var self = this; //Para no perder la variable this, la guardamos en self (de lo contrario se sobreescribe)
@@ -142,9 +142,9 @@ angular.module('frontend')
                 }
 
                 /**
-                 * Privada: devuelve true si el guest actual tiene en su lista de siguiendo el usuario con username.
+                 *  Devuelve true si el guest actual tiene en su lista de siguiendo el usuario con username.
                  */
-                function userIsInFollowingList(username) {
+                self.userIsInFollowingList = function(username) {
                     var isFollowing = false;
                     for (var i = 0; !isFollowing && i < self.following.length; i++) {
                         if (self.following[i].username == username) {
@@ -240,7 +240,7 @@ angular.module('frontend')
                             self.detailedPoi.isFav = poiIsInFavList(self.detailedPoi._id);
 
                             //Miramos si está siguiendo del usuario
-                            self.detailedPoi.isFollowing = userIsInFollowingList(self.detailedPoi.creator);
+                            self.detailedPoi.isFollowing = self.userIsInFollowingList(self.detailedPoi.creator);
 
                             self.detailedPoi.guestRating = 0;
                             //Ponemos que se está mostrando la info de Poi, no de ruta
@@ -388,25 +388,35 @@ angular.module('frontend')
 
 
                     //Buscamos si ya está como 'siguiendo'
-                    var isFollowing = userIsInFollowingList(self.detailedPoi.creator);
+
+
+                    var isFollowing = self.userIsInFollowingList(username);
+
+
 
                     if (isFollowing) { //Está siguiendo, por lo que quita de siguienod
-                        GuestService.unfollowUser(self.guest.mail, self.detailedPoi.creator)
+                        GuestService.unfollowUser(self.guest.mail, username)
                             .then(function (success) {
 
                                 //Borramos de lista local de siguiendo
-                                self.detailedPoi.isFollowing = false;
-                                deleteFromLocalFollowingList(self.detailedPoi.creator);
+                                if(self.detailedPoi){
+                                    self.detailedPoi.isFollowing = false;
+                                }
+
+                                deleteFromLocalFollowingList(username);
 
                             });
                     }
                     else { //No siguiendo, lo añade a siguienod
 
-                        GuestService.followUser(self.guest.mail, self.detailedPoi.creator)
+                        GuestService.followUser(self.guest.mail,username)
                             .then(function (success) {
 
                                 //Añadimos a lista local de siguiendo
-                                self.detailedPoi.isFollowing = true;
+                                if(self.detailedPoi){
+                                    self.detailedPoi.isFollowing = true;
+                                }
+
                                 self.following.push({username: username});
 
                             });
@@ -455,17 +465,10 @@ angular.module('frontend')
                  * Obtiene la puntuación media de un POI.
                  */
                 self.getMeanRating = function (poiId) {
-                    $http.get("/pois/" + poiId + "/ratings/mean")
-                        .then(function (response) {
+                    PoiService.getMeanRating(poiId)
+                        .then(function (avgRating) {
 
-                            self.detailedPoi.avgRating = response.data.message.pointsAvg;
-                        })
-                        .catch(function (response) {
-
-                            console.log("Error with average");
-                            self.detailedPoi.avgRating = "Error";
-
-                            console.log(response);
+                            self.detailedPoi.avgRating = avgRating;
                         });
                 };
 
@@ -473,56 +476,23 @@ angular.module('frontend')
                  * Obtiene la puntuación dada por el invitado a un poi.
                  */
                 self.getGuestRating = function (poiId) {
-                    $http.get("/pois/" + poiId + "/ratings/" + self.guest.mail)
-                        .then(function (response) {
-
-                            self.detailedPoi.guestRating = response.data.message.points;
-                            console.log(response);
-                        })
-                        .catch(function (error) {
-
-                            if (error.status == 404) {
-                                //No existe rating por parte de ese invitado -> se pone a 0
-                                self.detailedPoi.guestRating = 0;
-                            }
-                            //console.log(error);
+                    PoiService.getGuestRating(poiId,self.guest.mail)
+                        .then(function (points) {
+                            self.detailedPoi.guestRating = points;
                         });
                 };
 
 
                 /**
-                 *
                  * Cambia o añade la puntuación por parte del invitado actual al poi actual
                  */
                 self.changeGuestRating = function (newRating) {
 
-                    console.log("new rating");
-                    console.log(newRating);
-                    //Si no hay rating -> POST
-                    if (self.detailedPoi.guestRating == 0) {
-                        $http.post("/pois/" + self.detailedPoi._id + "/ratings", {rating: newRating})
-                            .then(function (response) {
-                                self.detailedPoi.guestRating = response.data.message.points;
-                                self.getMeanRating(self.detailedPoi._id);
-                                console.log(response);
-                            })
-                            .catch(function (error) {
-                                console.log(error);
-                            });
-                    }
-                    else {
-                        $http.put("/pois/" + self.detailedPoi._id + "/ratings/" + self.guest.mail, {rating: newRating})
-                            .then(function (response) {
-                                self.detailedPoi.guestRating = response.data.message.points;
-                                self.getMeanRating(self.detailedPoi._id);
-                                console.log(response);
-                            })
-                            .catch(function (error) {
-                                console.log(error);
-                            });
-                    }
+                    PoiService.changeGuestRating(self.detailedPoi._id,self.guest.mail,self.detailedPoi.guestRating,newRating)
+                        .then(function (points) {
+                            self.detailedPoi.guestRating = points;
 
-
+                        });
 
 
                 };
@@ -543,18 +513,12 @@ angular.module('frontend')
                  */
                 self.showUserDetail = function (creatorUsername) {
 
-                    return $http.get("/users/" + creatorUsername)
-                        .then(function (response) {
-                            self.detailedUser = response.data.message;
+                    return UserService.getUserDetail(creatorUsername)
+                        .then(function (user) {
+                            self.detailedUser = user;
                             self.creatorError = false;
                             self.showingCreator = true;
 
-                        })
-                        .catch(function (response) {
-
-                            self.showingCreator = true;
-                            self.creatorError = "Error showing creator data";
-                            console.log(response);
                         });
                 };
 

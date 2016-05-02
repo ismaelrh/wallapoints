@@ -378,11 +378,11 @@
                                 <b>Email:</b> {{ctrl.detailedUser.email}}
                                 <br/>
                                 <button type="button" class="btn btn-default btn-block"
-                                        ng-click="ctrl.toggleFollowing(ctrl.detailedPoi.creator)"
+                                        ng-click="ctrl.toggleFollowing(ctrl.detailedUser.username)"
                                         ng-if="ctrl.guest"><span
                                         class="glyphicon glyphicon-user"></span>
-                                    <span ng-if="ctrl.detailedPoi.isFollowing">Unfollow</span>
-                                    <span ng-if="!ctrl.detailedPoi.isFollowing">Follow</span>
+                                    <span ng-if="ctrl.userIsInFollowingList(ctrl.detailedUser.username)">Unfollow</span>
+                                    <span ng-if="!ctrl.userIsInFollowingList(ctrl.detailedUser.username)">Follow</span>
                                 </button>
                             </div>
                             <span ng-if="ctrl.creatorError" style="color:red;"><b>{{ctrl.creatorError}}</b></span>
