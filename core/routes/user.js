@@ -14,6 +14,7 @@ module.exports = function (app) {
 
     var User = app.models.User;
     var DeletedUser = app.models.DeletedUser;
+    var CreatedUser = app.models.CreatedUser;
 
 
     /**
@@ -109,19 +110,30 @@ module.exports = function (app) {
         );
 
         newUser.save(function (err, result) {
+            result.password = pass;
 
-            if (err) {
-                res.status(500).send({"error": true, "message": "Error saving data " + err});
-            }
-            else {
-                //Se mostrará la contraseña en claro en la respuesta
-                result.password = pass;
-                res.send({
-                    "error": false,
-                    "message": result.cleanObjectAndAddHref(),
-                    links: [{"userList": "/users"}]
-                });
-            }
+            //Se crea estructura a guardar del usuario que se ha borrado
+            var newCreatedUser = new CreatedUser(
+                {
+                    username: req.body.username,
+                    createDate: new Date()
+                }
+            );
+            //Se guarda en colección de usuarios borrados
+            newCreatedUser.save(function (err, response) {
+
+                if (err) {
+                    console.log(err)
+                    res.status(500).send({"error": true, "message": "Error saving data " + err});
+                }
+                else {
+                    res.send({
+                        "error": false,
+                        "message": result.cleanObjectAndAddHref(),
+                        links: [{"userList": "/users"}]
+                    });
+                }
+            });
         });
 
 
@@ -246,6 +258,7 @@ module.exports = function (app) {
                 return;
             }
 
+            console.log(req.params.username);
             //Se crea estructura a guardar del usuario que se ha borrado
             var newDeletedUser = new DeletedUser(
                 {
@@ -255,7 +268,19 @@ module.exports = function (app) {
             );
             //Se guarda en colección de usuarios borrados
             newDeletedUser.save(function (err, response) {
-                console.log("An error appeared saving the deleted user")
+
+                if (err) {
+                    console.log(err)
+                    res.send({"error": true, "message": "An error appeared saving the deleted user"});
+                }
+                else {
+                    console.log("Ok deleted user")
+                    res.send({
+                        "error": false,
+                        "message": "User successfully deleted",
+                        links: [{"userList": "/users"}]
+                    });
+                }
             });
 
 
@@ -264,12 +289,8 @@ module.exports = function (app) {
 
             //todo
             ///////////////////////////////////////////BORRA TODOS LOS PUNTOS
+            console.log("SIIIIIIIIIIIIIIIIIIIIIIIIIIII")
 
-            res.send({
-                "error": false,
-                "message": "User successfully deleted",
-                links: [{"userList": "/users"}]
-            });
         });
 
     });
