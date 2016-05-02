@@ -2,6 +2,11 @@
  * CSS USADO POR VARIAS VISTAS, COMÚN.
  */
 
+html, body{
+  height: 100%;
+
+}
+
 body { background: white; }
 
 /** Estilos propios de nav-bar para hacerla semi-transparente */
@@ -9,12 +14,23 @@ body { background: white; }
   background-color:rgba(0,0,0,0.8);
   border-color: rgba(0,0,0,0.8);
 }
+
+.nav.navbar-nav li a{
+  color: white;
+}
+.nav.navbar-nav li a:hover{
+  color: gray;
+}
+.navbar-brand{
+  color:white !important;
+}
 .nav.navbar-nav.navbar-right li a{
   color: white;
 }
 .nav.navbar-nav.navbar-right li a:hover{
   color: gray;
 }
+
 
 .navbar-offset { margin-top: 50px; }
 

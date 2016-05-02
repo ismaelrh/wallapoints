@@ -2,7 +2,7 @@
 
 angular.module('frontend')
 
-.controller('AdminPanelCtrl', ['$http','$location',function($http,$location) {
+.controller('AdminPanelCtrl', ['$http','$location','SessionService',function($http,$location,SessionService) {
 
     var self = this; //Para no perder la variable this, la guardamos en self (de lo contrario se sobreescribe)
 
@@ -97,6 +97,7 @@ angular.module('frontend')
 
     self.logOut = function(){
         SessionService.deleteCurrentToken();
+        $location.path("/");
     };
 
     //Para empezar, traemos los users.

@@ -22,27 +22,7 @@ angular.module('frontend', [
 
         $routeProvider
 
-            .when('/view1', {
-                templateUrl: 'view1/view1.html',
-                controller: 'View1Ctrl',
-                controllerAs: 'ctrl',
-                resolve : {
-                    'auth' : function(SessionService){
-                        return SessionService.isAuthenticatedUser();
-                    }
-                }
-            })
-            .when('/view2', {
-                templateUrl: 'view2/view2.html',
-                controller: 'View2Ctrl',
-                controllerAs: 'ctrl',
-                resolve : {
-                    'auth' : function(SessionService){
-                        return SessionService.isAuthenticatedUser('admin');
-                    }
-                }
 
-            })
             .when('/login', {
                 templateUrl: 'login/login.html',
                 controller: 'LoginCtrl',
@@ -99,6 +79,8 @@ angular.module('frontend', [
                 }
 
             })
+
+
 
             .when('/map', {
                 templateUrl: 'guestMap/guestMap.html',

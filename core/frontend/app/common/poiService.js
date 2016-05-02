@@ -19,6 +19,7 @@ angular.module('frontend')
 
             self.loadDetailPoi = function(poiId){
 
+
                 return $http.get("/pois/" + poiId)
 
                     .then(function(response){
@@ -132,9 +133,91 @@ angular.module('frontend')
                             console.error(exception);
                         });
                 }
-            }
+            };
 
 
+            self.updatePoi = function(poi){
+                return $http.put("/pois/" + poi._id,poi)
+                    .then(function(response){
+
+                        return response.data.message;
+
+                    })
+                    .catch(function(exception){
+                        broadcastAlert("Could not update POI");
+                        console.error(exception);
+                    });
+
+            };
+
+
+            self.createPoi = function(poi){
+                return $http.post("/pois",poi)
+                    .then(function(response){
+
+                        return response.data.message;
+
+                    })
+                    .catch(function(exception){
+                        broadcastAlert("Could not create POI");
+                        console.error(exception);
+                    });
+            };
+
+
+            self.updateRoute = function(route){
+                return $http.put("/routes/" + route._id,{name:route.name,pois:route.pois})
+                    .then(function(response){
+
+                        return response.data.message;
+
+                    })
+                    .catch(function(exception){
+                        broadcastAlert("Could not update ROUTE");
+                        console.error(exception);
+                    });
+
+            };
+
+
+            self.createRoute = function(route){
+                return $http.post("/routes/",route)
+                    .then(function(response){
+
+                        return response.data.message;
+
+                    })
+                    .catch(function(exception){
+                        broadcastAlert("Could not create ROUTE");
+                        console.error(exception);
+                    });
+            };
+
+            self.deletePoi = function(poiId){
+                return $http.delete("/pois/" + poiId)
+                    .then(function(response){
+
+                        return response.data.message;
+
+                    })
+                    .catch(function(exception){
+                        broadcastAlert("Could not delete POI");
+                        console.error(exception);
+                    });
+            };
+
+            self.deleteRoute = function(routeId){
+                return $http.delete("/routes/" + routeId)
+                    .then(function(response){
+
+                        return response.data.message;
+
+                    })
+                    .catch(function(exception){
+                        broadcastAlert("Could not delete ROUTE");
+                        console.error(exception);
+                    });
+            };
 
 
         }]);

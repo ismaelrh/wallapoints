@@ -32,8 +32,7 @@ function starRating() {
                         filled: i < scope.ratingValue
                     });
                 }
-                console.log("updated");
-                console.log(scope.stars);
+
             };
 
             scope.toggle = function(index) {
