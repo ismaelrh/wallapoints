@@ -10,30 +10,89 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#" style="color:white;">Wallalinks!</a>
+                <a class="navbar-brand" href="#" style="color:white;">Wallapoints!</a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li class="active"><a href="#">Home</a></li>
-
                 </ul>
-
-
-                <ul class="nav navbar-nav navbar-right" ng-if="ctrl.guest!=undefined"> <!-- Solo logout si logueado -->
-                    <li><a href="" ng-click="ctrl.logoutGuest()">Salir ({{ctrl.guest.mail}}) </a></li>
+                <ul class="nav navbar-nav navbar-right" ng-if="ctrl.guest==undefined">
+                    <!-- Solo login/registro si no logueado -->
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" href="" data-toggle="dropdown" id="navLogin">Login/registro<span
+                                class="caret"></a>
+                        <div class="dropdown-menu pull-right" style="padding:17px;">
+                            <form>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" ng-model="ctrl.loginData.mail"
+                                           placeholder="Email">
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" class="form-control" ng-model="ctrl.loginData.password"
+                                           placeholder="Password">
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-block"
+                                            ng-class="{'btn-success':ctrl.guest}" ng-click="ctrl.loginGuest()">Sign in
+                                    </button>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-block"
+                                            ng-class="{'btn-success':ctrl.guest}" ng-click="ctrl.registerGuest()">
+                                        Register
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </li>
                 </ul>
-
-
-            </div><!-- /.navbar-collapse -->
-        </div><!-- /.container-fluid -->
+                <ul class="nav navbar-nav navbar-right" ng-if="ctrl.guest!=undefined">
+                    <!-- Solo logout si logueado -->
+                    <li><a href="" ng-click="ctrl.logoutGuest()">Logout ({{ctrl.guest.mail}}) </a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" href="" data-toggle="dropdown" id="navSearch">Search POIs<span
+                                class="caret"></a>
+                        <div class="dropdown-menu pull-right" style="padding:17px;">
+                            <form>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" ng-model="ctrl.searchByCreator"
+                                           placeholder="Creator">
+                                </div>
+                                <div class="form-group">
+                                    <input type="date" class="form-control" ng-model="ctrl.searchByDate"
+                                           placeholder="Date">
+                                    {{ctrl.searchByDate}}
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Keywords">
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-block btn-default"
+                                            ng-click="ctrl.searchPois()">Search
+                                    </button>
+                                    <button type="submit" class="btn btn-block btn-default"
+                                            ng-click="ctrl.clearSearch(); ctrl.searchPois();">Clear
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
     </nav>
 </div>
 <div class="navbar-offset"></div>
 
 
-<ui-gmap-google-map id="map" center='ctrl.map.center' zoom='ctrl.map.zoom' options='ctrl.myOptions'
-                    control="ctrl.mapControl">
+<!-- Mapa -->
+<ui-gmap-google-map id="map" center='ctrl.map.center' zoom='ctrl.map.zoom' options='ctrl.map.options'
+                    control="ctrl.map.control">
     <!-- Resultados de la búsqueda -->
     <ui-gmap-marker ng-repeat="poi in ctrl.getShownPois()"
                     idKey='{key:poi._id}'
@@ -41,190 +100,249 @@
                     control="poi"
                     options='{"title": "Raul"}'
                     coords='{latitude:poi.lat,longitude:poi.long}'>
-
         <ui-gmap-window show="show">
             <div>
                 <p><b>{{poi.name}}</b></p>
             </div>
         </ui-gmap-window>
-
     </ui-gmap-marker>
-
 </ui-gmap-google-map>
 
 
-<!-- Menú lateral derecho plegado, mostrado cuando showRightPanel == false -->
+<div class="overlaid-container"> <!-- Capa que 'flota' sobre el mapa -->
 
-<div class="overlaid-container">
 
-    <div class="row overlaid-row">  <!-- Fila de los seleccionadores de paneles -->
+    <div class="row overlaid-row"> <!-- Fila de los seleccionadores de paneles -->
 
-        <div class="panel-selection btn-group btn-group-justified" role="group" aria-label="...">
+        <div class="panel-selection btn-group btn-group-justified" role="group">
             <div class="btn-group" role="group">
                 <div class="btn btn-default" ng-click="ctrl.toggleLeftPanel()">
-                    <span class="glyphicon"
-                          ng-class="{'glyphicon-check':ctrl.showLeftPanel,'glyphicon-unchecked':!ctrl.showLeftPanel}"></span>
-                    &nbsp;Resultados
+               <span class="glyphicon"
+                     ng-class="{'glyphicon-check':ctrl.resultsPanelActivated,'glyphicon-unchecked':!ctrl.resultsPanelActivated}"></span>
+                    &nbsp;Results
                 </div>
-
+            </div>
+            <div class="btn-group" role="group" ng-if="ctrl.guest">
+                <div class="btn btn-default" ng-click="ctrl.toggleLeftPanel2()">
+               <span class="glyphicon"
+                     ng-class="{'glyphicon-check':ctrl.mePanelActivated,'glyphicon-unchecked':!ctrl.mePanelActivated}"></span>
+                    &nbsp;Me
+                </div>
             </div>
             <div class="btn btn-default" ng-click="ctrl.toggleRightPanel()">
-                <span class="glyphicon"
-                      ng-class="{'glyphicon-check':ctrl.showRightPanel,'glyphicon-unchecked':!ctrl.showRightPanel}"></span>
+            <span class="glyphicon"
+                  ng-class="{'glyphicon-check':ctrl.infoPanelActivated,'glyphicon-unchecked':!ctrl.infoPanelActivated}"></span>
                 &nbsp;Info
             </div>
-
         </div>
-
-
     </div>
 
+    <div class="row overlaid-row" style="margin:0px !important;">  <!-- Fila de los menús laterales desplegados -->
 
-    <div class="row overlaid-row" style="margin:0px !important;"> <!-- Fila de los menús laterales desplegados -->
 
-        <!-- Menú lateral izquierdo-->
-        <div class="col-sm-4 col-md-3 sidebar">
+        <div class="col-sm-4 col-md-3 sidebar">   <!-- Menú lateral izquierdo-->
 
-            <!-- Menú lateral izquierdo primero, mostrado cuando showLeftPanel == true -->
             <div class="panel-group sidebar-body " id="accordion-left">
-                <div class="panel panel-primary" ng-show="ctrl.showLeftPanel">
+
+                <div class="panel panel-primary" ng-show="ctrl.resultsPanelActivated"> <!-- Panel "Search Results" -->
                     <div class="panel-heading">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" href="" data-target="#searchResults">
-                                <span class="fa fa-list-alt"></span>
-                                Resultados de búsqueda
+                                <span class="glyphicon glyphicon-search"></span>
+                                Search results
                             </a>
-                  <span class="pull-right slide-submenu">
-                    <span class="glyphicon glyphicon-chevron-left" ng-click="ctrl.toggleLeftPanel()"></span>
-                  </span>
+                             <span class="pull-right slide-submenu">
+                                 <span class="glyphicon glyphicon-chevron-left"
+                                       ng-click="ctrl.toggleLeftPanel()"></span>
+                             </span>
                         </h4>
                     </div>
-
                     <div id="searchResults" class="panel-collapse in">
-
                         <div class="panel-body">
 
-                            <div class="btn-group btn-group-justified" role="group"> <!-- Pestañas POI/RUTAS -->
+                            <div class="btn-group btn-group-justified" role="group">  <!-- Pestañas POI/RUTAS -->
                                 <div class="btn-group" role="group">
                                     <button type="button" class="btn btn-default"
                                             ng-click="ctrl.poiListEnabled = true;"
-                                            ng-class="{'active':ctrl.poiListEnabled}">Pois
+                                            ng-class="{'active':ctrl.poiListEnabled}">
+                                        <span class="glyphicon glyphicon-map-marker"></span>&nbsp;POIs
                                     </button>
                                 </div>
                                 <div class="btn-group" role="group">
                                     <button type="button" class="btn btn-default"
                                             ng-click="ctrl.poiListEnabled = false;"
-                                            ng-class="{'active':!ctrl.poiListEnabled}">Rutas
+                                            ng-class="{'active':!ctrl.poiListEnabled}">
+                                        <span class="glyphicon glyphicon-move"></span>&nbsp;Routes
                                     </button>
                                 </div>
                             </div>
 
-                            <ul class="list-group" style="max-height: 90vh; overflow-y: scroll;"
-                                ng-show="ctrl.poiListEnabled">
+                            <ul class="list-group" style="max-height: 30vh; overflow-y: scroll;"
+                                ng-show="ctrl.poiListEnabled"> <!-- Lista de POIs resultados -->
                                 <li href="" class="list-group-item" ng-repeat="poi in ctrl.pois"
                                     ng-click="ctrl.showPoiDetail(poi._id); ctrl.centerMapInPoi(poi);"><a href="">{{poi.name}}</a>
                                 </li>
                             </ul>
-                            <ul class="list-group" style="max-height: 90vh; overflow-y: scroll;"
-                                ng-show="!ctrl.poiListEnabled">
+                            <ul class="list-group" style="max-height: 30vh; overflow-y: scroll;"
+                                ng-show="!ctrl.poiListEnabled"> <!-- Lista de rutas resultados -->
                                 <li href="" class="list-group-item" ng-repeat="route in ctrl.routes"
                                     ng-click="ctrl.showAndCalculateRoute(route._id); ctrl.showUserDetail(route.creator)">
                                     <a href=""> {{route.name}}</a>
                                 </li>
-
                             </ul>
                         </div>
                     </div>
                 </div>
 
+
+                <div class="panel panel-primary" ng-show="ctrl.mePanelActivated && ctrl.guest"> <!-- Panel de "me" -->
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="" data-target="#guestData">
+                                <i class="glyphicon glyphicon-user"></i>
+                                Me
+                            </a>
+                     <span class="pull-right slide-submenu">
+                     <span class="glyphicon glyphicon-chevron-left" ng-click="ctrl.toggleLeftPanel2()"></span>
+                     </span>
+                        </h4>
+                    </div>
+                    <div id="guestData" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <div class="btn-group btn-group-justified" role="group">  <!-- Pestañas FAVS/FOLLOWING -->
+
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-default"
+                                            ng-click="ctrl.followingListEnabled = false;"
+                                            ng-class="{'active':!ctrl.followingListEnabled}">
+                                        <span class="glyphicon glyphicon-star"></span>&nbsp;Favourite POIs
+                                    </button>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-default"
+                                            ng-click="ctrl.followingListEnabled = true;"
+                                            ng-class="{'active':ctrl.followingListEnabled}">
+                                        <span class="glyphicon glyphicon-thumbs-up"></span>&nbsp;Users following
+                                    </button>
+                                </div>
+                            </div>
+                            <ul class="list-group" style="max-height: 30vh; overflow-y: scroll;"
+                                ng-if="!ctrl.followingListEnabled"> <!-- Lista de POIS favoritos -->
+                                <li class="list-group-item" ng-repeat="fav in ctrl.favs"
+                                    ng-click="ctrl.showPoiDetail(fav._id); ctrl.centerMapInPoi(fav);">
+                                    <a href="">{{fav.name}}</a>
+                                </li>
+                            </ul>
+                            <ul class="list-group" style="max-height: 30vh; overflow-y: scroll;"
+                                ng-if="ctrl.followingListEnabled"> <!-- Lista de usuarios siguiendo -->
+                                <li class="list-group-item" ng-repeat="poi in ctrl.following"
+                                    ng-click="ctrl.hideAllRightPanels(); ctrl.showUserDetail(poi.username)">
+                                    <a href="">{{poi.username}}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-
         </div>
-
 
         <!-- Menú lateral derecho, tiene offset para dejar en medio vacío-->
         <div class="col-sm-4 col-sm-offset-4 col-md-3 col-md-offset-6 sidebar ">
-            <!-- Menú lateral derecho desplegado, mostrado cuando showRightPanel == true -->
-            <div class="panel-group sidebar-body" id="accordion-right" ng-show="ctrl.showRightPanel">
-                <div class="panel panel-primary" ng-if="ctrl.showingRoute || ctrl.showingPoi">
+            <div class="panel-group sidebar-body" id="accordion-right" ng-show="ctrl.infoPanelActivated">
+
+                <div class="panel panel-primary" ng-if="ctrl.showingPoi"> <!-- Panel info de POI-->
                     <div class="panel-heading">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" href="" data-target="#poiInfo">
-                                <i class="fa fa-tasks"></i>
-                                Información del POI
+                                <i class="glyphicon glyphicon-info-sign"></i>
+                                POI information
                             </a>
-
-                      <span class="pull-right slide-submenu" ng-click="ctrl.toggleRightPanel()">
-                        <span class="glyphicon glyphicon-chevron-right"></span>
-                      </span>
+                     <span class="pull-right slide-submenu" ng-click="ctrl.toggleRightPanel()">
+                     <span class="glyphicon glyphicon-chevron-right"></span>
+                     </span>
                         </h4>
                     </div>
-
                     <div id="poiInfo" class="panel-collapse collapse in">
-
-                        <div class="panel-body" ng-if="ctrl.showingPoi">
-
-                            <b>Id: </b> {{ctrl.detailedPoi._id}}
+                        <div class="panel-body">
+                            <b>Name: </b> {{ctrl.detailedPoi.name}}
                             <br/>
-                            <b>Nombre: </b> {{ctrl.detailedPoi.name}}
+                            <b>Description: </b> {{ctrl.detailedPoi.description}}
                             <br/>
-                            <b>Descripción: </b> {{ctrl.detailedPoi.decription}}
+                            <b>Multimedia: </b> <a ng-if="ctrl.detailedPoi.multimediaUrl"
+                                                   href="{{ctrl.detailedPoi.multimediaUrl}}">{{ctrl.detailedPoi.multimediaUrl}}</a>
+                            <span ng-if="!ctrl.detailedPoi.multimediaUrl">None</span>
                             <br/>
-                            <b>Creador: </b> {{ctrl.detailedPoi.creator}}
+                            <b>Keywords: </b> {{ctrl.detailedPoi.keywordsList}}
                             <br/>
-                            <b>Dirección: </b> por rellenar
-
+                            <b>Creator: </b> {{ctrl.detailedPoi.creator}}
                             <br/>
-
-
+                            <b>Address: </b> {{ctrl.detailedPoi.formatted_address}}
+                            <br/>
                             <button type="button" class="btn btn-default btn-block"
                                     ng-click="ctrl.toggleFav(ctrl.detailedPoi._id)" ng-if="ctrl.guest"><span
                                     class="glyphicon"
                                     ng-class='{"glyphicon-star":ctrl.detailedPoi.isFav,
-                                            "glyphicon-star-empty":!ctrl.detailedPoi.isFav}'></span>Fav
+                        "glyphicon-star-empty":!ctrl.detailedPoi.isFav}'></span>Fav
                             </button>
-
-
+                            <button type="button" class="btn btn-default btn-block"
+                                    ng-click="ctrl.shareCurrentPoi()" ng-if="ctrl.guest"><span
+                                    class=" glyphicon glyphicon-share-alt"></span>Share
+                            </button>
                             <div star-rating ng-model="ctrl.detailedPoi.guestRating" max="5"
                                  on-rating-select="ctrl.changeGuestRating(rating)" ng-if="ctrl.guest"></div>
-                            Average rating: {{ctrl.detailedPoi.avgRating}}
+                            <b>Average rating: </b> {{ctrl.detailedPoi.avgRating}}
                             <div class="row">
                                 <div class="btn-group btn-group-justified" role="group">
                                     <div class="btn-group" role="group">
-
                                     </div>
                                 </div>
-
                             </div>
                         </div>
+                    </div>
 
+                </div>
+
+                <div class="panel panel-primary" ng-if="ctrl.showingRoute"> <!-- Panel info de Ruta-->
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="" data-target="#routeInfo">
+                                <i class="glyphicon glyphicon-info-sign"></i>
+                                Route information
+                            </a>
+                     <span class="pull-right slide-submenu" ng-click="ctrl.toggleRightPanel()">
+                     <span class="glyphicon glyphicon-chevron-right"></span>
+                     </span>
+                        </h4>
+                    </div>
+                    <div id="routeInfo" class="panel-collapse collapse in">
                         <div class="panel-body" ng-if="ctrl.showingRoute">
-                            <b>Nombre: </b> {{ctrl.detailedRoute.name}}
+                            <b>Name: </b> {{ctrl.detailedRoute.name}}
                             <br/>
-                            <b>Creador: </b> {{ctrl.detailedRoute.creator}}
+                            <b>Creator: </b> {{ctrl.detailedRoute.creator}}
                             <br/>
-                            <b>Puntos que la componen: </b>
+                            <b>POIs contained: </b>
                             <ol>
                                 <li ng-repeat="poi in ctrl.detailedRoute.pois">{{poi.name}}</li>
                             </ol>
+                            <button type="button" class="btn btn-default btn-block"
+                                    ng-click="ctrl.shareCurrentRoute()" ng-if="ctrl.guest"><span
+                                    class=" glyphicon glyphicon-share-alt"></span>Share
+                            </button>
                         </div>
                     </div>
                 </div>
-                <div class="panel panel-primary" ng-if="ctrl.showingCreator">
+
+                <div class="panel panel-primary" ng-if="ctrl.showingCreator"> <!-- Panel de info de creador -->
                     <div class="panel-heading">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" href="" data-target="#poiInfo">
-                                <i class="fa fa-tasks"></i>
-                                Información del usuario
+                                <i class="glyphicon glyphicon-info-sign"></i>
+                                User information
                             </a>
-
                         </h4>
                     </div>
                     <div id="userInfo" class="panel-collapse collapse in">
-
                         <div class="panel-body" ng-if="ctrl.showingCreator">
-
                             <div ng-if="!ctrl.creatorError">
                                 <b>Username:</b> {{ctrl.detailedUser.username}}
                                 <br/>
@@ -234,7 +352,6 @@
                                 <br/>
                                 <b>Email:</b> {{ctrl.detailedUser.email}}
                                 <br/>
-
                                 <button type="button" class="btn btn-default btn-block"
                                         ng-click="ctrl.toggleFollowing(ctrl.detailedPoi.creator)"
                                         ng-if="ctrl.guest"><span
@@ -242,20 +359,17 @@
                                     <span ng-if="ctrl.detailedPoi.isFollowing">Unfollow</span>
                                     <span ng-if="!ctrl.detailedPoi.isFollowing">Follow</span>
                                 </button>
-
                             </div>
-
                             <span ng-if="ctrl.creatorError" style="color:red;"><b>{{ctrl.creatorError}}</b></span>
                         </div>
-
                     </div>
                 </div>
-                <div class="panel panel-primary" ng-if="ctrl.showingRoute">
+                <div class="panel panel-primary" ng-if="ctrl.showingRoute"> <!-- Panel de pasos de ruta -->
                     <div class="panel-heading">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" href="" data-target="#routeData">
-                                <i class="fa fa-tasks"></i>
-                                Ruta a seguir
+                                <i class="glyphicon glyphicon-globe"></i>
+                                Route to follow
                             </a>
                         </h4>
                     </div>
@@ -264,14 +378,9 @@
                         <div class="panel-body" id="directionsList">
                             <span ng-if="ctrl.routeError" style="color:red;"><b>{{ctrl.routeError}}</b></span>
                         </div>
-
                     </div>
                 </div>
             </div>
-
-
         </div>
     </div>
-
-
 </div>

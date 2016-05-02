@@ -1,15 +1,21 @@
 'use strict';
 
 /**
- * Servicio que se encarga de la gestión de tokens de usuario.
+ * Servicio que se encarga de la gestión pois
  */
 angular.module('frontend')
 
-    .service('PoiService', ['$http',
-        function ($http) {
+    .service('PoiService', ['$http','$rootScope',
+        function ($http,$rootScope) {
 
 
             var self = this;
+
+
+            var broadcastAlert = function(message){
+                $rootScope.$broadcast("errorMessage",
+                    { message: message });
+            };
 
             self.loadDetailPoi = function(poiId){
 
@@ -22,64 +28,14 @@ angular.module('frontend')
                     })
                     .catch(function(exception){
 
+                        broadcastAlert("Could not load POI detail");
+
                         console.error(exception);
                     });
 
             };
 
 
-            self.setFav = function(guestMail,poiId){
-                return $http.put("/guests/" +guestMail + "/favs/" + poiId,{})
-                    .then(function(response){
-
-                        return response.data.message;
-                    })
-                    .catch(function(exception){
-                        console.error(exception);
-
-                    });
-
-            };
-
-            self.unsetFav = function(guestMail,poiId){
-                return $http.delete("/guests/" +guestMail + "/favs/" + poiId)
-                    .then(function(response){
-
-                        return response.data.message;
-                    })
-                    .catch(function(exception){
-                        console.error(exception);
-
-                    });
-
-            };
-
-            self.followUser = function(guestMail,user){
-
-                return $http.put("/guests/" + guestMail + "/following/" + user,{})
-                    .then(function(response){
-
-                        return response.data.message;
-                    })
-                    .catch(function(exception){
-                        console.error(exception);
-
-                    });
-
-            };
-
-            self.unfollowUser = function(guestMail,user){
-
-                return $http.delete("/guests/" + guestMail + "/following/" + user)
-                    .then(function(response){
-
-                        return response.data.message;
-                    })
-                    .catch(function(exception){
-                        console.error(exception);
-
-                    });
-            };
 
             self.searchPois = function (searchObject) {
 
@@ -87,9 +43,9 @@ angular.module('frontend')
                     .then(function (response) {
                         return response.data.message;
                     })
-                    .catch(function (error) {
-                        return null;
-                        console.error("Error obtaining pois");
+                    .catch(function (exception) {
+                        broadcastAlert("Could not search POIs");
+                        console.error(exception);
                     });
 
 
@@ -101,9 +57,9 @@ angular.module('frontend')
                     .then(function (response) {
                         return response.data.message;
                     })
-                    .catch(function (error) {
-                        return null;
-                        console.error("Error obtaining pois");
+                    .catch(function (exception) {
+                        broadcastAlert("Could not search routes");
+                        console.error(exception);
                     });
 
 
@@ -115,10 +71,13 @@ angular.module('frontend')
 
                         return result.data.message;
                     })
-                    .catch(function(err){
-                        console.error(err);
+                    .catch(function(exception){
+                        broadcastAlert("Could not load route detail");
+                        console.error(exception);
                     });
             }
+
+
 
 
 

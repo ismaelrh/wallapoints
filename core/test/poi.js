@@ -80,7 +80,7 @@ describe('Favourite', function () {
                 res.body.error.should.equal(false);
                 res.body.should.have.property('message');
                 res.body.message.should.be.a('array');
-                res.body.message.should.have.lengthOf(1);
+                res.body.message.should.have.lengthOf(2);
 
                 res.body.message[0]._id.should.equal(poi1_id.toString());
                 res.body.message[0].name.should.equal("test poi 1");
@@ -88,11 +88,11 @@ describe('Favourite', function () {
                 res.body.message[0].long.should.equal(3.21);
                 res.body.message[0].href.should.equal("/pois/" + poi1_id);
 
-                /*res.body.message[1]._id.should.equal(poi2_id.toString());
+                res.body.message[1]._id.should.equal(poi2_id.toString());
                 res.body.message[1].name.should.equal("test poi 2");
                 res.body.message[1].lat.should.equal(1.23);
                 res.body.message[1].long.should.equal(3.21);
-                res.body.message[1].href.should.equal("/pois/" + poi2_id);*/
+                res.body.message[1].href.should.equal("/pois/" + poi2_id);
 
 
                 done();
