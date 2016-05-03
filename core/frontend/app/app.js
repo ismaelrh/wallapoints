@@ -45,6 +45,17 @@ angular.module('frontend', [
                 }
             })
 
+            .when('/userPanel', {
+                templateUrl: 'userPanel/userPanel.html',
+                controller: 'UserPanelCtrl',
+                controllerAs: 'ctrl',
+                resolve : {
+                    'auth' : function(SessionService){
+                        return SessionService.isAuthenticatedUser();
+                    }
+                }
+            })
+
             .when('/editUser/:idUser', {
                 templateUrl: 'editUser/editUser.html',
                 controller: 'EditUserCtrl',
@@ -67,6 +78,8 @@ angular.module('frontend', [
                 }
 
             })
+
+
 
             .when('/userMap', {
                 templateUrl: 'userMap/userMap.html',

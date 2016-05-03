@@ -2,7 +2,7 @@
 
 angular.module('frontend')
 
-.controller('AdminPanelCtrl', ['$http','$location','SessionService',function($http,$location,SessionService) {
+.controller('AdminPanelCtrl', ['$http','$location','SessionService','UserService',function($http,$location,SessionService,UserService) {
 
     var self = this; //Para no perder la variable this, la guardamos en self (de lo contrario se sobreescribe)
 
@@ -36,9 +36,9 @@ angular.module('frontend')
     };
 
     self.showUserDetailed = function(id){
-        $http.get('/users/'+id).then(function(response){
+        UserService.getUserDetail(id).then(function(response){
             self.showUserDetailPanel = true;
-            self.userPanel=response.data.message;
+            self.userPanel=response;
             console.log(response.data.message);
         },  function(err){
             self.showUserDetailPanel = false;
