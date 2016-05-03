@@ -1,5 +1,5 @@
 /**
- * Módulo de router que maneja las peticiones de poi.
+ * Módulo de router que maneja las estadísticas del admin
  */
 
 var express = require('express');
@@ -16,12 +16,13 @@ module.exports = function (app) {
 
 
     /**
-     * GET /users/date
+     * GET /stats/admin/usersInOut
      *
      */
-    router.get("/users/date", function (req, res) {
+    router.get("/usersInOut", function (req, res) {
         // req.poi.creator ya tiene el creador por el metodo checkPoiExists
-        console.log("Put /pois/:id/ratings/mean");
+
+
         var today = new Date();
         today.setHours(today.getHours() - 360);
         CreatedUser.aggregate(
