@@ -31,6 +31,7 @@ angular.module('frontend')
                         broadcastAlert("Could not load user detail");
 
                         console.error(exception);
+                        throw exception;
                     });
 
             };
