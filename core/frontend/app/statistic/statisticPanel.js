@@ -18,14 +18,28 @@ angular.module('frontend')
         });
     };
 
+
+    self.PoisRegister = function(){
+        $http.get('/stats/admin/poisIn').then(function(response2){
+            self.dates2=response2.data.message.dates;
+            self.poiData=response2.data.message.userData;
+            self.poiSeries = ['Creados'];
+
+
+        },  function(err){
+            console.error(err);
+        });
+    };
+
+
     self.logOut = function(){
         SessionService.logOut();
     };
 
 
-
     //Para empezar, traemos los datos.
     self.UsersRegister();
+    self.PoisRegister();
 
 
 }]);
