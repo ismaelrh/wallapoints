@@ -9,9 +9,9 @@ module.exports = function (app) {
 
     var router = express.Router();
 
-    var User = app.models.User;
     var DeletedUser = app.models.DeletedUser;
     var CreatedUser = app.models.CreatedUser;
+    var Poi = app.models.Poi;
 
 
 
@@ -73,6 +73,49 @@ module.exports = function (app) {
             });
     });
 
+    /**
+     * GET /stats/admin/poisIn
+     *
+     */
+    router.get("/poisIn", function (req, res) {
+
+
+        var today = new Date();
+        today.setHours(today.getHours() - 360);
+        Poi.aggregate(
+            {   //agrega los valores de fecha mayores de today
+                $match: {date: {'$gt' : today}}
+            },
+            { $sort : { date : 1} },
+            { $group: {
+                _id: {year : { $year : "$date" },
+                    month : { $month : "$date" },
+                    day : { $dayOfMonth : "$date"}
+                },
+                count: {$sum: 1}
+            }}
+            ,function (err, pois) {
+                if (err) {
+                    console.log(err);
+                    res.send({"error": true, "message": "Error getting mean"});
+                }
+                else {
+                    console.log('pruebas');
+                    console.log(pois);
+                    var message = procesarPois(pois);
+                    console.log(message);
+                    res.status(200).send({
+                        error: "false",
+                        message: message,
+                        links: [{"poiInfo": "/poi/:"+req.params.id}]
+                    });
+
+                }
+            });
+    });
+
+
+
     function procesarUsers(altas, bajas) {
         var today = new Date();
         var arrayAltas = [];
@@ -124,6 +167,46 @@ module.exports = function (app) {
         }
         //devuelve el array de fechas y dos arrays de altas y fechas que coinciden en indice con el de fechas
         return {dates:arrayFechas, userData:[arrayAltas,arrayBajas]}
+
+
+    }
+
+    function procesarPois(altas) {
+        var today = new Date();
+        var arrayAltas = [];
+        var arrayFechas = [];
+
+        var cuentaA = altas.length - 1;
+        // desde el dia actual hasta el dia marcado
+        var dias = 15;
+        today.setHours(today.getHours()-24*dias);
+
+        for (var i = 0; i <= 24*dias; i=i + 24){
+
+            var d = today.getDate();
+            // se suma 1 dado que los meses van de 1-12 y se obtienen de 0-11
+            var m = today.getUTCMonth() + 1;
+            var y = today.getFullYear();
+            //introducimos la fecha en el array de fechas
+            arrayFechas.push(d+"-"+m+"-"+y);
+            var encontrado = false;
+            for(var x = 0; x < altas.length; x++){
+                if(altas[x]._id.day == d){
+                    console.log(altas[cuentaA]._id.day +"    "+d);
+                    arrayAltas.push(altas[x].count);
+                    console.log(arrayAltas);
+                    encontrado = true;
+                }
+            }
+            if (!encontrado){
+                arrayAltas.push(0);
+            }
+
+            today.setHours(today.getHours()+24);
+
+        }
+        //devuelve el array de fechas y dos arrays de altas y fechas que coinciden en indice con el de fechas
+        return {dates:arrayFechas, userData:[arrayAltas]}
 
 
     }
