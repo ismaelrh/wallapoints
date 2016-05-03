@@ -7,7 +7,8 @@ module.exports = function(app) {
 
 
   app.use("/users",require('./user')(app));
-  app.use("/stats",require('./stats')(app));
+  app.use("/stats/admin",require('./stats/adminStats')(app));
+  app.use("/stats/users",require('./stats/userStats')(app));
   app.use("/pois",require('./poi/poi')(app));
   app.use("/pois/:id/ratings",require('./poi/rating')(app));
   app.use("/guests",require('./guest/guest')(app));

@@ -2,13 +2,13 @@
 
 angular.module('frontend')
 
-.controller('StatisticCtrl', ['$http','SessionService',function($http,SessionService) {
+.controller('UserStatsCtrl', ['$http','SessionService',function($http,SessionService) {
 
     var self = this; //Para no perder la variable this, la guardamos en self (de lo contrario se sobreescribe)
 
 
     self.UsersRegister = function(){
-        $http.get('/stats/admin/usersInOut').then(function(response){
+        $http.get('/stats/users/date').then(function(response){
             self.dates=response.data.message.dates;
             self.userData=response.data.message.userData;
             self.usersSeries = ['Alta', 'Baja'];

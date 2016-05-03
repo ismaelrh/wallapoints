@@ -80,6 +80,18 @@ angular.module('frontend', [
 
             })
 
+            .when('/userStats', {
+                templateUrl: 'userStats/userStats.html',
+                controller: 'UserStatsCtrl',
+                controllerAs: 'ctrl',
+                resolve : {
+                    'auth' : function(SessionService){
+                        return SessionService.isAuthenticatedUser();
+                    }
+                }
+
+            })
+
             .when('/map', {
                 templateUrl: 'guestMap/guestMap.html',
                 controller: 'MapCtrl',
