@@ -183,7 +183,7 @@ module.exports = function (app) {
             return;
         }
         console.log(req.params.id);
-        Rating.findOne({poi: req.params.id}, "mail points", function (err, results) {
+        Rating.findOne({poi: req.params.id, mail: req.params.guestMail}, "mail points", function (err, results) {
             if (err) {
                 res.status(500).send({"error": true, "message": "Error retrieving poi list"});
             }
