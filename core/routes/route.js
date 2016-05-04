@@ -23,82 +23,7 @@ module.exports = function (app) {
     var Poi = app.models.Poi;
 
 
-    function distanceCall(params) {
-        var deferred = Q.defer();
-        gmAPI.distance(params, function (err, data) {
-            if (err) deferred.reject(err); // rejects the promise with `er` as the reason
-            else deferred.resolve(data); // fulfills the promise with `data` as the value
-        });
-        return deferred.promise; // the promise is returned
-    }
 
-    /**
-     * Calcula la distancia de una ruta completa, pasando por todos sus puntos,
-     * tanto en tiempo como en distancia.
-     * Devuelve una promesa con objeto con atributos "distance" (en km) y "time" (en segundos).
-     * En caso de fallo, devuelve una promesa fallida con un mensaje de error.
-     */
-    function calcularDistanciaRuta(pois) {
-
-
-        var deferred = Q.defer();
-        if (pois.length <= 1) {
-            return 0;
-        }
-
-
-        var promisesArray = [];
-        for (var i = 0; i < pois.length - 1; i++) {
-
-            var origenActual = pois[i];
-            var destinoActual = pois[i + 1];
-
-            console.log(origenActual);
-            var params = {
-                origins: origenActual.lat + "," + origenActual.long,
-                destinations: destinoActual.lat + "," + destinoActual.long
-            };
-
-            //var distance = Q.denodeify(gmAPI.distance(params));
-            promisesArray.push(distanceCall(params));
-
-        }
-
-        Q.all(promisesArray)
-            .then(function (response) {
-
-                var allDistancesCanBeCalculated = true;
-                var totalDistance = 0;
-                var totalTime = 0;
-                for (var i = 0; allDistancesCanBeCalculated && i < response.length; i++) {
-                    var elems = response[i].rows[0].elements[0];
-                    if (elems.status != 'OK') {
-                        console.log(elems);
-                        allDistancesCanBeCalculated = false;
-                    }
-                    else {
-                        totalDistance += elems.distance.value;
-                        totalTime += elems.duration.value;
-                    }
-
-                }
-                if (allDistancesCanBeCalculated) {
-                    deferred.resolve({distance: totalDistance, time: totalTime});
-                }
-                else {
-                    deferred.reject("Distance can not be calculated");
-                }
-
-
-            })
-            .catch(function (error) {
-
-                deferred.reject("Distance can not be calculated");
-            });
-
-        return deferred.promise;
-
-    }
 
 
     /**
@@ -513,6 +438,86 @@ module.exports = function (app) {
 
         return deferred.promise;
 
+
+    }
+
+    /**
+     * Convierte la llamada a gmAPI en una promesa.
+     */
+    function distanceCall(params) {
+        var deferred = Q.defer();
+        gmAPI.distance(params, function (err, data) {
+            if (err) deferred.reject(err); 
+            else deferred.resolve(data);
+        });
+        return deferred.promise;
+    }
+
+    /**
+     * Calcula la distancia de una ruta completa, pasando por todos sus puntos,
+     * tanto en tiempo como en distancia.
+     * Devuelve una promesa con objeto con atributos "distance" (en km) y "time" (en segundos).
+     * En caso de fallo, devuelve una promesa fallida con un mensaje de error.
+     */
+    function calcularDistanciaRuta(pois) {
+
+
+        var deferred = Q.defer();
+        if (pois.length <= 1) {
+            return 0;
+        }
+
+
+        var promisesArray = [];
+        for (var i = 0; i < pois.length - 1; i++) {
+
+            var origenActual = pois[i];
+            var destinoActual = pois[i + 1];
+
+            console.log(origenActual);
+            var params = {
+                origins: origenActual.lat + "," + origenActual.long,
+                destinations: destinoActual.lat + "," + destinoActual.long
+            };
+
+            //var distance = Q.denodeify(gmAPI.distance(params));
+            promisesArray.push(distanceCall(params));
+
+        }
+
+        Q.all(promisesArray)
+            .then(function (response) {
+
+                var allDistancesCanBeCalculated = true;
+                var totalDistance = 0;
+                var totalTime = 0;
+                for (var i = 0; allDistancesCanBeCalculated && i < response.length; i++) {
+                    var elems = response[i].rows[0].elements[0];
+                    if (elems.status != 'OK') {
+                        console.log(elems);
+                        allDistancesCanBeCalculated = false;
+                    }
+                    else {
+                        totalDistance += elems.distance.value;
+                        totalTime += elems.duration.value;
+                    }
+
+                }
+                if (allDistancesCanBeCalculated) {
+                    deferred.resolve({distance: totalDistance, time: totalTime});
+                }
+                else {
+                    deferred.reject("Distance can not be calculated");
+                }
+
+
+            })
+            .catch(function (error) {
+
+                deferred.reject("Distance can not be calculated");
+            });
+
+        return deferred.promise;
 
     }
 
