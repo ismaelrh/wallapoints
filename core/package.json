@@ -11,12 +11,13 @@
     "express": "^4.13.4",
     "express-jwt": "^3.3.0",
     "express-unless": "^0.3.0",
+    "googlemaps": "^1.4.0",
     "jsonwebtoken": "^5.7.0",
     "lodash": "^4.11.1",
     "mongoose": "^4.4.12",
     "mongoose-idexists": "^1.0.5",
     "morgan": "^1.7.0",
-    "googlemaps":"^1.4.0",
+    "q": "^1.4.1",
     "randomstring": "^1.1.4"
   },
   "devDependencies": {

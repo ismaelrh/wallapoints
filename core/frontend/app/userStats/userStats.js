@@ -6,6 +6,8 @@ angular.module('frontend')
 
     var self = this; //Para no perder la variable this, la guardamos en self (de lo contrario se sobreescribe)
 
+    self.user= SessionService.user;
+
 
     self.UsersRegister = function(){
         $http.get('/stats/users/date').then(function(response){

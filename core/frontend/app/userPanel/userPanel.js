@@ -32,7 +32,7 @@ angular.module('frontend')
         };
 
         self.editUser = function(){
-            $http.put('/users/'+self.editUserParam, self.userEdited).then(function(response){
+            $http.put('/users/'+self.user.username, self.userEdited).then(function(response){
                 self.errorEdited="Details edited succesfully";
                 self.userPanel=response.data.message;
 
