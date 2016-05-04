@@ -19,11 +19,32 @@ angular.module('frontend')
     };
 
 
+
+    self.dates2 = ['today'];
+    self.poiData= [[0]];
+    self.poiSeries = ['Creados'];
+
     self.PoisRegister = function(){
-        $http.get('/stats/admin/poisIn').then(function(response2){
-            self.dates2=response2.data.message.dates;
-            self.poiData=response2.data.message.userData;
+        $http.get('/stats/admin/poisIn').then(function(response){
+            self.dates2 = response.data.message.dates;
+            self.poiData = response.data.message.userData;
             self.poiSeries = ['Creados'];
+
+
+        },  function(err){
+            console.error(err);
+        });
+    };
+
+    self.dates3 = ['today'];
+    self.routeData= [[0]];
+    self.routeSeries = ['Creados'];
+
+    self.routeRegister = function(){
+        $http.get('/stats/admin/routesIn').then(function(response){
+            self.dates3 = response.data.message.dates;
+            self.routeData = response.data.message.userData;
+            self.routeSeries = ['Creados'];
 
 
         },  function(err){
@@ -40,6 +61,7 @@ angular.module('frontend')
     //Para empezar, traemos los datos.
     self.UsersRegister();
     self.PoisRegister();
+    self.routeRegister();
 
 
 }]);
