@@ -447,7 +447,7 @@ module.exports = function (app) {
     function distanceCall(params) {
         var deferred = Q.defer();
         gmAPI.distance(params, function (err, data) {
-            if (err) deferred.reject(err); 
+            if (err) deferred.reject(err);
             else deferred.resolve(data);
         });
         return deferred.promise;
