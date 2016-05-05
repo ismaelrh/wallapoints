@@ -45,8 +45,6 @@ angular.module('frontend')
 
                         $scope.$apply();
 
-
-
                     }
                 }
             };
@@ -632,6 +630,12 @@ angular.module('frontend')
 
                         if(self.editingRoute.pois.length < 2){
                             self.routeCreationError = "Please, select 2 or more points";
+                            return;
+                        }
+
+                        //API gratuita de Google no permite más de 9 puntos
+                        if(self.editingRoute.pois.length > 9){
+                            self.routeCreationError = "Please, select less than 10 points";
                             return;
                         }
 

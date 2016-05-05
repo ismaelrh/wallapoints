@@ -16,7 +16,7 @@ app.use(jwt({ secret: app.get('jwtsecret')})
         path:[ //Aqui se colocan rutas que no necesitan autenticación
             { url: "/users/login", methods: ['POST']  },  //Login
           //  { url: "/users", methods: ['POST']  }, //Descomentar para poder añadir usuarios, comentar en producción
-            { url: /\/users\/.+/, methods: ['GET']  },    //Get a info usuario
+            { url: /^\/users\/.+/, methods: ['GET']  },    //Get a info usuario
             { url: "/pois", methods: ['GET']  },          //GET Lista de pois
             { url: "/pois/search", methods: ['POST']  }, //POST busqueda de POIs
             { url: /^\/pois\/[^\/]+$/, methods: ['GET']  }, //Acceso GET a POI individual, pero nada más (sólo /poi/ID, no /poi/id/ratings...)
@@ -25,7 +25,8 @@ app.use(jwt({ secret: app.get('jwtsecret')})
             { url: "/routes/search", methods: ['POST']  }, //POST busqueda de ROUTEs
             { url: /^\/routes\/[^\/]+$/, methods: ['GET']  }, //Acceso GET a ROUTE individual, pero nada más (sólo /route/ID)
             { url: "/guests", methods: ['POST']  }, //Añadir nuevo guest
-            { url: "/guests/login", methods: ['POST']  } //Login de invitado
+            { url: "/guests/login", methods: ['POST']  } //Login de invitado,
+
         ]}
     ));
 

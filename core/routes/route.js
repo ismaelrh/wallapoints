@@ -3,25 +3,19 @@
  */
 
 var express = require('express');
-var GoogleMapsAPI = require('googlemaps');
-var publicConfig = {
-    key: 'AIzaSyD6pa36NtjEyNdffeAwWJFY44k_C4z2lh8',
-    stagger_time: 1000, // for elevationPath
-    encode_polylines: false,
-    secure: true
-};
 var Q = require("q");
 
-var gmAPI = new GoogleMapsAPI(publicConfig);
+
 
 module.exports = function (app) {
 
+
     var router = express.Router({mergeParams: true});
+    var gmAPI =app.get('gmAPI'); //Obtenemos objeto manejador de API de Gmaps
 
     //Importamos el modelo de Userouter
     var Route = app.models.Route;
     var Poi = app.models.Poi;
-
 
 
 
