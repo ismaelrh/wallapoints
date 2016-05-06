@@ -88,47 +88,71 @@ module.exports = function (app) {
             "location_type": "APPROXIMATE"
         };
 
-        // Realiza una petición al API Google Maps Geocoding para obtener la direccion
+        var locations= {
+                "locations": req.body.lat + "," + req.body.long};
+
+        // Realiza una petición al API Google Maps Geocoding para obtener la direccion y el pais
         gmAPI.reverseGeocode(reverseGeocodeParams, function (err, result) {
             var formatted_address = 'unknown';
+            var country = 'unknown';
+            var city= 'unknown';
+            var elevation = 0;
             if (result != undefined) {
                 formatted_address = result.results[0].formatted_address;
-            }
+                if (result.results[0].address_components){
+                    for (var i = 0; i < result.results[0].address_components.length; i++) {
+                        if (result.results[0].address_components[i].types[0]=="country"){
+                            country = result.results[0].address_components[i].long_name;
+                        }
 
-            var keywords = [];
-            if (req.body.keywords) {
-                keywords = req.body.keywords;
-            }
+                        if (result.results[0].address_components[i].types[0]=="locality"){
+                            city = result.results[0].address_components[i].long_name;
+                        }
+                    }
+                }}
 
-            var newPoi = new Poi(
-                {
-                    name: req.body.name,
-                    description: req.body.description,
-                    multimediaUrl: req.body.multimediaUrl,
-                    keywords: keywords,
-                    lat: req.body.lat,
-                    long: req.body.long,
-                    formatted_address: formatted_address,
-                    creator: creator
+            gmAPI.elevationFromLocations(locations, function (err,result){
+                if (result != undefined){
+                    elevation = result.results[0].elevation;
                 }
-            );
 
-            newPoi.save(function (err, result) {
+                var keywords = [];
+                if (req.body.keywords) {
+                    keywords = req.body.keywords;
+                }
 
-                if (err) {
-                    res.send({"error": true, "message": "Error saving data"});
-                }
-                else {
-                    res.send({
-                        "error": false,
-                        "message": result.cleanObjectAndAddHref(),
-                        links: [{"poiList": "/pois"}]
-                    });
-                }
+                var newPoi = new Poi(
+                    {
+                        name: req.body.name,
+                        description: req.body.description,
+                        multimediaUrl: req.body.multimediaUrl,
+                        keywords: keywords,
+                        lat: req.body.lat,
+                        long: req.body.long,
+                        formatted_address: formatted_address,
+                        country: country,
+                        city: city,
+                        elevation: elevation,
+                        creator: creator
+                    }
+                );
+
+                newPoi.save(function (err, result) {
+
+                    if (err) {
+                        res.send({"error": true, "message": "Error saving data"});
+                    }
+                    else {
+                        res.send({
+                            "error": false,
+                            "message": result.cleanObjectAndAddHref(),
+                            links: [{"poiList": "/pois"}]
+                        });
+                    }
+                });
             });
         });
     });
-
 
     /**
      * DELETE /
@@ -288,26 +312,49 @@ module.exports = function (app) {
                 "location_type": "APPROXIMATE"
             };
 
+            var locations= {
+                "locations": poi.lat + "," + poi.long};
+
             //Actualizamos localización y luego guardamos
             gmAPI.reverseGeocode(reverseGeocodeParams, function (err, result) {
 
-
+                var country = 'unknown';
+                var city= 'unknown';
+                var elevation = 0;
                 poi.formatted_address = 'unknown';
                 if (result != undefined) {
                     poi.formatted_address = result.results[0].formatted_address;
+                    if (result.results[0].address_components){
+                        for (var i = 0; i < result.results[0].address_components.length; i++) {
+                            if (result.results[0].address_components[i].types[0]=="country"){
+                                poi.country = result.results[0].address_components[i].long_name;
+                            }
+
+                            if (result.results[0].address_components[i].types[0]=="locality"){
+                                poi.city = result.results[0].address_components[i].long_name;
+                            }
+                        }
+                    }
                 }
 
-                poi.save(function (err, result) {
-                    if (err) {
-                        res.send({"error": true, "message": "Error updating poi"});
+                gmAPI.elevationFromLocations(locations, function (err,result){
+                    if (result != undefined) {
+                        poi.elevation = result.results[0].elevation;
                     }
-                    else {
-                        res.send({
-                            "error": false,
-                            "message": result.cleanObjectAndAddHref(),
-                            links: [{"poiList": "/pois"}]
+
+
+                        poi.save(function (err, result) {
+                            if (err) {
+                                res.send({"error": true, "message": "Error updating poi"});
+                            }
+                            else {
+                                res.send({
+                                    "error": false,
+                                    "message": result.cleanObjectAndAddHref(),
+                                    links: [{"poiList": "/pois"}]
+                                });
+                            }
                         });
-                    }
                 });
             });
 

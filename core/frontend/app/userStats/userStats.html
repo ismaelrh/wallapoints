@@ -110,6 +110,7 @@
         </div>
 
 
+
         <!-- Fila de quesitos de rutas -->
         <div class="row bg-default" style="margin-top:20px;" ng-if="ctrl.hasRouteData">
             <div class="col-md-6 bg-success">
@@ -122,6 +123,59 @@
                 <h3 style="text-align:center;">Routes by total distance</h3>
                 <canvas id="pieDistance" class="chart chart-pie"
                         chart-data="ctrl.routesByDistance.data" chart-labels="ctrl.routesByDistance.labels">
+                </canvas>
+            </div>
+
+
+        </div>
+
+        </div>
+    <div >
+
+        <div class="row bg-info" style="margin-top:20px;" >
+            <div class="col-m-12">
+                <h2 style="text-align:center;">Stats about your pois</h2>
+            </div>
+
+        </div>
+
+        <!-- Fila de elevación de pois -->
+        <div class="row bg-default" ng-if="ctrl.hasPoiData">
+            <div class="col-md-4 bg-success">
+
+                <h3>Average elevation Poi</h3>
+                <h1>{{ctrl.avgPoiElevation | number : 2}} m.</h1>
+                <p>Of a total of {{ctrl.poiCount}} pois</p>
+            </div>
+            <div class="col-md-4 bg-success">
+
+                <h3>Max elevation Poi</h3>
+                <h1>{{ctrl.maxPoiElevation.elevation | number : 2}} m.</h1>
+                <p>Poi: <strong>{{ctrl.poiMaxName}} </strong></p>
+            </div>
+            <div class="col-md-4 bg-success">
+                <h3>Min elevation Poi</h3>
+                <h1>{{ctrl.minPoiElevation.elevation | number : 2}} m.</h1>
+                <p>Poi: <strong>{{ctrl.poiMinName}} </strong></p>
+            </div>
+
+        </div>
+
+
+
+
+        <!-- Fila de quesitos de pois -->
+        <div class="row bg-default" style="margin-top:20px;" ng-if="ctrl.hasPoiData">
+            <div class="col-md-6 bg-success">
+                <h3 style="text-align:center;">Pois by city</h3>
+                <canvas id="pieCity" class="chart chart-pie"
+                        chart-data="ctrl.routesByCity.data" chart-labels="ctrl.routesByCity.labels">
+                </canvas>
+            </div>
+            <div class="col-md-6 bg-success">
+                <h3 style="text-align:center;">Pois by country</h3>
+                <canvas id="pieCountry" class="chart chart-pie"
+                        chart-data="ctrl.routesByCountry.data" chart-labels="ctrl.routesByCountry.labels">
                 </canvas>
             </div>
 

@@ -9,7 +9,7 @@ angular.module('frontend')
 .controller('LoginCtrl', ['SessionService', '$location', 'UserService','$rootScope', function(SessionService,$location,UserService,$rootScope) {
 
 
-    var self = this; //Para no perder la variable this, la guardamos en self (de lo contrario se sobreescribe)
+    var self = this; //Para no perder la variable this
 
     //Fields login
     self.loginUser={};
