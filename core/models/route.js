@@ -26,6 +26,7 @@ RouteSchema.methods.cleanRouteForDetail = function(){
     delete object.__v;
     var pois = object.pois;
     object.pois = [];
+    
     for(var i = 0; i < pois.length; i++){
         var p = pois[i];
         object.pois.push({_id:p._id,name:p.name,lat:p.lat,long:p.long,href: "/pois/" + p._id});

@@ -29,6 +29,7 @@ var publicConfig = {
   encode_polylines: false,
   secure: true
 };
+
 var gmAPI = new GoogleMapsAPI(publicConfig);
 //Pones objeto de la API de Gmaps en gmAPI
 app.set('gmAPI',gmAPI);
@@ -67,5 +68,6 @@ mongoose.connection.once('open', function(){
     console.log("[INFO] Express server running on port " + app.get('port') + " (" + app.settings.env  + ")");
   });
 });
+
 
 module.exports = app;
