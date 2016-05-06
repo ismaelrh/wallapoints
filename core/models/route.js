@@ -7,6 +7,7 @@ var RouteSchema = mongoose.Schema({
     creator: {type: String, required:true},
     pois: [{type: mongoose.Schema.Types.ObjectId, ref: 'Poi' }],
     distance: {type: Number, required: false},
+    date: {type: Date, default: Date.now },
     time: {type:Number, required: false}
 });
 
