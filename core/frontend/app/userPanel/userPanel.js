@@ -1,15 +1,19 @@
 'use strict';
 
+/**
+ * Controlador de pantalla de panel de usuario.
+ * @author Ismael Rodríguez, Sergio Soro, David Vergara. 2016.
+ */
 angular.module('frontend')
 
-    .controller('UserPanelCtrl', ['$routeParams', 'SessionService', 'UserService','$rootScope',
-        function ($routeParams, SessionService, UserService,$rootScope) {
+    .controller('UserPanelCtrl', ['$routeParams', 'SessionService', 'UserService', '$rootScope',
+        function ($routeParams, SessionService, UserService, $rootScope) {
 
             var self = this; //Para no perder la variable this, la guardamos en self (de lo contrario se sobreescribe)
 
             self.user = SessionService.user;
 
-            console.log(SessionService.user);
+            
             self.userEdited = { //User a añadir
                 email: "",
                 password: "",
@@ -28,23 +32,23 @@ angular.module('frontend')
                 message: ""
             };
 
+            //Para mostrar alerta
             $rootScope.$on("errorMessage", function (event, args) {
-                console.log("what");
-                showAlert("danger",args.message);
+                showAlert("danger", args.message);
             });
 
 
-            function showAlert(type,message){
+            function showAlert(type, message) {
                 self.alert.show = true;
                 self.alert.type = type;
                 self.alert.message = message;
-                if(self.alert.type=="danger"){
+                if (self.alert.type == "danger") {
                     self.alert.title = "Error!";
                 }
-                if(self.alert.type=="warning"){
+                if (self.alert.type == "warning") {
                     self.alert.title = "Warning!"
                 }
-                if(self.alert.type=="success"){
+                if (self.alert.type == "success") {
                     self.alert.title = "Success!";
                 }
             }

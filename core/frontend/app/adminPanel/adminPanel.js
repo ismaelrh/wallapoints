@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * Controlador de panel de administrador.
+ * @author Ismael Rodríguez, Sergio Soro, David Vergara. 2016.
+ */
 angular.module('frontend')
 
     .controller('AdminPanelCtrl', ['$location', 'SessionService', 'UserService', '$rootScope', function ($location, SessionService, UserService, $rootScope) {
@@ -26,8 +30,8 @@ angular.module('frontend')
             message: ""
         };
 
+        //Para mostrar alerta
         $rootScope.$on("errorMessage", function (event, args) {
-            console.log("what");
             showAlert("danger", args.message);
         });
 
@@ -64,7 +68,7 @@ angular.module('frontend')
             UserService.getUserDetail(id).then(function (response) {
                 self.showUserDetailPanel = true;
                 self.userPanel = response;
-                console.log(response.data.message);
+                
             }, function (err) {
                 self.showUserDetailPanel = false;
                 console.error(err);
@@ -108,7 +112,7 @@ angular.module('frontend')
                 //Remove from local array
                 if (index > -1) {
                     self.users.splice(index, 1);
-                    console.log("User deleted");
+                    
                 }
 
 

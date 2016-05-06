@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * Controlador de edición de usuario.
+ * @author Ismael Rodríguez, Sergio Soro, David Vergara. 2016.
+ */
 angular.module('frontend')
 
     .controller('EditUserCtrl', ['$routeParams','UserService','$rootScope',function($routeParams,UserService,$rootScope) {
@@ -25,8 +29,8 @@ angular.module('frontend')
             message: ""
         };
 
+        //Para mostrar alerta
         $rootScope.$on("errorMessage", function (event, args) {
-            console.log("what");
             showAlert("danger",args.message);
         });
 

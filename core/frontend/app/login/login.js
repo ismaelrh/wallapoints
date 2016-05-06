@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * Controlador de pantalla de login.
+ * @author Ismael Rodríguez, Sergio Soro, David Vergara. 2016.
+ */
 angular.module('frontend')
 
 .controller('LoginCtrl', ['SessionService', '$location', 'UserService','$rootScope', function(SessionService,$location,UserService,$rootScope) {
@@ -25,8 +29,8 @@ angular.module('frontend')
         message: ""
     };
 
+    //Para mostrar alerta
     $rootScope.$on("errorMessage", function (event, args) {
-        console.log("what");
         showAlert("danger",args.message);
     });
 
@@ -83,6 +87,6 @@ angular.module('frontend')
     };
 
 
-    console.log("You are on login ctrl");
+
 
 }]);

@@ -1,5 +1,8 @@
 'use strict';
-
+/**
+ * Controlador de pantalla de estadísticas del propio usuario.
+ * @author Ismael Rodríguez, Sergio Soro, David Vergara. 2016.
+ */
 angular.module('frontend')
 
     .controller('UserStatsCtrl', ['SessionService', 'StatsService', '$rootScope', function (SessionService, StatsService, $rootScope) {
@@ -29,11 +32,10 @@ angular.module('frontend')
             message: ""
         };
 
-
         self.hasRouteData = true;
 
+        //Para mostrar alerta
         $rootScope.$on("errorMessage", function (event, args) {
-            console.log("what");
             showAlert("danger", args.message);
         });
 
@@ -74,7 +76,7 @@ angular.module('frontend')
                     .then(function (response) {
 
                         self.avgRouteTime = response.avgTime;
-                        console.log("avg: " + response.avgTime);
+                        
                         self.routeCount = response.count;
                     });
 
@@ -102,7 +104,7 @@ angular.module('frontend')
                     .then(function (response) {
 
                         self.maxTimeRoute.time = response.time;
-                        console.log("max: " + response.time);
+                        
                         self.maxTimeRoute.name = response.name;
                         self.maxTimeRoute.start = response.pois[0].name;
                         self.maxTimeRoute.end = response.pois[response.pois.length - 1].name;
@@ -113,7 +115,7 @@ angular.module('frontend')
 
 
                         self.minTimeRoute.time = response.time;
-                        console.log("min: " + response.time);
+                        
                         self.minTimeRoute.name = response.name;
                         self.minTimeRoute.start = response.pois[0].name;
                         self.minTimeRoute.end = response.pois[response.pois.length - 1].name;

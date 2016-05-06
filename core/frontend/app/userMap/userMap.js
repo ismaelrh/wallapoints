@@ -1,9 +1,13 @@
 'use strict';
 
+/**
+ * Controlador de pantalla de mapa de usuarios.
+ * @author Ismael Rodríguez, Sergio Soro, David Vergara. 2016.
+ */
 angular.module('frontend')
 
     .controller('UserMapCtrl', ['SessionService', 'uiGmapGoogleMapApi', '$scope', 'PoiService', '$rootScope',
-        function (SessionService, uiGmapGoogleMapApi, $scope, PoiService,$rootScope) {
+        function (SessionService, uiGmapGoogleMapApi, $scope, PoiService, $rootScope) {
 
 
             var self = this; //Para no perder la variable this, la guardamos en self (de lo contrario se sobreescribe)
@@ -25,7 +29,7 @@ angular.module('frontend')
             //Objeto de mapa
             self.map =
             {
-                center:{latitude: 42.1365707, longitude: -0.4143509},
+                center: {latitude: 42.1365707, longitude: -0.4143509},
                 zoom: 3,
                 control: {},
                 options: {
@@ -36,9 +40,9 @@ angular.module('frontend')
                     click: function (mapModel, eventName, originalEventArgs) {
                         var e = originalEventArgs[0];
 
-                        console.log(e.latLng.lat() + " - " + e.latLng.lng());
+                        
 
-                        if(self.showingPoiEdition || self.showingPoiCreation){
+                        if (self.showingPoiEdition || self.showingPoiCreation) {
                             self.editingPoi.lat = e.latLng.lat();
                             self.editingPoi.long = e.latLng.lng();
                         }
@@ -94,11 +98,9 @@ angular.module('frontend')
             self.routeCreationError = false;
 
 
-
-            self.logOut = function(){
+            self.logOut = function () {
                 SessionService.logOut();
             };
-
 
 
             //Se empieza a hacer declaraciones una vez ha cargado el objeto de mapa -> maps es el objecto google.maps
@@ -112,19 +114,19 @@ angular.module('frontend')
                 self.markersEvents = {
                     click: function (marker, eventName, model) {
 
-                        if(!self.selectPoiForRoute){ //Modo normal -> Se muestran detalles (Si está dentro de las del usuario)
+                        if (!self.selectPoiForRoute) { //Modo normal -> Se muestran detalles (Si está dentro de las del usuario)
 
-                            if(poiIsInList(model.control._id)){ //Solo si el punto es del usuario se muestran detalles
+                            if (poiIsInList(model.control._id)) { //Solo si el punto es del usuario se muestran detalles
                                 //Podria ser que en un futuro se permitan crear rutas con puntos de otros usuarios, por eso
                                 //se deja esto aquí.
                                 self.showPoiDetail(model.control);
                             }
 
                         }
-                        else{ //Modo selección de POIs para editar/crear ruta -> Se añade POI a lista
+                        else { //Modo selección de POIs para editar/crear ruta -> Se añade POI a lista
 
                             var poiToInsert = {};
-                            angular.copy(model.control,poiToInsert);
+                            angular.copy(model.control, poiToInsert);
                             self.editingRoute.pois.push(poiToInsert);
                         }
 
@@ -133,59 +135,58 @@ angular.module('frontend')
                     mouseover: function (marker, eventName, model) {
 
 
-                            self.map.hoverPoiList.push(model.control._id);
-
+                        self.map.hoverPoiList.push(model.control._id);
 
 
                     },
                     mouseout: function (marker, eventName, model) {
 
 
-                            var index = self.map.hoverPoiList.indexOf(model.control._id);
-                            if(index>-1){
-                                self.map.hoverPoiList.splice(index,1);
-                            }
-
+                        var index = self.map.hoverPoiList.indexOf(model.control._id);
+                        if (index > -1) {
+                            self.map.hoverPoiList.splice(index, 1);
+                        }
 
 
                     }
                 };
 
 
-                function poiIsInList(poiId){
+                function poiIsInList(poiId) {
                     var found = false;
-                    for(var i = 0; !found && i < self.pois.length;i++){
-                        if(self.pois[i]._id == poiId){
+                    for (var i = 0; !found && i < self.pois.length; i++) {
+                        if (self.pois[i]._id == poiId) {
                             found = true;
                         }
                     }
                     return found;
                 }
 
-                function showAlert(type,message){
+                function showAlert(type, message) {
                     self.alert.show = true;
                     self.alert.type = type;
                     self.alert.message = message;
-                    if(self.alert.type=="danger"){
+                    if (self.alert.type == "danger") {
                         self.alert.title = "Error!";
                     }
-                    if(self.alert.type=="warning"){
+                    if (self.alert.type == "warning") {
                         self.alert.title = "Warning!"
                     }
-                    if(self.alert.type=="success"){
+                    if (self.alert.type == "success") {
                         self.alert.title = "Success!";
                     }
                 }
 
-                function clearAlert(){
+                function clearAlert() {
                     self.alert.show = false;
                     self.alert.type = "default";
                     self.alert.message = "";
                 }
 
 
+                //Para mostrar alerta
                 $rootScope.$on("errorMessage", function (event, args) {
-                    showAlert("danger",args.message);
+                    showAlert("danger", args.message);
                 });
 
 
@@ -193,13 +194,13 @@ angular.module('frontend')
                  * Devuelve cierto si el poi está en la ruta seleccionada actual.
                  * False en caso contrario.
                  */
-                self.isPoiOnDetailedRoute = function(poi){
-                    if(!self.detailedRoute){
+                self.isPoiOnDetailedRoute = function (poi) {
+                    if (!self.detailedRoute) {
                         return false;
                     }
                     var is = false;
-                    for(var i = 0; !is && i < self.detailedRoute.pois.length; i++){
-                        if(self.detailedRoute.pois[i]._id == poi._id){
+                    for (var i = 0; !is && i < self.detailedRoute.pois.length; i++) {
+                        if (self.detailedRoute.pois[i]._id == poi._id) {
                             is = true;
                         }
                     }
@@ -224,7 +225,6 @@ angular.module('frontend')
                 };
 
 
-
                 /**
                  * Dado un poi, carga su detalle del backend
                  * y lo muestra en el cuadro de información.
@@ -233,10 +233,10 @@ angular.module('frontend')
                 self.showPoiDetail = function (poi) {
 
                     var _id = poi._id;
-                    if(self.showingRouteEdition || self.showingRouteCreation){
+                    if (self.showingRouteEdition || self.showingRouteCreation) {
                         //Antes de insertar, copiamos para permitir puntos repetidos
                         var poiToInsert = {};
-                        angular.copy(poi,poiToInsert);
+                        angular.copy(poi, poiToInsert);
                         self.editingRoute.pois.push(poiToInsert);
                         return false;
                     }
@@ -270,8 +270,8 @@ angular.module('frontend')
                 /**
                  * A partir de un array de keywords, devuelve cadena que las muestra separadas por comas.
                  */
-                self.getKeywordCommasFromList = function(list){
-                   var result = "None";
+                self.getKeywordCommasFromList = function (list) {
+                    var result = "None";
                     if (list.length > 0) {
 
 
@@ -300,7 +300,6 @@ angular.module('frontend')
                  * Busca pois según search.creator y search.date
                  */
                 self.searchPois = function () {
-
 
 
                     var searchObject = {};
@@ -353,7 +352,6 @@ angular.module('frontend')
                 };
 
 
-
                 /**
                  * Obtiene la puntuación media de un POI.
                  */
@@ -369,7 +367,7 @@ angular.module('frontend')
                 /**
                  * Activa modo creación de ruta.
                  */
-                self.showRouteCreation = function(){
+                self.showRouteCreation = function () {
                     self.clearDirections();
                     self.hideAllRightPanels();
                     self.showingRouteCreation = true;
@@ -381,7 +379,7 @@ angular.module('frontend')
                 /**
                  * Activa modo edición de ruta.
                  */
-                self.showRouteEdition = function(){
+                self.showRouteEdition = function () {
 
                     self.hideAllRightPanels();
                     self.showingRoute = true;
@@ -389,7 +387,7 @@ angular.module('frontend')
                     self.editingRoute = {};
                     self.selectPoiForRoute = true;
                     //Copiamos la ruta actual para no modificarla hasta el final.
-                    angular.copy(self.detailedRoute,self.editingRoute);
+                    angular.copy(self.detailedRoute, self.editingRoute);
 
                 };
 
@@ -397,7 +395,7 @@ angular.module('frontend')
                 /**
                  * Activa el modo creación de POI
                  */
-                self.showPoiCreation = function(){
+                self.showPoiCreation = function () {
                     self.clearDirections();
                     self.hideAllRightPanels();
 
@@ -409,22 +407,22 @@ angular.module('frontend')
                 /**
                  * Activa el modo de edición de POI
                  */
-                self.showPoiEdition = function(){
+                self.showPoiEdition = function () {
 
                     self.showingPoiEdition = true;
                     self.editingPoi = {};
 
                     //Copiamos usuario a editar a 'editingPoi'
-                    angular.copy(self.detailedPoi,self.editingPoi);
+                    angular.copy(self.detailedPoi, self.editingPoi);
 
                     //Transformamos la lista de keywords de un array a lista separada por comas
                     var keywordList = "";
-                    for(var i = 0; i < self.editingPoi.keywords.length -1; i++){
+                    for (var i = 0; i < self.editingPoi.keywords.length - 1; i++) {
                         keywordList += self.editingPoi.keywords[i] + ", ";
                     }
 
-                    if(self.editingPoi.keywords.length>0){
-                        keywordList += self.editingPoi.keywords[self.editingPoi.keywords.length-1];
+                    if (self.editingPoi.keywords.length > 0) {
+                        keywordList += self.editingPoi.keywords[self.editingPoi.keywords.length - 1];
                     }
 
                     self.editingPoi.keywordList = keywordList;
@@ -433,23 +431,23 @@ angular.module('frontend')
 
 
                 //Añade un poi a la lista de pois (sólo detalles esenciales, como id, name, lat y long)
-                self.addPoiToList = function(poi){
-                    self.pois.push({_id:poi._id,name:poi.name,lat:poi.lat,long:poi.long})
+                self.addPoiToList = function (poi) {
+                    self.pois.push({_id: poi._id, name: poi.name, lat: poi.lat, long: poi.long})
                 };
 
                 //Añade una ruta a la lista de pois (sólo detalles esenciales, como id y name)
-                self.addRouteToList = function(route){
-                    self.routes.push({_id:route._id,name:route.name})
+                self.addRouteToList = function (route) {
+                    self.routes.push({_id: route._id, name: route.name})
                 };
 
 
                 //Actualiza en lista de POIs el poi actual
-                self.updatePoiInList = function(poi){
+                self.updatePoiInList = function (poi) {
 
                     var found = false;
-                    for(var i = 0; !found && i < self.pois.length; i++){
-                        console.log(self.pois[i]._id);
-                        if(self.pois[i]._id == poi._id){
+                    for (var i = 0; !found && i < self.pois.length; i++) {
+                        
+                        if (self.pois[i]._id == poi._id) {
                             self.pois[i].name = poi.name;
                             self.pois[i].lat = poi.lat;
                             self.pois[i].long = poi.long;
@@ -459,12 +457,12 @@ angular.module('frontend')
                 };
 
                 //Actualiza en la lista de rutas la ruta actual
-                self.updateRouteInList = function(route){
+                self.updateRouteInList = function (route) {
 
                     var found = false;
-                    for(var i = 0; !found && i < self.routes.length; i++){
-                        console.log(self.routes[i]._id);
-                        if(self.routes[i]._id == route._id){
+                    for (var i = 0; !found && i < self.routes.length; i++) {
+                        
+                        if (self.routes[i]._id == route._id) {
                             self.routes[i].name = route.name;
                             self.routes[i].pois = route.pois;
                         }
@@ -473,12 +471,12 @@ angular.module('frontend')
                 };
 
                 //Borra un POI, según su poiId, de la lista de pois
-                self.removePoiInList = function(poiId){
+                self.removePoiInList = function (poiId) {
 
                     var found = false;
-                    for(var i = 0; !found && i < self.pois.length; i++){
-                        if(self.pois[i]._id == poiId){
-                            self.pois.splice(i,1);
+                    for (var i = 0; !found && i < self.pois.length; i++) {
+                        if (self.pois[i]._id == poiId) {
+                            self.pois.splice(i, 1);
                         }
 
                     }
@@ -487,12 +485,12 @@ angular.module('frontend')
 
 
                 //Borra una RUTA, según su poiId, de la lista de rutas
-                self.removeRouteInList = function(routeId){
+                self.removeRouteInList = function (routeId) {
 
                     var found = false;
-                    for(var i = 0; !found && i < self.routes.length; i++){
-                        if(self.routes[i]._id == routeId){
-                            self.routes.splice(i,1);
+                    for (var i = 0; !found && i < self.routes.length; i++) {
+                        if (self.routes[i]._id == routeId) {
+                            self.routes.splice(i, 1);
                         }
 
                     }
@@ -503,16 +501,16 @@ angular.module('frontend')
                 /**
                  * Borra el poi actual, tanto del backend como del sistema.
                  */
-                self.removePoi = function(poiId){
+                self.removePoi = function (poiId) {
                     PoiService.deletePoi(poiId)
-                        .then(function(response){
+                        .then(function (response) {
 
                             //Se ha borrado el POI
                             self.removePoiInList(poiId);
                             self.hideAllRightPanels();
 
                         })
-                        .catch(function(response){
+                        .catch(function (response) {
 
                         });
                 };
@@ -520,9 +518,9 @@ angular.module('frontend')
                 /**
                  * Borra la ruta actual, tanto del backend como del sistema.
                  */
-                self.removeRoute = function(routeId){
+                self.removeRoute = function (routeId) {
                     PoiService.deleteRoute(routeId)
-                        .then(function(response){
+                        .then(function (response) {
 
                             //Se ha borrado el POI
                             self.removeRouteInList(routeId);
@@ -530,74 +528,72 @@ angular.module('frontend')
                             self.clearDirections();
 
                         })
-                        .catch(function(response){
+                        .catch(function (response) {
 
                         });
                 };
 
 
-
-
                 /**
                  *  Cierra la creación o edición de POI. Si save = true, guarda el POI en backend.
                  */
-                self.hidePoiEdition   = function(save){
+                self.hidePoiEdition = function (save) {
 
-                    if(!save){
+                    if (!save) {
 
-                        if(self.showingPoiEdition){ //Si se estaba editando, se deja la ventana de info
+                        if (self.showingPoiEdition) { //Si se estaba editando, se deja la ventana de info
                             self.hideAllRightPanels();
                             self.showingPoi = true;
                         }
-                        else{ //Si se estaba creando, se cierra todo
+                        else { //Si se estaba creando, se cierra todo
                             self.hideAllRightPanels();
                         }
 
 
                     }
-                    else{
+                    else {
 
                         //Formamos array de keywords a partir de lista separada por comas
                         self.editingPoi.keywords = self.editingPoi.keywordList.split(",");
-                        for(var i = 0; i < self.editingPoi.keywords.length; i++){
+                        for (var i = 0; i < self.editingPoi.keywords.length; i++) {
                             self.editingPoi.keywords[i] = self.editingPoi.keywords[i].trim();
                         }
 
                         //Cuando no se pone ninguna keyword, que quede vacío el array
-                        if(self.editingPoi.keywords.length == 1 && self.editingPoi.keywords[0].length==0){
+                        if (self.editingPoi.keywords.length == 1 && self.editingPoi.keywords[0].length == 0) {
                             self.editingPoi.keywords = [];
                         }
 
-                        if(self.editingPoi.multimediaUrl && self.editingPoi.multimediaUrl.length>0 &&
-                            self.editingPoi.multimediaUrl.indexOf("http")==-1){
+                        if (self.editingPoi.multimediaUrl && self.editingPoi.multimediaUrl.length > 0 &&
+                            self.editingPoi.multimediaUrl.indexOf("http") == -1) {
                             self.editingPoi.multimediaUrl = "http://" + self.editingPoi.multimediaUrl;
                         }
 
 
                         var poiPromise;
-                        if(self.showingPoiEdition){
+                        if (self.showingPoiEdition) {
                             poiPromise = PoiService.updatePoi(self.editingPoi);
                         }
-                        else{
+                        else {
                             poiPromise = PoiService.createPoi(self.editingPoi);
                         }
 
-                            poiPromise.then(function(createdPoi){
+                        poiPromise.then(function (createdPoi) {
 
-                                self.detailedPoi = createdPoi;
-                                if(self.showingPoiEdition){
+                            self.detailedPoi = createdPoi;
+                            if (self.showingPoiEdition) {
 
-                                    self.updatePoiInList(self.detailedPoi);
-                                }
-                                else{
-                                    self.addPoiToList(self.detailedPoi);
-                                }
+                                self.updatePoiInList(self.detailedPoi);
+                            }
+                            else {
+                                self.addPoiToList(self.detailedPoi);
+                            }
 
 
-                                self.hideAllRightPanels();
-                                self.showingPoi = true;
+                            self.hideAllRightPanels();
+                            self.showingPoi = true;
 
-                            });
+                        });
 
 
                     }
@@ -605,63 +601,61 @@ angular.module('frontend')
                 };
 
 
-
-
                 /**
                  * Cierra la edición o creación de ruta.  Si save = true, guarda la ruta en backend.
                  */
-                self.hideRouteEdition  = function(save){
+                self.hideRouteEdition = function (save) {
 
                     self.routeCreationError = false;
-                    if(!save){
+                    if (!save) {
 
-                        if(self.showingRouteEdition){
+                        if (self.showingRouteEdition) {
                             self.hideAllRightPanels();
                             self.showingRoute = true;
                             self.showingRouteSteps = true;
                             self.showAndCalculateRoute(self.detailedRoute._id);
                         }
-                        else{
+                        else {
                             self.hideAllRightPanels();
                         }
 
                     }
-                    else{ //Se guarda
+                    else { //Se guarda
 
-                        if(self.editingRoute.pois.length < 2){
+                        if (self.editingRoute.pois.length < 2) {
                             self.routeCreationError = "Please, select 2 or more points";
                             return;
                         }
 
                         //API gratuita de Google no permite más de 9 puntos
-                        if(self.editingRoute.pois.length > 9){
+                        if (self.editingRoute.pois.length > 9) {
                             self.routeCreationError = "Please, select less than 10 points";
                             return;
                         }
 
                         //Formamos array de objetos con atributo  _id que se envía
-                        for(var i = 0; i < self.editingRoute.pois.length; i++ ){
-                            self.editingRoute.pois[i] = {_id:self.editingRoute.pois[i]._id};
+                        for (var i = 0; i < self.editingRoute.pois.length; i++) {
+                            self.editingRoute.pois[i] = {_id: self.editingRoute.pois[i]._id};
                         }
 
 
                         var routePromise;
-                        if(self.showingRouteEdition){
+                        if (self.showingRouteEdition) {
                             routePromise = PoiService.updateRoute(self.editingRoute);
                         }
-                        else{
+                        else {
                             routePromise = PoiService.createRoute(self.editingRoute);
                         }
 
                         routePromise
-                            .then(function(savedRoute){
+                            .then(function (savedRoute) {
 
 
                                 self.detailedRoute = savedRoute;
-                                if(self.showingRouteEdition){
+                                if (self.showingRouteEdition) {
                                     self.updateRouteInList(self.detailedRoute);
                                 }
-                                else{
+                                else {
                                     self.addRouteToList(self.detailedRoute);
                                 }
 
@@ -678,7 +672,7 @@ angular.module('frontend')
                 };
 
 
-                self.hideAllRightPanels = function(){
+                self.hideAllRightPanels = function () {
 
                     self.showingPoi = false;
                     self.showingRoute = false;
@@ -691,17 +685,9 @@ angular.module('frontend')
                 };
 
 
-
-
-
-
-
-
-
                 self.toggleLeftPanel = function () {
                     self.resultsPanelActivated = !self.resultsPanelActivated;
                 };
-
 
 
                 self.toggleRightPanel = function () {
@@ -733,7 +719,6 @@ angular.module('frontend')
                     //Cogemos del backend los pois
                     return PoiService.loadDetailRoute(id)
                         .then(function (detailedRoute) {
-
 
 
                             self.detailedRoute = detailedRoute;
@@ -779,8 +764,8 @@ angular.module('frontend')
 
                                     //Para cada punto de la ruta, mostramos un marker
                                     self.routeMarkers = [];
-                                    for(var i = 0; i < self.detailedRoute.pois.length; i++){
-                                        self.detailedRoute.pois[i].order = "" + String.fromCharCode(65+i);
+                                    for (var i = 0; i < self.detailedRoute.pois.length; i++) {
+                                        self.detailedRoute.pois[i].order = "" + String.fromCharCode(65 + i);
                                         self.routeMarkers.push(self.detailedRoute.pois[i]);
                                     }
 
@@ -801,7 +786,6 @@ angular.module('frontend')
 
                 self.searchPois();
                 self.searchRoutes();
-
 
 
             });
