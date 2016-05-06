@@ -5,7 +5,7 @@ angular.module('frontend')
 .controller('LoginCtrl', ['$http','SessionService', '$location', function($http,SessionService,$location) {
 
 
-    var self = this; //Para no perder la variable this, la guardamos en self (de lo contrario se sobreescribe)
+    var self = this; //Para no perder la variable this
 
     //Fields login
     self.loginUser={};
