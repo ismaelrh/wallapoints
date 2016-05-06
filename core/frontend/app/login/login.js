@@ -2,7 +2,7 @@
 
 angular.module('frontend')
 
-.controller('LoginCtrl', ['$http','SessionService', '$location', function($http,SessionService,$location) {
+.controller('LoginCtrl', ['SessionService', '$location', 'UserService','$rootScope', function(SessionService,$location,UserService,$rootScope) {
 
 
     var self = this; //Para no perder la variable this, la guardamos en self (de lo contrario se sobreescribe)
@@ -18,14 +18,43 @@ angular.module('frontend')
     self.getUserObject = function(){
         return SessionService.user;
     };
+
+    //Para mostrar alerta cuando hay errores
+    self.alert = {
+        show: false,
+        message: ""
+    };
+
+    $rootScope.$on("errorMessage", function (event, args) {
+        console.log("what");
+        showAlert("danger",args.message);
+    });
+
+
+    function showAlert(type,message){
+        self.alert.show = true;
+        self.alert.type = type;
+        self.alert.message = message;
+        if(self.alert.type=="danger"){
+            self.alert.title = "Error!";
+        }
+        if(self.alert.type=="warning"){
+            self.alert.title = "Warning!"
+        }
+        if(self.alert.type=="success"){
+            self.alert.title = "Success!";
+        }
+    }
+
     /**
      * Hace login de usuario normal.
      */
 
     self.login =function(){
-        $http.post('/users/login', self.loginUser).then(function(response){
+        UserService.loginUser(self.loginUser)
+            .then(function(jwt){
             self.errorPassword ="";
-            var jwtToken = response.data.message;
+            var jwtToken = jwt;
 
             SessionService.setNewToken(jwtToken);
 

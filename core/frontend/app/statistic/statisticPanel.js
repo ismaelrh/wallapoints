@@ -2,10 +2,36 @@
 
 angular.module('frontend')
 
-.controller('StatisticCtrl', ['$http','SessionService',function($http,SessionService) {
+.controller('StatisticCtrl', ['$http','SessionService','$rootScope',function($http,SessionService,$rootScopes) {
 
     var self = this; //Para no perder la variable this, la guardamos en self (de lo contrario se sobreescribe)
 
+    //Para mostrar alerta cuando hay errores
+    self.alert = {
+        show: false,
+        message: ""
+    };
+
+    $rootScope.$on("errorMessage", function (event, args) {
+        console.log("what");
+        showAlert("danger",args.message);
+    });
+
+
+    function showAlert(type,message){
+        self.alert.show = true;
+        self.alert.type = type;
+        self.alert.message = message;
+        if(self.alert.type=="danger"){
+            self.alert.title = "Error!";
+        }
+        if(self.alert.type=="warning"){
+            self.alert.title = "Warning!"
+        }
+        if(self.alert.type=="success"){
+            self.alert.title = "Success!";
+        }
+    }
 
     self.UsersRegister = function(){
         $http.get('/stats/admin/usersInOut').then(function(response){
