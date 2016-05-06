@@ -11,6 +11,14 @@ module.exports = {
         development: 8888,
         test: 8889
     },
+    deploy:{
+        admin:{
+            password: "1",
+            email: "admin@mail.com",
+            name: "Ismael",
+            surname: "Rodríguez"
+        }
+    },
     jwtsecret: "firmasuperlargaeimposibledeadivinar",
     "gmaps-api-key": "AIzaSyD6pa36NtjEyNdffeAwWJFY44k_C4z2lh8"
 

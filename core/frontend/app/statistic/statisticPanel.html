@@ -14,14 +14,25 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li><a href="/#/admin"><span class="glyphicon glyphicon-inbox" aria-hidden="true"></span> Manage users <span class="sr-only">(current)</span></a></li>
-                <li><a href="/#/adminMap"><span class="glyphicon glyphicon-globe" aria-hidden="true"></span>&nbsp;View all POIs</a></li>
-                <li><a href="/#/userMap"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>&nbsp;Manage my POIs</a></li>
-                <li><a href="/#/userPanel"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>&nbsp;Edit my profile</a></li>
-                <li class="active"><a href="/#/statistics"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span>&nbsp;Statistics</a></li>
+                <ul class="nav navbar-nav">
+                    <li ng-if="ctrl.user.username=='admin'"><a href="/#/admin"><span class="glyphicon glyphicon-inbox"
+                                                                                     aria-hidden="true"></span> Manage
+                        users <span class="sr-only">(current)</span></a></li>
+                    <li ng-if="ctrl.user.username=='admin'"><a href="/#/adminMap"><span
+                            class="glyphicon glyphicon-globe" aria-hidden="true"></span>&nbsp;View all POIs</a></li>
+                    <li><a href="/#/userMap"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>&nbsp;Manage
+                        my POIs</a></li>
+                    <li><a href="/#/userPanel"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>&nbsp;Edit
+                        my profile</a></li>
+                    <li class="active" ng-if="ctrl.user.username=='admin'"><a href="/#/statistics"><span
+                            class="glyphicon glyphicon-stats" aria-hidden="true"></span>&nbsp;Statistics</a></li>
+                    <li><a href="/#/userStats"><span class="glyphicon glyphicon-stats"
+                                                                    aria-hidden="true"></span>&nbsp;User Stats</a></li>
+                </ul>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="" ng-click="ctrl.logOut()"><span class="glyphicon glyphicon-log-out"></span>&nbsp;Log-out</a></li>
+                <li><a href="" ng-click="ctrl.logOut()"><span
+                        class="glyphicon glyphicon-log-out"></span>&nbsp;Log-out</a></li>
 
             </ul>
         </div><!-- /.navbar-collapse -->
@@ -33,48 +44,79 @@
 
 <div class="container"> <!-- El container añade márgenes a los lados -->
 
-    <div class=" col-md-8 col-sm-12 ">
-        <div class="row">
+    <div class="alert "
+         ng-class="{'alert-danger':ctrl.alert.type=='danger','alert-warning':ctrl.alert.type=='warning', 'alert-success':ctrl.alert.type=='success'}"
+         role="alert" ng-if="ctrl.alert.show">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+        <strong>{{ctrl.alert.title}}</strong> {{ctrl.alert.message}}
+    </div>
 
-            <div class="col-md-offset-3 col-md-6 col-sm-12  bg-success">
-                <h3>Movimiento de usuarios</h3>
+        <div class="row bg-info">
+            <div class="col-m-12">
+                <h2 style="text-align:center;">System Stats</h2>
             </div>
 
         </div>
 
-        <div class="row">
+        <!-- Fila de distancias de rutas -->
+        <div class="row bg-default" >
+            <div class="col-md-4 bg-success">
 
-            <div class="col-md-12 ">
+                <h3>Logins in the last 24 hours</h3>
+                <h1>{{ctrl.accessDay}}</h1>
 
-                <canvas id="bar" class="chart chart-bar"
-                        chart-data="ctrl.userData" chart-labels="ctrl.dates" chart-series="ctrl.usersSeries">
-                </canvas>
+            </div>
+            <div class="col-md-4 bg-success">
+
+                <h3>Total Active pois</h3>
+                <h1>{{ctrl.totalPois}}</h1>
+
+            </div>
+            <div class="col-md-4 bg-success">
+                <h3>Total Active routes</h3>
+                <h1>{{ctrl.totalRoutes}}</h1>
 
             </div>
 
-
         </div>
 
-        <div class="row">
 
-            <div class="col-md-offset-3 col-md-6 col-sm-12  bg-success">
-                <h3>Pois activos por fecha de creacion</h3>
-            </div>
 
-        </div>
-
-        <div class="row">
-
-            <div class="col-md-12 ">
-
+        <div class="row bg-default" style="margin-top:20px;" >
+            <div class="col-md-6 bg-success">
+                <h3 style="text-align:center;">Active pois active by created date</h3>
                 <canvas id="line" class="chart chart-line" chart-data="ctrl.poiData"
                         chart-labels="ctrl.dates2"  chart-series="ctrl.poiSeries"  >
                 </canvas>
-
+            </div>
+            <div class="col-md-6 bg-success">
+                <h3 style="text-align:center;"> Active routes by created date</h3>
+                <canvas id="line2" class="chart chart-line" chart-data="ctrl.routeData"
+                        chart-labels="ctrl.dates3"  chart-series="ctrl.routeSeries"  >
+                </canvas>
             </div>
 
 
         </div>
+
+        <div class="row bg-default" style="margin-top:20px;" >
+            <div class="col-md-6 bg-success">
+                <h3 style="text-align:center;">Sign up and deletes accounts</h3>
+                <canvas id="bar" class="chart chart-bar"
+                        chart-data="ctrl.userData" chart-labels="ctrl.dates" chart-series=
+                                "ctrl.usersSeries">
+                </canvas>
+            </div>
+            <div class="col-md-6 bg-success">
+                <h3 style="text-align:center;">Last login by hours</h3>
+                <canvas id="bar2" class="chart chart-bar"
+                        chart-data="ctrl.AccessData" chart-labels="ctrl.Accesshours" chart-series=
+                                "ctrl.AccessSeries">
+                </canvas>
+            </div>
+        </div>
+
 
     </div>
 

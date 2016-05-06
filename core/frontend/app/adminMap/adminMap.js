@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * Controlador de mapa de administrador.
+ * @author Ismael Rodríguez, Sergio Soro, David Vergara. 2016.
+ */
 angular.module('frontend')
 
     .controller('AdminMapCtrl', ['SessionService', 'uiGmapGoogleMapApi', '$scope', 'PoiService', '$rootScope','GuestService','UserService',
@@ -129,7 +133,7 @@ angular.module('frontend')
                     self.alert.message = "";
                 }
 
-
+                //Para mostrar alerta
                 $rootScope.$on("errorMessage", function (event, args) {
                     showAlert("danger",args.message);
                 });

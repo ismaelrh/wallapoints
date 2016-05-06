@@ -7,6 +7,7 @@ var RouteSchema = mongoose.Schema({
     creator: {type: String, required:true},
     pois: [{type: mongoose.Schema.Types.ObjectId, ref: 'Poi' }],
     distance: {type: Number, required: false},
+    date: {type: Date, default: Date.now },
     time: {type:Number, required: false}
 });
 
@@ -20,8 +21,7 @@ RouteSchema.methods.cleanRouteForList = function(){
     return object;
 };
 
-//El procesado se hace síncrono porque como máximo una ruta puede tener 9 pois
-RouteSchema.methods.cleanRouteForDetail = function(){
+RouteSchema.methods.cleanRouteForDetail = function(mes){
     var object = this.toJSON();
     delete object.__v;
     var pois = object.pois;

@@ -95,7 +95,7 @@ module.exports = function (app) {
                         {
                             name: req.body.name,
                             creator: req.user.username,
-                            pois: req.body.pois
+                            pois: response
                         }
                     );
 
@@ -107,6 +107,7 @@ module.exports = function (app) {
                             res.send({"error": true, "message": "Error saving data " + err});
                             return;
                         }
+
 
                         res.send({
                             error: false,
@@ -199,6 +200,9 @@ module.exports = function (app) {
                 promise
                     .then(function(completePois){
 
+                        //Se actualiza "pois" con el resultado completo
+                        result.pois = completePois;
+
                         //Se actualiza y se vuelven a calcular las distancias y tiempos
                         result.save(function (err, saveResult) {
 
@@ -208,9 +212,10 @@ module.exports = function (app) {
                                 return;
                             }
 
+
                             res.send({
                                 error: false,
-                                message: saveResult.cleanRouteForDetail(),
+                                message: result.cleanRouteForDetail(),
                                 links: [{guestList: "/routes/"}]
                             });
 
@@ -291,13 +296,13 @@ module.exports = function (app) {
      * Borra una route.
      * Acceso = admin o propio invitado
      */
-    router.delete("/:_id", function (req, res) {
+    router.delete("/:id", function (req, res) {
 
         Route.findOne({_id: req.params.id}, function (err, result) {
 
 
             if (err) {
-                res.status(500).send({"error": true, "message": "Error deleting guest"});
+                res.status(500).send({"error": true, "message": "Error deleting route"});
                 return;
             }
             if (result == null) {
@@ -305,11 +310,11 @@ module.exports = function (app) {
                 return;
             }
 
-            Route.remove({_id: req.params._id}, function (err, result) {
+            Route.remove({_id: req.params.id}, function (err, result) {
 
 
                 if (err) {
-                    res.status(500).send({"error": true, "message": "Error deleting guest"});
+                    res.status(500).send({"error": true, "message": "Error deleting route"});
                     return;
                 }
 
@@ -415,7 +420,7 @@ module.exports = function (app) {
                 var hasError = false;
                 for (var j = 0; j < result.length; j++) {
                     if (!result[j]) {
-                        hasError = false;
+                        hasError = true;
                     }
                 }
                 if (hasError) {
@@ -434,6 +439,7 @@ module.exports = function (app) {
 
 
     }
+
 
     /**
      * Convierte la llamada a gmAPI en una promesa.

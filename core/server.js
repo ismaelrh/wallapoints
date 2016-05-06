@@ -27,6 +27,7 @@ var publicConfig = {
   encode_polylines: false,
   secure: true
 };
+
 var gmAPI = new GoogleMapsAPI(publicConfig);
 //Pones objeto de la API de Gmaps en gmAPI
 app.set('gmAPI',gmAPI);
@@ -36,6 +37,7 @@ app.set('jwtsecret',config.jwtsecret);
 
 //URL de mongo según modo. Primero prueba la de HEROKU, si no, fichero de config.
 app.set('dbUrl',process.env.MONGODB_URI || config.db[app.settings.env]);
+
 //Ponemos el puerto según modo. Primero prueba el de HEROKU, si no, fichero de config.
 app.set('port',process.env.PORT || config.port[app.settings.env]);
 
@@ -52,10 +54,6 @@ app.use(bodyParser.urlencoded({extended:true}));
 //Cargamos los modelos
 app.models = require('./models');
 
-
-
-
-
 //Cargamos las rutas
 require('./routes')(app);
 
@@ -69,5 +67,6 @@ mongoose.connection.once('open', function(){
     console.log("[INFO] Express server running on port " + app.get('port') + " (" + app.settings.env  + ")");
   });
 });
+
 
 module.exports = app;
