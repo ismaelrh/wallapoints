@@ -20,8 +20,6 @@ if(app.settings.env=='development'){
   app.use(morgan('dev'));
 }
 
-
-
 //Creamos objeto de API de Google Maps
 var publicConfig = {
   key: config["gmaps-api-key"],
@@ -39,6 +37,7 @@ app.set('jwtsecret',config.jwtsecret);
 
 //URL de mongo según modo. Primero prueba la de HEROKU, si no, fichero de config.
 app.set('dbUrl',process.env.MONGODB_URI || config.db[app.settings.env]);
+
 //Ponemos el puerto según modo. Primero prueba el de HEROKU, si no, fichero de config.
 app.set('port',process.env.PORT || config.port[app.settings.env]);
 

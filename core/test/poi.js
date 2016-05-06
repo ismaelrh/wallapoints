@@ -223,7 +223,7 @@ describe('Poi', function () {
     });
 
     /**
-     * actualiza un poi en la bd
+     * borra un poi
      */
     it('should delete the poi with id poi1_id DELETE', function (done) {
         chai.request(server)
@@ -251,7 +251,7 @@ describe('Poi', function () {
         chai.request(server)
             .delete('/pois')
             .send({
-                creator:'admin'
+                username:'admin'
             })
             .set('Authorization','Bearer ' + generateUserToken('admin'))
             .end(function (err, res) {
