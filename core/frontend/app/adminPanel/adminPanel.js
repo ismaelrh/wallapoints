@@ -68,7 +68,7 @@ angular.module('frontend')
             UserService.getUserDetail(id).then(function (response) {
                 self.showUserDetailPanel = true;
                 self.userPanel = response;
-                
+
             }, function (err) {
                 self.showUserDetailPanel = false;
                 console.error(err);
@@ -112,7 +112,7 @@ angular.module('frontend')
                 //Remove from local array
                 if (index > -1) {
                     self.users.splice(index, 1);
-                    
+
                 }
 
 

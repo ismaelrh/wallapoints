@@ -33,12 +33,12 @@ angular.module('frontend')
                     .catch(function (exception) {
 
 
-                        if(exception.status == 401){
+                        if (exception.status == 401) {
                             //Si error 401 -> Datos incorrectos. Hacemos throw para que el controlador lo trate.
                             broadcastAlert(exception.data.message);
                             throw exception;
                         }
-                        else{
+                        else {
                             console.error(exception);
                             broadcastAlert("Could not login Guest");
                         }
@@ -73,7 +73,7 @@ angular.module('frontend')
                     });
             };
 
-            self.register = function(mail,password){
+            self.register = function (mail, password) {
                 return $http.post("/guests", {mail: mail, password: password})
                     .then(function (response) {
                         return response.data.message;
@@ -147,7 +147,6 @@ angular.module('frontend')
 
                     });
             };
-
 
 
         }]);
