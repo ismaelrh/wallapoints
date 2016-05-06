@@ -1,5 +1,6 @@
 /**
  * Módulo de router que maneja los pois favoritos de un invitado.
+ *  * @author Ismael Rodríguez, Sergio Soro, David Vergara. 2016.
  */
 var express = require('express');
 

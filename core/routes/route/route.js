@@ -1,5 +1,6 @@
 /**
- * Módulo de router que maneja las peticiones de user.
+ * Módulo de router que maneja las peticiones de rutas.
+ * @author Ismael Rodríguez, Sergio Soro, David Vergara. 2016.
  */
 
 var express = require('express');

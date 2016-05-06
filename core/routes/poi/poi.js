@@ -1,5 +1,6 @@
 /**
  * Módulo de router que maneja las peticiones de poi.
+ * @author Ismael Rodríguez, Sergio Soro, David Vergara. 2016.
  */
 
 var express = require('express');

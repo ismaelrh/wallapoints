@@ -1,5 +1,6 @@
 /**
- * Módulo de router que maneja las estadísticas del admin
+ * Módulo de router que maneja las estadísticas del admin.
+ * @author Ismael Rodríguez, Sergio Soro, David Vergara. 2016.
  */
 
 

@@ -2,6 +2,7 @@
 * Módulo principal de routes.
 * Este módulo se encarga de definir las rutas y los routers que manejan
 * cada una de ellas.
+* @author Ismael Rodríguez, Sergio Soro, David Vergara. 2016.
 */
 module.exports = function(app) {
 

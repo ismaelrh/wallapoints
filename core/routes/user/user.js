@@ -1,5 +1,6 @@
 /**
  * Módulo de router que maneja las peticiones de user.
+ * @author Ismael Rodríguez, Sergio Soro, David Vergara. 2016.
  */
 var http = require("http");
 var express = require('express');

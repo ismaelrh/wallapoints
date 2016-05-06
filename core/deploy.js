@@ -1,6 +1,7 @@
 /**
  * Módulo que se encarga de limpiar la BD e insertar el usuaro de admin en la misma
  * conforme a lo establecido en el fichero de configuración.
+ * @author Ismael Rodríguez, Sergio Soro, David Vergara. 2016.
  */
 var mongoose = require('mongoose'),
     config = require("./config"),

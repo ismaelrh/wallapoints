@@ -1,6 +1,7 @@
 /**
  * Módulo encargado de testear la API de /guest
  * Usa Mocha y Chai.
+ * @author Ismael Rodríguez, Sergio Soro, David Vergara. 2016.
  */
 process.env.NODE_ENV = 'test';
 

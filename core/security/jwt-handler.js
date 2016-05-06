@@ -4,6 +4,7 @@
  * y manejar los errores.
  * Si es necesario y está disponible, el objeto de user estará en req.user.
  * Módulo usado: https://github.com/auth0/express-jwt
+ *
  */
 
 jwt = require('express-jwt');

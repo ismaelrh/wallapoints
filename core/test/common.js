@@ -1,4 +1,7 @@
-
+/**
+ * Fichero que provee de funcionalidad útil a los tests, como generar JSON-WEB-TOCKENS válidos.
+ * @author Ismael Rodríguez, Sergio Soro, David Vergara. 2016.
+ */
 var config = require("../config");
 var jwt = require('jsonwebtoken');
 
