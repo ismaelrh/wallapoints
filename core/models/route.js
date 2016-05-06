@@ -5,6 +5,7 @@ var Poi = require('./poi'); //Se importa el model de POI pues se usa
 var RouteSchema = mongoose.Schema({
     name: {type: String, required:true},
     creator: {type: String, required:true},
+    date: {type: Date, default: Date.now },
     pois: [{type: mongoose.Schema.Types.ObjectId, ref: 'Poi' }]
 });
 
