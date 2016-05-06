@@ -9,6 +9,9 @@ var PoiSchema = mongoose.Schema({
     lat: {type: Number, required:true},
     long: {type: Number, required:true},
     formatted_address:{type: String},
+    country: {type: String},
+    city: {type: String},
+    elevation: {type: Number},
     date: {type: Date, default: Date.now },
     creator: {type: String, required:true}
 });

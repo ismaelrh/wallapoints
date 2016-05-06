@@ -164,7 +164,7 @@ angular.module('frontend')
                         }
                     }
                     return isFollowing;
-                }
+                };
 
 
                 function deleteFromLocalFavList(poiId) {
@@ -508,13 +508,16 @@ angular.module('frontend')
 
 
                 /**
-                 * Cambia o añade la puntuación por parte del invitado actual al poi actual
+                 * Cambia o añade la puntuación por parte del invitado actual al poi actual.
+                 * Además, actualiza la media
                  */
                 self.changeGuestRating = function (newRating) {
 
                     PoiService.changeGuestRating(self.detailedPoi._id, self.guest.mail, self.detailedPoi.guestRating, newRating)
                         .then(function (points) {
                             self.detailedPoi.guestRating = points;
+
+                            self.getMeanRating(self.detailedPoi._id);
 
                         });
 

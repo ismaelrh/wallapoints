@@ -32,12 +32,25 @@ angular.module('frontend')
 
             };
 
+            self.getPoisValidCount = function (username){
+                return $http.get("/stats/users/" + username + "/pois/validCount")
+                    .then(function (response) {
 
-            self.getAvgRouteDistance = function(username){
-                return $http.get("/stats/users/" + username + "/routes/avgDistance")
+                        return response.data.message.count;
+
+                    })
+                    .catch(function (exception) {
+
+                        broadcastAlert("Pois stats error");
+                        console.error(exception);
+                    });
+            };
+
+            self.getAvgPoiElevation = function(username){
+                return $http.get("/stats/users/" + username + "/pois/avgElevation")
                     .then(function(response){
 
-                        return response.data.message;;
+                        return response.data.message;
 
                     })
                     .catch(function(exception){
@@ -48,6 +61,39 @@ angular.module('frontend')
                     });
 
             };
+
+            self.getAvgRouteDistance = function(username){
+                return $http.get("/stats/users/" + username + "/routes/avgDistance")
+                    .then(function(response){
+
+                        return response.data.message;
+
+                    })
+                    .catch(function(exception){
+
+                        broadcastAlert("Route stats error");
+
+                        console.error(exception);
+                    });
+
+            };
+
+            self.getMaxPoiElevation = function(username){
+                return $http.get("/stats/users/" + username + "/pois/maxElevation")
+                    .then(function(response){
+
+                        return response.data.message;
+
+                    })
+                    .catch(function(exception){
+
+                        broadcastAlert("Pois stats error");
+
+                        console.error(exception);
+                    });
+
+            };
+
 
             self.getMaxDistanceRoute = function(username){
                 return $http.get("/stats/users/" + username + "/routes/maxDistance")
@@ -64,6 +110,24 @@ angular.module('frontend')
                     });
 
             };
+
+            self.getMinPoiElevation = function(username){
+                return $http.get("/stats/users/" + username + "/pois/minElevation")
+                    .then(function(response){
+
+                        return response.data.message;
+
+                    })
+                    .catch(function(exception){
+
+                        broadcastAlert("Route stats error");
+
+                        console.error(exception);
+                    });
+
+            };
+
+
 
             self.getMinDistanceRoute = function(username){
                 return $http.get("/stats/users/" + username + "/routes/minDistance")
@@ -144,6 +208,36 @@ angular.module('frontend')
                     });
             };
 
+            self.getPoisGroupedByCity = function(username){
+                return $http.get("/stats/users/" + username + "/pois/groupedByCity")
+                    .then(function(response){
+
+                        return response.data.message;
+
+                    })
+                    .catch(function(exception){
+
+                        broadcastAlert("Poi stats error");
+
+                        console.error(exception);
+                    });
+            };
+
+            self.getPoisGroupedByCountry = function(username){
+                return $http.get("/stats/users/" + username + "/pois/groupedByCountry")
+                    .then(function(response){
+
+                        return response.data.message;
+
+                    })
+                    .catch(function(exception){
+
+                        broadcastAlert("Poi stats error");
+
+                        console.error(exception);
+                    });
+            };
+
             self.getRoutesGroupedByTime = function(username){
                 return $http.get("/stats/users/" + username + "/routes/groupedByTime")
                     .then(function(response){
@@ -158,11 +252,4 @@ angular.module('frontend')
                         console.error(exception);
                     });
             }
-
-
-
-
-
-
-
         }]);

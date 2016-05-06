@@ -12,25 +12,36 @@ angular.module('frontend')
         self.user = SessionService.user;
 
 
-        self.minTimeRoute = {};
-        self.maxTimeRoute = {};
-        self.minDistanceRoute = {};
-        self.maxDistanceRoute = {};
+    self.minTimeRoute = {};
+    self.maxTimeRoute = {};
+    self.minDistanceRoute = {};
+    self.maxDistanceRoute = {};
+    self.maxPoiElevation ={};
+    self.minPoiElevation={};
 
-        self.routesByDistance = {
-            labels: [0],
-            data: [0]
-        };
-        self.routesByTime = {
-            labels: [0],
-            data: [0]
-        };
+    self.routesByDistance = {
+        labels: [0],
+        data: [0]
+    };
+    self.routesByTime = {
+        labels: [0],
+        data: [0]
+    };
+    self.routesByCountry= {
+        labels: [0],
+        data: [0]
+    };
+    self.routesByCity = {
+        labels: [0],
+        data: [0]
+    };
 
         //Para mostrar alerta cuando hay errores
         self.alert = {
             show: false,
             message: ""
         };
+
 
         self.hasRouteData = true;
 
@@ -55,6 +66,18 @@ angular.module('frontend')
             }
         }
 
+    /**
+     * Se obtiene la cuenta de rutas válidas (con distancia y tiempo).
+     * Si es 0, no se cargan las demás estadísticas.
+     */
+    StatsService.getRoutesValidCount(self.user.username).
+        then(function(response){
+        if(response==0){
+            self.hasRouteData = false;
+        }
+        else{
+            StatsService.getAvgRouteDistance(self.user.username)
+                .then(function(response){
 
         /**
          * Se obtiene la cuenta de rutas válidas (con distancia y tiempo).
@@ -76,7 +99,7 @@ angular.module('frontend')
                     .then(function (response) {
 
                         self.avgRouteTime = response.avgTime;
-                        
+
                         self.routeCount = response.count;
                     });
 
@@ -104,7 +127,7 @@ angular.module('frontend')
                     .then(function (response) {
 
                         self.maxTimeRoute.time = response.time;
-                        
+
                         self.maxTimeRoute.name = response.name;
                         self.maxTimeRoute.start = response.pois[0].name;
                         self.maxTimeRoute.end = response.pois[response.pois.length - 1].name;
@@ -115,7 +138,7 @@ angular.module('frontend')
 
 
                         self.minTimeRoute.time = response.time;
-                        
+
                         self.minTimeRoute.name = response.name;
                         self.minTimeRoute.start = response.pois[0].name;
                         self.minTimeRoute.end = response.pois[response.pois.length - 1].name;
@@ -135,6 +158,60 @@ angular.module('frontend')
             }
 
         });
+
+    /**
+     * Se obtiene la cuenta de pois válidos (con altitud).
+     * Si es 0, no se cargan las demás estadísticas.
+     */
+    StatsService.getPoisValidCount(self.user.username).
+    then(function(response){
+        if(response==0){
+            self.hasPoiData = false;
+            console.log("Failed getPoisValidCount");
+        }
+        else{
+            StatsService.getAvgPoiElevation(self.user.username)
+                .then(function(response){
+
+                    self.avgPoiElevation= response.avgPoiElevation;
+                    console.log("avg elevtion: " + response.avgPoiElevation);
+                    self.poiCount = response.count;
+                });
+
+
+
+            StatsService.getMaxPoiElevation(self.user.username)
+                .then(function(response){
+
+                    self.maxPoiElevation.elevation = response.elevation;
+                    self.poiMaxName= response.name;
+                    console.log("max poi elevation: " + response.maxPoiElevation);
+                });
+
+            StatsService.getMinPoiElevation(self.user.username)
+                .then(function(response){
+
+                    self.poiMinName= response.name;
+                    self.minPoiElevation.elevation = response.elevation;
+                    console.log("min poi elevation: " + response.minPoiElevation);
+                });
+
+            StatsService.getPoisGroupedByCity(self.user.username)
+                .then(function(response){
+
+                    self.routesByCity = response;
+                });
+
+            StatsService.getPoisGroupedByCountry(self.user.username)
+                .then(function(response){
+
+                    self.routesByCountry = response;
+                });
+
+        }
+
+    });
+
 
 
         self.logOut = function () {
