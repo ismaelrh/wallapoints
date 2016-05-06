@@ -347,10 +347,10 @@ module.exports = function (app) {
             //introducimos la fecha en el array de fechas
             arrayFechas.push(d+"-"+m+"-"+y);
             var encontrado = false;
-            for(var x = 0; x < altas.length; x++){
+            for(var x = 0; (x < altas.length) && !encontrado; x++){
                 if(altas[x]._id.day == d){
-                    console.log(altas[cuentaA]._id.day +"    "+d);
                     arrayAltas.push(altas[x].count);
+                    altas.splice(x,1);
                     console.log(arrayAltas);
                     encontrado = true;
                 }
@@ -368,14 +368,14 @@ module.exports = function (app) {
 
     }
 
-    function byHour(altas) {
-        console.log(altas);
+    function byHour(access) {
+        console.log(access);
         var today = new Date();
-        var arrayAltas = [];
+        var arrayAccess = [];
         var arrayFechas = [];
 
-        var cuentaA = altas.length - 1;
-        // desde el dia actual hasta el dia marcado
+        var cuentaA = access.length - 1;
+        // Ultimas 24 horas
         var hours = 24;
         today.setHours(today.getHours()-1*hours);
 
@@ -386,26 +386,27 @@ module.exports = function (app) {
             var m = today.getUTCMonth() + 1;
             var y = today.getFullYear();
             var d = today.getDate();
-            //introducimos la fecha en el array de fechas
+            //introducimos la fecha en el array de fechas con la hora
             arrayFechas.push(d+"-"+m+"-"+y+"("+h+")");
             var encontrado = false;
-            for(var x = 0; x < altas.length; x++){
-                if(altas[x]._id.hour == h){
-                    console.log(altas[cuentaA]._id.day +"    "+d);
-                    arrayAltas.push(altas[x].count);
-                    console.log(arrayAltas);
+            for(var x = 0; (x < access.length) && !encontrado; x++){
+                if(access[x]._id.hour == h){
+                    arrayAccess.push(access[x].count);
+                    access.splice(x,1);
+                    console.log(access);
+                    console.log(access.length);
                     encontrado = true;
                 }
             }
             if (!encontrado){
-                arrayAltas.push(0);
+                arrayAccess.push(0);
             }
 
             today.setHours(today.getHours()+1);
 
         }
-        //devuelve el array de fechas y dos arrays de altas y fechas que coinciden en indice con el de fechas
-        return {dates:arrayFechas, userData:[arrayAltas]}
+        //devuelve array de fechas con hora junto al array de logins por hora de las ultimas 24 horas
+        return {dates:arrayFechas, userData:[arrayAccess]}
 
 
     }
