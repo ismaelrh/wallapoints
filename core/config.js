@@ -11,6 +11,7 @@ module.exports = {
         development: 8888,
         test: 8889
     },
-    jwtsecret: "firmasuperlargaeimposibledeadivinar"
+    jwtsecret: "firmasuperlargaeimposibledeadivinar",
+    "gmaps-api-key": "AIzaSyD6pa36NtjEyNdffeAwWJFY44k_C4z2lh8"
 
 };

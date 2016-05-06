@@ -49,4 +49,9 @@ angular.module('frontend')
         self.showUserDetailed(self.editUserParam);
 
 
+        self.logOut = function(){
+            SessionService.logOut();
+        };
+
+
     }]);

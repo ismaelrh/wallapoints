@@ -3,22 +3,15 @@
  */
 
 var express = require('express');
-var GoogleMapsAPI = require('googlemaps');
-var publicConfig = {
-    key: 'AIzaSyBUPexZRNdGWU0u151pYbdPKK4Ib8DPZCA',
-    stagger_time:       1000, // for elevationPath
-    encode_polylines:   false,
-    secure:             true, // use https
-};
-var gmAPI = new GoogleMapsAPI(publicConfig);
-
 
 
 module.exports = function (app) {
 
     var router = express.Router();
+    var gmAPI = app.get('gmAPI'); //Obtenemos objeto manejador de API de Gmaps
 
     var Poi = app.models.Poi;
+    var Route = app.models.Route;
 
 
     /**
@@ -68,7 +61,7 @@ module.exports = function (app) {
      */
     router.post("/", function (req, res) {
 
-        if(req.user.type=="guest"){
+        if (req.user.type == "guest") {
             res.status(403).send({"error": true, "message": "Forbidden. You are not authorized."});
         }
 
@@ -86,18 +79,19 @@ module.exports = function (app) {
             return;
         }
 
-        // reverse geocode API
+
+        //Necesitamos obtener la dirección para enviar la respuesta
         var reverseGeocodeParams = {
-            "latlng":        req.body.lat+","+req.body.long,
-            "result_type":   "postal_code",
-            "language":      "en",
+            "latlng": req.body.lat + "," + req.body.long,
+            "result_type": "postal_code",
+            "language": "en",
             "location_type": "APPROXIMATE"
         };
 
         // Realiza una petición al API Google Maps Geocoding para obtener la direccion
-        gmAPI.reverseGeocode(reverseGeocodeParams, function(err, result){
+        gmAPI.reverseGeocode(reverseGeocodeParams, function (err, result) {
             var formatted_address = 'unknown';
-            if (result != undefined){
+            if (result != undefined) {
                 formatted_address = result.results[0].formatted_address;
             }
 
@@ -139,46 +133,75 @@ module.exports = function (app) {
     /**
      * DELETE /
      * Borra los poi de un usuario pasado por payload {"creator": "fulanito"}.
+     * Además, borra las rutas que contengan alguno de sus pois, y las rutas creadas por el creador.
      */
     router.delete("/", function (req, res) {
 
 
-
-
-        if (!req.body.creator) {
+        if (!req.body.username) {
             res.status(400).send({"error": true, "message": "You have to fill the creator parameter"});
             return;
         }
 
-        if( !(
-            (req.user.type == "user" && req.user.username == req.body.creator) ||
+        if (!(
+            (req.user.type == "user" && req.user.username == req.body.username) ||
             (req.user.type == "user" && req.user.username == "admin"))
-        )
-        {
+        ) {
             res.status(403).send({"error": true, "message": "Forbidden. You are not authorized."});
             return;
         }
 
 
-
-        Poi.remove({creator: req.body.creator}, function (err, results) {
-
+        Poi.find({creator: req.body.username}, function (err, findResult) {
 
             if (err) {
                 res.status(500).send({"error": true, "message": "Error deleting data"});
                 return;
             }
 
-            if (results.result.n == 0) {
-                res.status(500).send({"error": true, "message": "The user doesn't have Pois "});
-                return;
-            }
+            Poi.remove({creator: req.body.username}, function (err, removeResult) {
 
-            res.send({
-                "error": false,
-                "message": "Pois deleted successfully",
-                links: [{"poiList": "/pois"}]
+                if (err) {
+                    res.status(500).send({"error": true, "message": "Error deleting data"});
+                    return;
+                }
+
+                if (removeResult.result.n == 0) {
+                    res.status(404).send({"error": true, "message": "The user doesn't have Pois "});
+                    return;
+                }
+
+
+                var idArray = [];
+                for (var i = 0; i < findResult.length; i++) {
+                    idArray.push({_id: findResult[i]._id});
+                }
+
+
+                //Borramos rutas con esos POIS y rutas del creador
+                Route.remove({pois: {$in: findResult}})
+                    .then(function (results) {
+                        console.log("Cleaned DB of " + results.result.n + " invalid routes");
+                        return Route.remove({creator: req.body.username});
+                    })
+                    .then(function (results) {
+                        console.log("Cleaned DB of " + results.result.n + " invalid routes");
+                        res.send({
+                            "error": false,
+                            "message": "Pois deleted successfully",
+                            links: [{"poiList": "/pois"}]
+                        });
+
+                    })
+                    .catch(function (exception) {
+                        res.status(500).send({"error": true, "message": "Error deleting data"});
+                        return;
+                        console.error("Error while cleaning DB of invalid routes " + err);
+                    });
+
+
             });
+
 
         });
 
@@ -222,7 +245,6 @@ module.exports = function (app) {
     router.put("/:id", function (req, res) {
 
 
-
         Poi.findOne({_id: req.params.id}, function (err, poi) {
 
 
@@ -231,11 +253,10 @@ module.exports = function (app) {
                 return;
             }
 
-            if( !(
+            if (!(
                 (req.user.type == "user" && req.user.username == poi.creator) ||
                 (req.user.type == "user" && req.user.username == "admin"))
-            )
-            {
+            ) {
                 res.status(403).send({"error": true, "message": "Forbidden. You are not authorized."});
                 return;
             }
@@ -259,18 +280,37 @@ module.exports = function (app) {
                 poi.long = req.body.long;
             }
 
-            poi.save(function (err, result) {
-                if (err) {
-                    res.send({"error": true, "message": "Error updating poi"});
+            //Necesitamos obtener la dirección para enviar la respuesta
+            var reverseGeocodeParams = {
+                "latlng": poi.lat + "," + poi.long,
+                "result_type": "postal_code",
+                "language": "en",
+                "location_type": "APPROXIMATE"
+            };
+
+            //Actualizamos localización y luego guardamos
+            gmAPI.reverseGeocode(reverseGeocodeParams, function (err, result) {
+
+
+                poi.formatted_address = 'unknown';
+                if (result != undefined) {
+                    poi.formatted_address = result.results[0].formatted_address;
                 }
-                else {
-                    res.send({
-                        "error": false,
-                        "message": result.cleanObjectAndAddHref(),
-                        links: [{"poiList": "/pois"}]
-                    });
-                }
+
+                poi.save(function (err, result) {
+                    if (err) {
+                        res.send({"error": true, "message": "Error updating poi"});
+                    }
+                    else {
+                        res.send({
+                            "error": false,
+                            "message": result.cleanObjectAndAddHref(),
+                            links: [{"poiList": "/pois"}]
+                        });
+                    }
+                });
             });
+
 
         });
 
@@ -282,54 +322,62 @@ module.exports = function (app) {
      * Borra un poi (sólo puede borrarlo el usuario creador y admin). Lo quita también de favoritos
      * y de las rutas.
      * Links.poiList -> lista de pois
+     * Borra las rutas que lo contengan.
      */
     router.delete("/:id", function (req, res) {
 
 
-
-
-        Poi.findOne({_id:req.params.id},function(err,poi){
+        Poi.findOne({_id: req.params.id}, function (err, poi) {
 
             if (err) {
                 res.status(500).send({"error": true, "message": "Error deleting poi"});
                 return;
             }
 
-            if(poi==null){
+            if (poi == null) {
                 res.status(404).send({"error": true, "message": "The poi does not exist in the db"});
             }
 
 
-            if( !(
+            if (!(
                 (req.user.type == "user" && req.user.username == poi.creator) ||
                 (req.user.type == "user" && req.user.username == "admin"))
-            )
-            {
+            ) {
                 res.status(403).send({"error": true, "message": "Forbidden. You are not authorized."});
                 return;
             }
 
-            Poi.remove({_id: req.params.id}, function (err, result) {
+
+            poi.remove({_id: req.params.id}, function (err, result) {
 
 
-                if (err) {
-                    res.status(500).send({"error": true, "message": "Error deleting poi"});
-                    return;
-                }
 
 
-                res.send({"error": false,
-                    "message": "Poi deleted successfully",
-                    links: [{"poiList": "/pois"}]
+                //Borrar todas las rutas que contenían ese punto
+                Route.remove({pois: {$in: [req.params.id]}}, function (err, results) {
+
+                    if (err || !results) {
+
+                        console.error("Error while cleaning DB of invalid routes " + err);
+                        res.status(500).send({"error": true, "message": "Error deleting poi"});
+                        return;
+
+
+                    }
+                    else {
+                        res.send({
+                            "error": false,
+                            "message": "Poi deleted successfully",
+                            links: [{"poiList": "/pois"}]
+                        });
+                        console.log("Cleaned DB of " + results.result.n + " invalid routes");
+                    }
                 });
 
 
             });
 
         });
-
-
-
 
 
     });
@@ -343,32 +391,35 @@ module.exports = function (app) {
     router.post("/search", function (req, res) {
 
         var searchObject = {};
-        if(req.body.date){
+        if (req.body.date) {
             var date = new Date(req.body.date);
             searchObject.date = req.body.date;
             var month = date.getUTCMonth(); //months from 1-12
-            var day = date.getUTCDate() +1;
+            var day = date.getUTCDate() + 1;
             var year = date.getUTCFullYear();
 
-            var start = new Date(year,month,day,0,0,0,0);
-            var end = new Date(year,month,day+1,23,59,59,99);
+            var start = new Date(year, month, day, 0, 0, 0, 0);
+            var end = new Date(year, month, day + 1, 23, 59, 59, 99);
 
 
-            console.log("Searching for " + new Date(year,month,day));
-            searchObject.date = {"$gte": new Date(year,month,day,0,0,0), "$lte": new Date(year,month,day,23,59,59)};
+            console.log("Searching for " + new Date(year, month, day));
+            searchObject.date = {
+                "$gte": new Date(year, month, day, 0, 0, 0),
+                "$lte": new Date(year, month, day, 23, 59, 59)
+            };
             //Extraemos dia, año y mes
         }
 
-        if(req.body.creator){
+        if (req.body.creator) {
             searchObject.creator = req.body.creator;
         }
 
-        if(req.body.keywords && req.body.keywords.length > 0){
+        if (req.body.keywords && req.body.keywords.length > 0) {
             searchObject.keywords = {$all: req.body.keywords}
         }
 
 
-        Poi.find(searchObject,"_id name lat long", function (err, results) {
+        Poi.find(searchObject, "_id name lat long", function (err, results) {
 
 
             if (err) {
@@ -402,9 +453,7 @@ module.exports = function (app) {
             }
 
 
-
         });
-
 
 
     });

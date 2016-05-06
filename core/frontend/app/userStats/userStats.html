@@ -2,7 +2,8 @@
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -14,14 +15,25 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li><a href="/#/admin"><span class="glyphicon glyphicon-inbox" aria-hidden="true"></span> Manage users <span class="sr-only">(current)</span></a></li>
-                <li><a href="/#/adminMap"><span class="glyphicon glyphicon-globe" aria-hidden="true"></span>&nbsp;View all POIs</a></li>
-                <li><a href="/#/userMap"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>&nbsp;Manage my POIs</a></li>
-                <li><a href="/#/statistics"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span>&nbsp;Statistics</a></li>
-                <li class="active"><a href="/#/statistics"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span>&nbsp;USer statistics</a></li>
+                <ul class="nav navbar-nav">
+                    <li ng-if="ctrl.user.username=='admin'"><a href="/#/admin"><span class="glyphicon glyphicon-inbox"
+                                                                                     aria-hidden="true"></span> Manage
+                        users <span class="sr-only">(current)</span></a></li>
+                    <li ng-if="ctrl.user.username=='admin'"><a href="/#/adminMap"><span
+                            class="glyphicon glyphicon-globe" aria-hidden="true"></span>&nbsp;View all POIs</a></li>
+                    <li><a href="/#/userMap"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>&nbsp;Manage
+                        my POIs</a></li>
+                    <li><a href="/#/userPanel"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>&nbsp;Edit
+                        my profile</a></li>
+                    <li ng-if="ctrl.user.username=='admin'"><a href="/#/statistics"><span
+                            class="glyphicon glyphicon-stats" aria-hidden="true"></span>&nbsp;Statistics</a></li>
+                    <li class="active"><a href="/#/userStats"><span class="glyphicon glyphicon-stats"
+                                                                    aria-hidden="true"></span>&nbsp;User Stats</a></li>
+                </ul>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="" ng-click="ctrl.logOut()"><span class="glyphicon glyphicon-log-out"></span>&nbsp;Log-out</a></li>
+                <li><a href="" ng-click="ctrl.logOut()"><span
+                        class="glyphicon glyphicon-log-out"></span>&nbsp;Log-out</a></li>
 
             </ul>
         </div><!-- /.navbar-collapse -->
@@ -29,73 +41,85 @@
 </nav>
 
 
-
-
 <div class="container"> <!-- El container añade márgenes a los lados -->
 
 
-    <!-- Fila de rutas -->
-    <div class="row bg-default">
-        <div class="col-md-4 bg-success">
-
-            <h3>Longitud media de ruta: </h3>
-            <h1>1234 km</h1>
-        </div>
-        <div class="col-md-4 bg-success">
-
-            <h3>Ruta más larga: </h3>
-            <h1>1234 km</h1>
-        </div>
-        <div class="col-md-4 bg-success">
-            <h3>Ruta más corta</h3>
-            <h1>1234 km</h1>
-        </div>
-
-    </div>
-
-    <!-- Fila de pois -->
-    <div class="row bg-default" style="margin-top:20px;">
-        <div class="col-md-4 bg-success">
-
-            <h3>Altitud  media de POIs: </h3>
-            <h1>1234 km</h1>
-        </div>
-        <div class="col-md-4 bg-success">
-
-            <h3>Poi más alto: </h3>
-            <h1>1234 km</h1>
-        </div>
-        <div class="col-md-4 bg-success">
-            <h3>Poi más corto: </h3>
-            <h1>1234 km</h1>
-        </div>
-
-    </div>
-
-
-    <!-- Fila de gráficas -->
-    <div class="row bg-default" style="margin-top:20px;">
-        <div class="col-md-6 bg-success">
-
-           <h3>Quesito de países</h3>
+    <div >
+        <div class="row bg-info">
+            <div class="col-m-12">
+                <h2 style="text-align:center;">Stats about your routes</h2>
+            </div>
 
         </div>
-        <div class="col-md-6 bg-success">
-            <h3>Quesito de ciudades</h3>
+        <div class="row bg-success" ng-if="!ctrl.hasRouteData">
+            <h3 style="text-align:center;">No routes available!</h3>
         </div>
 
+        <!-- Fila de distancias de rutas -->
+        <div class="row bg-default" ng-if="ctrl.hasRouteData">
+            <div class="col-md-4 bg-success">
 
-    </div>
-    <div class="row bg-default" style="margin-top:20px;">
-        <div class="col-md-6 bg-success">
-            <h3>Rutas de más de X horas</h3>
+                <h3>Average distance</h3>
+                <h1>{{ctrl.avgRouteDistance | number : 2}} Km</h1>
+                <p>Of a total of {{ctrl.routeCount}} routes</p>
+            </div>
+            <div class="col-md-4 bg-success">
+
+                <h3>Longest distance</h3>
+                <h1>{{ctrl.maxDistanceRoute.distance | number : 2}} Km</h1>
+                <p><b>{{ctrl.maxDistanceRoute.name}}</b>, from <i>"{{ctrl.maxDistanceRoute.start}}"</i> to <i>"{{ctrl.maxDistanceRoute.end}}"</i>
+                </p>
+            </div>
+            <div class="col-md-4 bg-success">
+                <h3>Shortest distance</h3>
+                <h1>{{ctrl.minDistanceRoute.distance | number : 2}} Km</h1>
+                <p><b>{{ctrl.minDistanceRoute.name}}</b>, from <i>"{{ctrl.minDistanceRoute.start}}"</i> to <i>"{{ctrl.minDistanceRoute.end}}"</i>
+                </p>
+            </div>
 
         </div>
-        <div class="col-md-6 bg-success">
-            <h3>Rutas de más de X kilómetros</h3>
+        <!-- Fila de tiempos de rutas -->
+        <div class="row bg-default" ng-if="ctrl.hasRouteData">
+            <div class="col-md-4 bg-success">
+
+                <h3>Average time</h3>
+                <h1>{{ctrl.avgRouteTime | secondsToHHMM}} h.</h1>
+                <p>Of a total of {{ctrl.routeCount}} routes</p>
+            </div>
+            <div class="col-md-4 bg-success">
+
+                <h3>Longest time</h3>
+                <h1>{{ctrl.maxTimeRoute.time | secondsToHHMM}} h.</h1>
+                <p><b>{{ctrl.maxTimeRoute.name}}</b>, from <i>"{{ctrl.maxTimeRoute.start}}"</i> to <i>"{{ctrl.maxTimeRoute.end}}"</i>
+                </p>
+            </div>
+            <div class="col-md-4 bg-success">
+                <h3>Shortest time</h3>
+                <h1>{{ctrl.minTimeRoute.time | secondsToHHMM }} h.</h1>
+                <p><b>{{ctrl.minTimeRoute.name}}</b>, from <i>"{{ctrl.minTimeRoute.start}}"</i> to <i>"{{ctrl.minTimeRoute.end}}"</i>
+                </p>
+            </div>
+
         </div>
 
 
+        <!-- Fila de quesitos de rutas -->
+        <div class="row bg-default" style="margin-top:20px;" ng-if="ctrl.hasRouteData">
+            <div class="col-md-6 bg-success">
+                <h3 style="text-align:center;">Routes by time duration</h3>
+                <canvas id="pieTime" class="chart chart-pie"
+                        chart-data="ctrl.routesByTime.data" chart-labels="ctrl.routesByTime.labels">
+                </canvas>
+            </div>
+            <div class="col-md-6 bg-success">
+                <h3 style="text-align:center;">Routes by total distance</h3>
+                <canvas id="pieDistance" class="chart chart-pie"
+                        chart-data="ctrl.routesByDistance.data" chart-labels="ctrl.routesByDistance.labels">
+                </canvas>
+            </div>
+
+
+        </div>
     </div>
 
 </div>
