@@ -1,9 +1,13 @@
 'use strict';
 
+/**
+ * Controlador de pantalla de mapa de invitado.
+ * @author Ismael Rodríguez, Sergio Soro, David Vergara. 2016.
+ */
 angular.module('frontend')
 
-    .controller('MapCtrl', ['SessionService', 'uiGmapGoogleMapApi', '$scope', 'PoiService', '$rootScope','GuestService','UserService',
-        function (SessionService, uiGmapGoogleMapApi, $scope, PoiService,$rootScope,GuestService,UserService) {
+    .controller('MapCtrl', ['SessionService', 'uiGmapGoogleMapApi', '$scope', 'PoiService', '$rootScope', 'GuestService', 'UserService',
+        function (SessionService, uiGmapGoogleMapApi, $scope, PoiService, $rootScope, GuestService, UserService) {
 
 
             var self = this; //Para no perder la variable this, la guardamos en self (de lo contrario se sobreescribe)
@@ -12,7 +16,7 @@ angular.module('frontend')
             //Invitado logueado actualmente
             self.guest = SessionService.user;
             //Si no es guest, tratamos como no autentificado
-            if(self.guest && self.guest.type!="guest"){
+            if (self.guest && self.guest.type != "guest") {
                 self.guest = undefined;
             }
 
@@ -29,7 +33,7 @@ angular.module('frontend')
             //Objeto de mapa
             self.map =
             {
-                center:{latitude: 42.1365707, longitude: -0.4143509},
+                center: {latitude: 42.1365707, longitude: -0.4143509},
                 zoom: 3,
                 control: {},
                 options: {
@@ -73,8 +77,6 @@ angular.module('frontend')
             self.creatorError = false;
 
 
-
-
             //Se empieza a hacer declaraciones una vez ha cargado el objeto de mapa -> maps es el objecto google.maps
             uiGmapGoogleMapApi.then(function (maps) {
 
@@ -91,17 +93,17 @@ angular.module('frontend')
                     },
                     mouseover: function (marker, eventName, model) {
 
-                        if(model.control){
+                        if (model.control) {
                             self.map.hoverPoiList.push(model.control._id);
                         }
 
 
                     },
                     mouseout: function (marker, eventName, model) {
-                        if(model.control){
+                        if (model.control) {
                             var index = self.map.hoverPoiList.indexOf(model.control._id);
-                            if(index>-1){
-                                self.map.hoverPoiList.splice(index,1);
+                            if (index > -1) {
+                                self.map.hoverPoiList.splice(index, 1);
                             }
                         }
 
@@ -110,31 +112,31 @@ angular.module('frontend')
                 };
 
 
-
-                function showAlert(type,message){
+                function showAlert(type, message) {
                     self.alert.show = true;
                     self.alert.type = type;
                     self.alert.message = message;
-                    if(self.alert.type=="danger"){
+                    if (self.alert.type == "danger") {
                         self.alert.title = "Error!";
                     }
-                    if(self.alert.type=="warning"){
+                    if (self.alert.type == "warning") {
                         self.alert.title = "Warning!"
                     }
-                    if(self.alert.type=="success"){
+                    if (self.alert.type == "success") {
                         self.alert.title = "Success!";
                     }
                 }
 
-                function clearAlert(){
+                function clearAlert() {
                     self.alert.show = false;
                     self.alert.type = "default";
                     self.alert.message = "";
                 }
 
 
+                //Para mostrar alerta
                 $rootScope.$on("errorMessage", function (event, args) {
-                    showAlert("danger",args.message);
+                    showAlert("danger", args.message);
                 });
 
                 /**
@@ -154,7 +156,7 @@ angular.module('frontend')
                 /**
                  *  Devuelve true si el guest actual tiene en su lista de siguiendo el usuario con username.
                  */
-                self.userIsInFollowingList = function(username) {
+                self.userIsInFollowingList = function (username) {
                     var isFollowing = false;
                     for (var i = 0; !isFollowing && i < self.following.length; i++) {
                         if (self.following[i].username == username) {
@@ -188,13 +190,13 @@ angular.module('frontend')
                  * Devuelve cierto si el poi está en la ruta seleccionada actual.
                  * False en caso contrario.
                  */
-                self.isPoiOnDetailedRoute = function(poi){
-                    if(!self.detailedRoute){
+                self.isPoiOnDetailedRoute = function (poi) {
+                    if (!self.detailedRoute) {
                         return false;
                     }
                     var is = false;
-                    for(var i = 0; !is && i < self.detailedRoute.pois.length; i++){
-                        if(self.detailedRoute.pois[i]._id == poi._id){
+                    for (var i = 0; !is && i < self.detailedRoute.pois.length; i++) {
+                        if (self.detailedRoute.pois[i]._id == poi._id) {
                             is = true;
                         }
                     }
@@ -204,13 +206,13 @@ angular.module('frontend')
                  * Devuelve el label del marker para el poi indicado.
                  * Será estrella si es favorito, nada si no lo es.
                  */
-                self.getMarkerLabel = function(poi){
+                self.getMarkerLabel = function (poi) {
 
 
-                    if(poi.isFav){
+                    if (poi.isFav) {
                         return "★";
                     }
-                    else{
+                    else {
                         return undefined;
                     }
 
@@ -307,7 +309,6 @@ angular.module('frontend')
                 self.searchPois = function () {
 
 
-
                     var searchObject = {};
 
                     if (self.search.creator && self.search.creator.length > 0) {
@@ -318,15 +319,15 @@ angular.module('frontend')
                         searchObject.date = self.search.date;
                     }
 
-                    if(self.search.keywords && self.search.keywords.length > 0){
+                    if (self.search.keywords && self.search.keywords.length > 0) {
                         //Formamos array de keywords a partir de lista separada por comas
                         searchObject.keywords = self.search.keywords.split(",");
-                        for(var i = 0; i < searchObject.keywords.length; i++){
+                        for (var i = 0; i < searchObject.keywords.length; i++) {
                             searchObject.keywords[i] = searchObject.keywords[i].trim();
                         }
 
                         //Cuando no se pone ninguna keyword, que quede vacío el array
-                        if(searchObject.keywords.length == 1 && searchObject.keywords[0].length==0){
+                        if (searchObject.keywords.length == 1 && searchObject.keywords[0].length == 0) {
                             searchObject.keywords = [];
                         }
                     }
@@ -342,8 +343,6 @@ angular.module('frontend')
                         });
 
 
-
-
                 };
 
                 /**
@@ -352,11 +351,11 @@ angular.module('frontend')
                 self.searchRoutes = function (listaPois) {
 
                     var arrayToSend = [];
-                    for(var i = 0; i < listaPois.length;i++){
+                    for (var i = 0; i < listaPois.length; i++) {
                         arrayToSend.push(listaPois[i]._id);
                     }
 
-                    PoiService.searchRoutes({pois:arrayToSend})
+                    PoiService.searchRoutes({pois: arrayToSend})
                         .then(function (routeList) {
                             self.routes = routeList;
                         });
@@ -419,13 +418,12 @@ angular.module('frontend')
                     var isFollowing = self.userIsInFollowingList(username);
 
 
-
                     if (isFollowing) { //Está siguiendo, por lo que quita de siguienod
                         GuestService.unfollowUser(self.guest.mail, username)
                             .then(function (success) {
 
                                 //Borramos de lista local de siguiendo
-                                if(self.detailedPoi){
+                                if (self.detailedPoi) {
                                     self.detailedPoi.isFollowing = false;
                                 }
 
@@ -435,11 +433,11 @@ angular.module('frontend')
                     }
                     else { //No siguiendo, lo añade a siguienod
 
-                        GuestService.followUser(self.guest.mail,username)
+                        GuestService.followUser(self.guest.mail, username)
                             .then(function (success) {
 
                                 //Añadimos a lista local de siguiendo
-                                if(self.detailedPoi){
+                                if (self.detailedPoi) {
                                     self.detailedPoi.isFollowing = true;
                                 }
 
@@ -460,7 +458,7 @@ angular.module('frontend')
                     var shownArray = [];
                     for (var i = 0; i < self.pois.length; i++) {
                         shownArray.push(self.pois[i]);
-                        self.pois[i].isFav= false;
+                        self.pois[i].isFav = false;
                     }
 
                     for (var j = 0; j < self.favs.length; j++) {
@@ -477,7 +475,7 @@ angular.module('frontend')
                             shownArray.push(self.favs[j]);
                             self.favs[j].isFav = true;
                         }
-                        else{
+                        else {
                             shownArray[repeatedIndex].isFav = true;
                         }
                     }
@@ -502,7 +500,7 @@ angular.module('frontend')
                  * Obtiene la puntuación dada por el invitado a un poi.
                  */
                 self.getGuestRating = function (poiId) {
-                    PoiService.getGuestRating(poiId,self.guest.mail)
+                    PoiService.getGuestRating(poiId, self.guest.mail)
                         .then(function (points) {
                             self.detailedPoi.guestRating = points;
                         });
@@ -514,7 +512,7 @@ angular.module('frontend')
                  */
                 self.changeGuestRating = function (newRating) {
 
-                    PoiService.changeGuestRating(self.detailedPoi._id,self.guest.mail,self.detailedPoi.guestRating,newRating)
+                    PoiService.changeGuestRating(self.detailedPoi._id, self.guest.mail, self.detailedPoi.guestRating, newRating)
                         .then(function (points) {
                             self.detailedPoi.guestRating = points;
 
@@ -563,17 +561,17 @@ angular.module('frontend')
                  */
                 self.loginGuest = function () {
 
-                    GuestService.login(self.loginData.mail,self.loginData.password)
+                    GuestService.login(self.loginData.mail, self.loginData.password)
                         .then(function (jwtToken) {
 
                             SessionService.setNewToken(jwtToken);
                             self.guest = SessionService.user;
 
-                            showAlert("success","Welcome :)");
+                            showAlert("success", "Welcome :)");
                             return self.getGuestDetails();
 
                         })
-                        .catch(function(exception){
+                        .catch(function (exception) {
                             //Este error salta cuando nos dan 401 -> Incorrect mail or password
                         });
 
@@ -602,13 +600,13 @@ angular.module('frontend')
                  */
                 self.registerGuest = function () {
 
-                    GuestService.register(self.loginData.mail,self.loginData.password)
+                    GuestService.register(self.loginData.mail, self.loginData.password)
                         .then(function (response) {
 
                             self.loginGuest();
 
                         })
-                        .catch(function(exception){
+                        .catch(function (exception) {
 
                             //Error al registrar, no hacemos log-in (El servicio ha propagado el error)
                         });
@@ -702,8 +700,8 @@ angular.module('frontend')
 
                                     //Para cada punto de la ruta, mostramos un marker
                                     self.routeMarkers = [];
-                                    for(var i = 0; i < self.detailedRoute.pois.length; i++){
-                                        self.detailedRoute.pois[i].order = "" + String.fromCharCode(65+i);
+                                    for (var i = 0; i < self.detailedRoute.pois.length; i++) {
+                                        self.detailedRoute.pois[i].order = "" + String.fromCharCode(65 + i);
                                         self.routeMarkers.push(self.detailedRoute.pois[i]);
                                     }
                                 } else {
@@ -725,8 +723,6 @@ angular.module('frontend')
                 }
 
                 self.searchPois();
-
-
 
 
             });

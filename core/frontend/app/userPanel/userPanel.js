@@ -1,53 +1,82 @@
 'use strict';
 
+/**
+ * Controlador de pantalla de panel de usuario.
+ * @author Ismael Rodríguez, Sergio Soro, David Vergara. 2016.
+ */
 angular.module('frontend')
 
-    .controller('UserPanelCtrl', ['$http','$routeParams','SessionService',function($http,$routeParams,SessionService) {
+    .controller('UserPanelCtrl', ['$routeParams', 'SessionService', 'UserService', '$rootScope',
+        function ($routeParams, SessionService, UserService, $rootScope) {
 
-        var self = this; //Para no perder la variable this, la guardamos en self (de lo contrario se sobreescribe)
+            var self = this; //Para no perder la variable this, la guardamos en self (de lo contrario se sobreescribe)
 
-        self.user= SessionService.user;
-        console.log(SessionService.user);
-        self.userEdited = { //User a añadir
-            email: "",
-            password: "",
-            name: "",
-            surname:""
-        };
+            self.user = SessionService.user;
 
-        self.errorEdited ="";
+            
+            self.userEdited = { //User a añadir
+                email: "",
+                password: "",
+                name: "",
+                surname: ""
+            };
 
-        self.userPanel = { //User mostrado en el panel
-        };
+            self.errorEdited = "";
 
 
-        self.showUserDetailed = function(id){
-            $http.get('/users/'+id).then(function(response){
-                self.userPanel=response.data.message;
-                console.log(response.data.message);
-            },  function(err){
-                self.showUserDetailPanel = false;
-                console.error(err);
+            self.userPanel = {}; //User mostrado en el panel
+
+            //Para mostrar alerta cuando hay errores
+            self.alert = {
+                show: false,
+                message: ""
+            };
+
+            //Para mostrar alerta
+            $rootScope.$on("errorMessage", function (event, args) {
+                showAlert("danger", args.message);
             });
-        };
-
-        self.editUser = function(){
-            $http.put('/users/'+self.user.username, self.userEdited).then(function(response){
-                self.errorEdited="Details edited succesfully";
-                self.userPanel=response.data.message;
-
-                self.userEdited = {};
-                console.log(response.data.message);
-            },  function(err){
-                self.errorEdited="Error on the database";
-                console.error(err);
-            });
-        };
 
 
+            function showAlert(type, message) {
+                self.alert.show = true;
+                self.alert.type = type;
+                self.alert.message = message;
+                if (self.alert.type == "danger") {
+                    self.alert.title = "Error!";
+                }
+                if (self.alert.type == "warning") {
+                    self.alert.title = "Warning!"
+                }
+                if (self.alert.type == "success") {
+                    self.alert.title = "Success!";
+                }
+            }
 
-        //Para empezar, traemos el user.
-        self.showUserDetailed(self.user.username);
+
+            self.showUserDetailed = function (id) {
+                UserService.getUserDetail(id).then(function (response) {
+                    self.userPanel = response;
+                }, function (err) {
+                    self.showUserDetailPanel = false;
+                });
+            };
 
 
-    }]);
+            self.editUser = function () {
+                UserService.updateUser(self.user.username, self.userEdited).then(function (response) {
+                    self.errorEdited = "Details edited succesfully";
+                    self.userPanel = response;
+                    self.userEdited = {};
+                }, function (err) {
+                    self.errorEdited = "Error on the database";
+                    console.error(err);
+                });
+            };
+
+
+            //Para empezar, traemos el user.
+            self.showUserDetailed(self.user.username);
+
+
+        }]);

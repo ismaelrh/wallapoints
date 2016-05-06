@@ -34,6 +34,14 @@
 
 <div class="container"> <!-- El container añade márgenes a los lados -->
 
+    <div class="alert "
+         ng-class="{'alert-danger':ctrl.alert.type=='danger','alert-warning':ctrl.alert.type=='warning', 'alert-success':ctrl.alert.type=='success'}"
+         role="alert" ng-if="ctrl.alert.show">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+        <strong>{{ctrl.alert.title}}</strong> {{ctrl.alert.message}}
+    </div>
+
     <div class=" col-md-8 col-sm-12 ">
         <div class="row">
             <div class="col-md-offset-3 col-md-6 col-sm-12">
