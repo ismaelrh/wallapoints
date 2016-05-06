@@ -287,20 +287,32 @@ module.exports = function (app) {
             //Borra de las listas de siguiendo ->  Lo hace solo
             //Borrar todos los puntos y rutas del usuario
 
-            //todo
+            var adminUser = {username: "admin",type:"user"};
+            var jwtToken = generateToken(adminUser);
+            var body = JSON.stringify({username: req.params.username});
+
             var options = {
-                host: 'localhost',
-                path: '/users/' + req.params.username,
-                port:8888,
-                method: 'DELETE'
+                host: 'localhost', //Cambiar para URL servicio
+                path: '/pois',
+                port:app.get('port'),
+                method: 'DELETE',
+                headers: {
+                    'Authorization': 'Bearer ' + jwtToken,
+                    'Content-Type': 'application/json',
+                    'Content-Length': Buffer.byteLength(body)
+                }
             };
 
-            http.request(options,function(response){
-                console.log("http");
-                console.log(response);
-            }).end();
-            ///////////////////////////////////////////BORRA TODOS LOS PUNTOS
-            console.log("SIIIIIIIIIIIIIIIIIIIIIIIIIIII")
+
+
+            var delete_req = http.request(options);
+            delete_req.write(body);
+            delete_req.end();
+
+
+
+
+
 
         });
 
@@ -329,10 +341,10 @@ module.exports = function (app) {
 
                     var userObject = result.cleanObjectAndAddHref();
                     userObject.type = "user";
-                    delete userObject.passwordusers;
+                    delete userObject.password;
                     /*Se genera token de sesion, guardando dentro info de usuario */
                     var token = jwt.sign(userObject, app.get('jwtsecret'), {
-                            expiresIn: "999h"
+                            expiresIn: "1h"
                         } // expires in 1 hour
                     );
 
@@ -354,6 +366,14 @@ module.exports = function (app) {
 
 
     });
+
+    function generateToken(userObject){
+        return jwt.sign(userObject, app.get('jwtsecret'), {
+                expiresIn: "1h"
+            } // expires in 1 hour
+        );
+
+    }
 
     return router;
 };

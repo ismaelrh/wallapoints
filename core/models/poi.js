@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-
+var Route = require('./route'); //Se importa el model de POI pues se usa
 //Definimos esquema
 var PoiSchema = mongoose.Schema({
     name: {type: String, required:true},

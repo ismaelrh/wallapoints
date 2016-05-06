@@ -9,7 +9,8 @@ var express = require("express"),
     morgan = require("morgan"),
     config = require("./config"),
     jwt = require('express-jwt'),
-    unless = require('express-unless');
+    unless = require('express-unless'),
+    GoogleMapsAPI = require('googlemaps');
 
 
 var app = express();
@@ -19,8 +20,20 @@ if(app.settings.env=='development'){
   app.use(morgan('dev'));
 }
 
+//Creamos objeto de API de Google Maps
+var publicConfig = {
+  key: config["gmaps-api-key"],
+  stagger_time: 1000, // for elevationPath
+  encode_polylines: false,
+  secure: true
+};
+var gmAPI = new GoogleMapsAPI(publicConfig);
+//Pones objeto de la API de Gmaps en gmAPI
+app.set('gmAPI',gmAPI);
+
 //Secret usado para firmar JWT's
 app.set('jwtsecret',config.jwtsecret);
+
 //URL de mongo según modo. Primero prueba la de HEROKU, si no, fichero de config.
 app.set('dbUrl',process.env.MONGODB_URI || config.db[app.settings.env]);
 //Ponemos el puerto según modo. Primero prueba el de HEROKU, si no, fichero de config.
