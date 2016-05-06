@@ -251,5 +251,122 @@ angular.module('frontend')
 
                         console.error(exception);
                     });
-            }
+            };
+
+
+            self.getTotalPois = function(){
+
+                return $http.get('/stats/admin/totalPois')
+                    .then(function(response){
+
+                        return response.data.message;
+
+                    })
+                    .catch(function(exception){
+
+                        broadcastAlert("Error getting total pois");
+
+                        console.error(exception);
+                    });
+            };
+
+
+            self.getTotalRoutes = function(){
+
+                return $http.get('/stats/admin/totalRoutes')
+                    .then(function(response){
+
+                        return response.data.message;
+
+                    })
+                    .catch(function(exception){
+
+                        broadcastAlert("Error getting total routes");
+
+                        console.error(exception);
+                    });
+            };
+
+            self.getAccessesToday = function(){
+
+                return $http.get('/stats/admin/accessesToday')
+                    .then(function(response){
+
+                        return response.data.message;
+
+                    })
+                    .catch(function(exception){
+
+                        broadcastAlert("Error getting accesses today");
+
+                        console.error(exception);
+                    });
+            };
+
+            self.getPoisInSystem = function(){
+                return $http.get('/stats/admin/poisInSystem')
+                    .then(function(response){
+
+                        return response.data.message;
+
+                    })
+                    .catch(function(exception){
+
+                        broadcastAlert("Error getting pois in system");
+
+                        console.error(exception);
+                    });
+            };
+
+            self.getUsersInOut = function(){
+                return $http.get('/stats/admin/usersInOut')
+                    .then(function(response){
+
+                        return response.data.message;
+
+                    })
+                    .catch(function(exception){
+
+                        broadcastAlert("Error getting users in/out");
+
+                        console.error(exception);
+                    });
+            };
+
+            self.getRoutesInSystem = function(){
+                return $http.get('/stats/admin/routesInSystem')
+                    .then(function(response){
+
+                        return response.data.message;
+
+                    })
+                    .catch(function(exception){
+
+                        broadcastAlert("Error getting users in/out");
+
+                        console.error(exception);
+                    });
+            };
+
+            self.getAccessesByHour = function(){
+                return $http.get('/stats/admin/accessesByHour')
+                    .then(function(response){
+
+                        return response.data.message;
+
+                    })
+                    .catch(function(exception){
+
+                        broadcastAlert("Error getting users in/out");
+
+                        console.error(exception);
+                    });
+            };
+
+
+
+
+
+
+
         }]);

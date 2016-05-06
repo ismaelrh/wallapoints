@@ -68,7 +68,7 @@ module.exports = function (app) {
      */
     router.post("/", function (req, res) {
 
-            console.log(req.user);
+
 
             if (req.user.type != "user") {
                 res.status(403).send({"error": true, "message": "Forbidden. You are not authorized."});
@@ -227,7 +227,7 @@ module.exports = function (app) {
                                         result.distance = distanceResults.distance;
                                         result.time = distanceResults.time;
 
-                                        console.log("Saved distance " + result.distance + " and time " + result.time);
+
                                         result.save();
 
                                     })
@@ -242,7 +242,7 @@ module.exports = function (app) {
 
                     })
                     .catch(function(exception){
-                        console.log(exception);
+
                         res.status(400).send({
                             "error": true,
                             "message": "Bad array pois[]"
@@ -474,7 +474,7 @@ module.exports = function (app) {
             var origenActual = pois[i];
             var destinoActual = pois[i + 1];
 
-            console.log(origenActual);
+
             var params = {
                 origins: origenActual.lat + "," + origenActual.long,
                 destinations: destinoActual.lat + "," + destinoActual.long
@@ -494,7 +494,7 @@ module.exports = function (app) {
                 for (var i = 0; allDistancesCanBeCalculated && i < response.length; i++) {
                     var elems = response[i].rows[0].elements[0];
                     if (elems.status != 'OK') {
-                        console.log(elems);
+
                         allDistancesCanBeCalculated = false;
                     }
                     else {

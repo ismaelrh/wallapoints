@@ -55,7 +55,7 @@ module.exports = function (app) {
     router.get("/validCount",function(req,res){
 
         var username = req.params.username;
-        console.log(username);
+
 
         Poi.count({creator: username, elevation: {$gte: 0}})
             .then(function(result){
@@ -67,7 +67,8 @@ module.exports = function (app) {
 
                 res.status(200).send({
                     error: "false",
-                    message: {count:count}
+                    message: {count:count},
+                    links:generateRouteStatsLinks(username)
                 });
 
 
@@ -114,7 +115,8 @@ module.exports = function (app) {
                 }
                 res.status(200).send({
                     error: "false",
-                    message: {avgPoiElevation: response[0].avgElevation,count:response[0].count}
+                    message: {avgPoiElevation: response[0].avgElevation,count:response[0].count},
+                    links:generateRouteStatsLinks(username)
                 });
 
             });
@@ -147,7 +149,8 @@ module.exports = function (app) {
                 }
                 res.status(200).send({
                     error: "false",
-                    message: response.cleanObjectAndAddHref()
+                    message: response.cleanObjectForStats(),
+                    links:generateRouteStatsLinks(username)
                 });
 
 
@@ -182,7 +185,9 @@ module.exports = function (app) {
 
                 res.status(200).send({
                     error: "false",
-                    message: response.cleanObjectAndAddHref()
+                    message: response.cleanObjectForStats(),
+                    links:generateRouteStatsLinks(username)
+
                 });
 
 
@@ -196,9 +201,10 @@ module.exports = function (app) {
      * Devuelve objeto con  {data: [X,Y,Z,..], labels: [X',Y',Z'...]} preparado para Chart.js
      */
     router.get("/groupedByCity", function (req, res) {
+        var username = req.params.username;
         Poi.aggregate(
             {   //agrega los valores de fecha mayores de today
-                $match: {city: {'$ne' : 'unknown'}}
+                $match: {creator:username, city: {'$ne' : 'unknown'}}
             },
             { $group: {
                 _id: "$city",
@@ -211,7 +217,7 @@ module.exports = function (app) {
                     return;
                 }
                 else {
-                    console.log(result);
+
                     //var message = procesarPois(pois);
                     var data = [];
                     var labels = [];
@@ -221,7 +227,7 @@ module.exports = function (app) {
                     }
                     res.status(200).send({
                         error: "false",
-                        message: {data: data, labels: labels}
+                        message: {data: data, labels: labels,links:generateRouteStatsLinks(username)}
                     });
                 }
             });
@@ -233,9 +239,11 @@ module.exports = function (app) {
      * Devuelve objeto con  {data: [X,Y,Z,..], labels: [X',Y',Z'...]} preparado para Chart.js
      */
     router.get("/groupedByCountry", function (req, res) {
+        var username = req.params.username;
+
         Poi.aggregate(
             {   //agrega los valores de fecha mayores de today
-                $match: {city: {'$ne' : 'unknown'}}
+                $match: {creator:username,city: {'$ne' : 'unknown'}}
             },
             { $group: {
                 _id: "$country",
@@ -248,7 +256,7 @@ module.exports = function (app) {
                     return;
                 }
                 else {
-                    console.log(result);
+
                     //var message = procesarPois(pois);
                     var data = [];
                     var labels = [];
@@ -258,11 +266,23 @@ module.exports = function (app) {
                     }
                     res.status(200).send({
                         error: "false",
-                        message: {data: data, labels: labels}
+                        message: {data: data, labels: labels,links:generateRouteStatsLinks(username)}
                     });
                 }
             });
     });
+
+
+    function generateRouteStatsLinks(username){
+        return [
+            {"validPoisCount": "/stats/users/" + username + "/pois/validCount"},
+            {"averagePoiElevation": "/stats/users/" + username + "/pois/avgElevation"},
+            {"maxElevationPoi": "/stats/users/" + username + "/pois/maxElevation"},
+            {"minElevationPoi": "/stats/users/" + username + "/pois/minElevation"},
+            {"groupedByCity": "/stats/users/" + username + "/pois/groupedByCity"},
+            {"groupedByCountry": "/stats/users/" + username + "/pois/groupedByCountry"}
+        ];
+    }
 
     return router;
 

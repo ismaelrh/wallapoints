@@ -1,3 +1,7 @@
+/**
+ * Modelo que guarda la fecha de creación de cada usuario.
+ * @author Ismael Rodríguez, Sergio Soro, David Vergara. 2016.
+ */
 var mongoose = require('mongoose');
 
 //Definimos esquema
@@ -6,7 +10,6 @@ var CreatedUserSchema = mongoose.Schema({
     createDate: {type: Date, required:true}
 });
 
-//(Opcional) definimos funciones que añadan algo de lógica al esquema
 
 //Compilamos modelo
 CreatedUser = mongoose.model('CreatedUser', CreatedUserSchema);

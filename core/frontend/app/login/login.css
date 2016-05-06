@@ -1,10 +1,9 @@
 .fondo{
-    background-image: url("../images/login.jpg");
+    background-image: url("../common/images/login.jpg");
 
 
     width: 100% !important;
     height: 100%;
-
     min-height: 100%;
 }
 

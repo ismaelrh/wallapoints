@@ -63,7 +63,7 @@
         <div class="row bg-default" >
             <div class="col-md-4 bg-success">
 
-                <h3>Logins in the last 24 hours</h3>
+                <h3>Users logged-in the last 24 hours</h3>
                 <h1>{{ctrl.accessDay}}</h1>
 
             </div>
@@ -85,13 +85,13 @@
 
         <div class="row bg-default" style="margin-top:20px;" >
             <div class="col-md-6 bg-success">
-                <h3 style="text-align:center;">Active pois active by created date</h3>
+                <h3 style="text-align:center;">Active pois active by creation date</h3>
                 <canvas id="line" class="chart chart-line" chart-data="ctrl.poiData"
                         chart-labels="ctrl.dates2"  chart-series="ctrl.poiSeries"  >
                 </canvas>
             </div>
             <div class="col-md-6 bg-success">
-                <h3 style="text-align:center;"> Active routes by created date</h3>
+                <h3 style="text-align:center;"> Active routes by creatin date</h3>
                 <canvas id="line2" class="chart chart-line" chart-data="ctrl.routeData"
                         chart-labels="ctrl.dates3"  chart-series="ctrl.routeSeries"  >
                 </canvas>
@@ -109,7 +109,7 @@
                 </canvas>
             </div>
             <div class="col-md-6 bg-success">
-                <h3 style="text-align:center;">Last login by hours</h3>
+                <h3 style="text-align:center;">Last logins by hours</h3>
                 <canvas id="bar2" class="chart chart-bar"
                         chart-data="ctrl.AccessData" chart-labels="ctrl.Accesshours" chart-series=
                                 "ctrl.AccessSeries">

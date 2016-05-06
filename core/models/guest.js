@@ -1,3 +1,7 @@
+/**
+ * Modelo de un invitado.
+ * @author Ismael Rodríguez, Sergio Soro, David Vergara. 2016.
+ */
 var mongoose = require('mongoose');
 var Poi = require('./poi'); //Se importa el model de POI pues se usa
 var User = require('./user'); //Se importa el model de USER pues se usa

@@ -75,6 +75,11 @@ angular.module('frontend')
             };
 
 
+            self.logOut = function(){
+                SessionService.logOut();
+            };
+
+
             //Para empezar, traemos el user.
             self.showUserDetailed(self.user.username);
 

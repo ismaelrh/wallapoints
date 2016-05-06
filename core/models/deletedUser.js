@@ -1,3 +1,7 @@
+/**
+ * Modelo que guarda la fecha de baja de cada usuario.
+ * @author Ismael Rodríguez, Sergio Soro, David Vergara. 2016.
+ */
 var mongoose = require('mongoose');
 
 //Definimos esquema
@@ -5,8 +9,6 @@ var DeletedUserSchema = mongoose.Schema({
     username: {type: String, required:true},
     deleteDate: {type: Date, required:true}
 });
-
-//(Opcional) definimos funciones que añadan algo de lógica al esquema
 
 //Compilamos modelo
 DeletedUser = mongoose.model('DeletedUser', DeletedUserSchema);

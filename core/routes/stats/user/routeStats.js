@@ -56,7 +56,7 @@ module.exports = function (app) {
     router.get("/validCount",function(req,res){
 
         var username = req.params.username;
-        console.log(username);
+
 
         Route.count({creator: username, distance: {$gte: 0}, time: {$gte: 0}})
             .then(function(result){
@@ -193,7 +193,7 @@ module.exports = function (app) {
 
                 res.status(200).send({
                     error: "false",
-                    message: response.cleanRouteForDetail(),
+                    message: response.cleanRouteForStats(),
                     links: generateRouteStatsLinks(username)
                 });
 
@@ -232,7 +232,7 @@ module.exports = function (app) {
 
                 res.status(200).send({
                     error: "false",
-                    message: response.cleanRouteForDetail(),
+                    message: response.cleanRouteForStats(),
                     links: generateRouteStatsLinks(username)
                 });
 
@@ -269,7 +269,7 @@ module.exports = function (app) {
 
                 res.status(200).send({
                     error: "false",
-                    message: response.cleanRouteForDetail(),
+                    message: response.cleanRouteForStats(),
                     links: generateRouteStatsLinks(username)
                 });
 
@@ -306,7 +306,7 @@ module.exports = function (app) {
 
                 res.status(200).send({
                     error: "false",
-                    message: response.cleanRouteForDetail(),
+                    message: response.cleanRouteForStats(),
                     links: generateRouteStatsLinks(username)
                 });
 

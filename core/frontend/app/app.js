@@ -15,8 +15,8 @@ angular.module('frontend', [
 ]).config(['$routeProvider','$httpProvider', 'uiGmapGoogleMapApiProvider',function ($routeProvider,$httpProvider,uiGmapGoogleMapApiProvider) {
 
         uiGmapGoogleMapApiProvider.configure({
-            //    key: 'your api key',
-            v: '3.20', //defaults to latest 3.X anyhow
+
+            v: '3.20',
             libraries: 'weather,geometry,visualization'
         });
 
@@ -29,8 +29,8 @@ angular.module('frontend', [
                 controllerAs: 'ctrl'
             })
             .when('/statistics', {
-                templateUrl: 'statistic/statisticPanel.html',
-                controller: 'StatisticCtrl',
+                templateUrl: 'adminStats/adminStats.html',
+                controller: 'AdminStatsCtrl',
                 controllerAs: 'ctrl'
             })
 

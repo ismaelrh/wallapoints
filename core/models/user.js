@@ -1,3 +1,7 @@
+/**
+ * Modelo que guarda los usuarios.
+ * @author Ismael Rodríguez, Sergio Soro, David Vergara. 2016.
+ */
 var mongoose = require('mongoose');
 
 //Definimos esquema

@@ -74,6 +74,8 @@ angular.module('frontend')
 
 
 
+
+
         //Para empezar, traemos el user.
         self.showUserDetailed(self.editUserParam);
 

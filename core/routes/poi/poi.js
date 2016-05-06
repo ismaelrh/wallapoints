@@ -205,11 +205,11 @@ module.exports = function (app) {
                 //Borramos rutas con esos POIS y rutas del creador
                 Route.remove({pois: {$in: findResult}})
                     .then(function (results) {
-                        console.log("Cleaned DB of " + results.result.n + " invalid routes");
+
                         return Route.remove({creator: req.body.username});
                     })
                     .then(function (results) {
-                        console.log("Cleaned DB of " + results.result.n + " invalid routes");
+
                         res.send({
                             "error": false,
                             "message": "Pois deleted successfully",
@@ -417,7 +417,7 @@ module.exports = function (app) {
                             "message": "Poi deleted successfully",
                             links: [{"poiList": "/pois"}]
                         });
-                        console.log("Cleaned DB of " + results.result.n + " invalid routes");
+
                     }
                 });
 
@@ -449,7 +449,7 @@ module.exports = function (app) {
             var end = new Date(year, month, day + 1, 23, 59, 59, 99);
 
 
-            console.log("Searching for " + new Date(year, month, day));
+
             searchObject.date = {
                 "$gte": new Date(year, month, day, 0, 0, 0),
                 "$lte": new Date(year, month, day, 23, 59, 59)

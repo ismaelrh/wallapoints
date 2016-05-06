@@ -123,7 +123,7 @@ module.exports = function (app) {
             newCreatedUser.save(function (err, response) {
 
                 if (err) {
-                    console.log(err)
+
                     res.status(500).send({"error": true, "message": "Error saving data " + err});
                 }
                 else {
@@ -258,7 +258,7 @@ module.exports = function (app) {
                 return;
             }
 
-            console.log(req.params.username);
+
             //Se crea estructura a guardar del usuario que se ha borrado
             var newDeletedUser = new DeletedUser(
                 {
@@ -270,11 +270,11 @@ module.exports = function (app) {
             newDeletedUser.save(function (err, response) {
 
                 if (err) {
-                    console.log(err)
+
                     res.send({"error": true, "message": "An error appeared saving the deleted user"});
                 }
                 else {
-                    console.log("Ok deleted user")
+
                     res.send({
                         "error": false,
                         "message": "User successfully deleted",

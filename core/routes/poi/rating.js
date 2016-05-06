@@ -24,7 +24,7 @@ module.exports = function (app) {
         Poi.findOne({_id: req.params.id})
             .exec(function (err, result) {
 
-                console.log("Checking for " + req.params.id);
+
                 if (err) {
                     res.status(500).send({error: true, message: "Error " + err});
                     return;
@@ -53,7 +53,7 @@ module.exports = function (app) {
      */
     router.get("/", function (req, res) {
         // req.poi.creator ya tiene el creador por el metodo checkPoiExists
-        console.log("Post /pois/:id/ratings");
+
 
         // si el usuario que accede no es el creador del poi o admin forbidden
         if((req.user.type == "user" && req.user.username != req.poi.creator) || (req.user.type == "user" && req.user.name != "admin")){
@@ -81,7 +81,7 @@ module.exports = function (app) {
      * Devuelve el rating insertado o error y un link de los ratings del poi.
      */
     router.post("/", function (req, res) {
-        console.log("Post /pois/:id/ratings");
+
 
         // si el usuario que accede no es el creador del poi o admin forbidden
         if(req.user.type != "guest"){
@@ -136,7 +136,7 @@ module.exports = function (app) {
      */
     router.get("/mean", function (req, res) {
         // req.poi.creator ya tiene el creador por el metodo checkPoiExists
-        console.log("Put /pois/:id/ratings/mean");
+
 
         var oid = new ObjectID(req.params.id);
 
@@ -150,7 +150,7 @@ module.exports = function (app) {
             }}
         ,function (err, results) {
             if (err) {
-                console.log(err);
+
                 res.send({"error": true, "message": "Error getting mean"});
             }
             else {
@@ -174,7 +174,7 @@ module.exports = function (app) {
      */
     router.get("/:guestMail", function (req, res) {
         // req.poi.creator ya tiene el creador por el metodo checkPoiExists
-        console.log("Get /pois/:id/ratings/:guestMail");
+
 
 
         // si el usuario que accede no es guest o no es el creador del rating o no es admin forbidden
@@ -182,7 +182,7 @@ module.exports = function (app) {
             res.status(403).send({"error": true, "message": "Forbidden. You are not authorized."});
             return;
         }
-        console.log(req.params.id);
+
         Rating.findOne({poi: req.params.id, mail: req.params.guestMail}, "mail points", function (err, results) {
             if (err) {
                 res.status(500).send({"error": true, "message": "Error retrieving poi list"});
@@ -210,7 +210,7 @@ module.exports = function (app) {
      */
     router.put("/:guestMail", function (req, res) {
         // req.poi.creator ya tiene el creador por el metodo checkPoiExists
-        console.log("Put /pois/:id/ratings/:guestMail");
+
 
 
         // si el usuario que accede no es guest o no es el creador del rating o no es admin forbidden
@@ -261,7 +261,7 @@ module.exports = function (app) {
      */
     router.delete("/:guestMail", function (req, res) {
         // req.poi.creator ya tiene el creador por el metodo checkPoiExists
-        console.log("Delete /pois/:id/ratings/:guestMail");
+
 
 
         // si el usuario que accede no es guest o no es el creador del rating o no es admin forbidden
