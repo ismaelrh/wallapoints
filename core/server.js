@@ -20,6 +20,8 @@ if(app.settings.env=='development'){
   app.use(morgan('dev'));
 }
 
+
+
 //Creamos objeto de API de Google Maps
 var publicConfig = {
   key: config["gmaps-api-key"],
@@ -51,10 +53,6 @@ app.use(bodyParser.urlencoded({extended:true}));
 
 //Cargamos los modelos
 app.models = require('./models');
-
-
-
-
 
 //Cargamos las rutas
 require('./routes')(app);
