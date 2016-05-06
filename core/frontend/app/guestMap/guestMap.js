@@ -222,7 +222,10 @@ angular.module('frontend')
                  */
                 self.shareCurrentPoi = function () {
 
-                    alert("Sharing poi");
+                    alert("Sharing POI:\n" +
+                        "Name: " + self.detailedPoi.name + "\n"+
+                        "Creator: " + self.detailedPoi.creator + "\n"+
+                        "Address: " + self.detailedPoi.formatted_address);
                 };
 
                 /**
@@ -230,8 +233,15 @@ angular.module('frontend')
                  */
                 self.shareCurrentRoute = function () {
 
-                    alert("Sharing route");
+                    var length = self.detailedRoute.pois.length;
+                    alert("Sharing Route:\n" +
+                        "Name: " + self.detailedRoute.name + "\n"+
+                        "Creator: " + self.detailedRoute.creator + "\n"+
+                        "Origin POI: " + self.detailedRoute.pois[0].name + "\n"+
+                        "Destination POI: " + self.detailedRoute.pois[length-1].name + "\n" +
+                        "Intermediate points: " + (length -2));
                 };
+
 
 
                 /**

@@ -96,7 +96,7 @@ module.exports = function (app) {
 
         Poi.aggregate(
             {
-                $match: {creator: username} //Todo: match
+                $match: {creator: username,elevation: {$gte: 0}} //Todo: match
             },
             {
                 $group: {
@@ -135,7 +135,7 @@ module.exports = function (app) {
         var username = req.params.username;
 
         Poi
-            .findOne({creator: username, elevation: {$gt: 0}})
+            .findOne({creator: username, elevation: {$gte: 0}})
             .sort('-elevation')  //Máxima altitud
             .exec(function (err, response) {
 
@@ -170,7 +170,7 @@ module.exports = function (app) {
         var username = req.params.username;
 
         Poi
-            .findOne({creator: username, elevation: {$gt: 0}})
+            .findOne({creator: username, elevation: {$gte: 0}})
             .sort('elevation')  //Mínima altitud
             .exec(function (err, response) {
 
