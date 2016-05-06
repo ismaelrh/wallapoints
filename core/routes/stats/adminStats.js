@@ -12,6 +12,7 @@ module.exports = function (app) {
     var DeletedUser = app.models.DeletedUser;
     var CreatedUser = app.models.CreatedUser;
     var Poi = app.models.Poi;
+    var Route = app.models.Route;
 
 
 
@@ -64,7 +65,7 @@ module.exports = function (app) {
                                 res.status(200).send({
                                     error: "false",
                                     message: message,
-                                    links: [{"poiInfo": "/poi/:"+req.params.id}]
+                                    links: [{"adminStats": "/statistic"}]
                                 });
                             }
                         });
@@ -107,13 +108,53 @@ module.exports = function (app) {
                     res.status(200).send({
                         error: "false",
                         message: message,
-                        links: [{"poiInfo": "/poi/:"+req.params.id}]
+                        links: [{"adminStats": "/statistic"}]
                     });
 
                 }
             });
     });
 
+    /**
+     * GET /stats/admin/poisIn
+     *
+     */
+    router.get("/routesIn", function (req, res) {
+
+
+        var today = new Date();
+        today.setHours(today.getHours() - 360);
+        Route.aggregate(
+            {   //agrega los valores de fecha mayores de today
+                $match: {date: {'$gt' : today}}
+            },
+            { $sort : { date : 1} },
+            { $group: {
+                _id: {year : { $year : "$date" },
+                    month : { $month : "$date" },
+                    day : { $dayOfMonth : "$date"}
+                },
+                count: {$sum: 1}
+            }}
+            ,function (err, route) {
+                if (err) {
+                    console.log(err);
+                    res.send({"error": true, "message": "Error getting mean"});
+                }
+                else {
+                    console.log('pruebas');
+                    console.log(route);
+                    var message = procesarPois(route);
+                    console.log(message);
+                    res.status(200).send({
+                        error: "false",
+                        message: message,
+                        links: [{"adminStats": "/statistic"}]
+                    });
+
+                }
+            });
+    });
 
 
     function procesarUsers(altas, bajas) {

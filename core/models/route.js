@@ -20,13 +20,11 @@ RouteSchema.methods.cleanRouteForList = function(){
     return object;
 };
 
-//El procesado se hace síncrono porque como máximo una ruta puede tener 9 pois
-RouteSchema.methods.cleanRouteForDetail = function(){
+RouteSchema.methods.cleanRouteForDetail = function(mes){
     var object = this.toJSON();
     delete object.__v;
     var pois = object.pois;
     object.pois = [];
-    
     for(var i = 0; i < pois.length; i++){
         var p = pois[i];
         object.pois.push({_id:p._id,name:p.name,lat:p.lat,long:p.long,href: "/pois/" + p._id});
