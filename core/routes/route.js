@@ -435,6 +435,7 @@ module.exports = function (app) {
 
     }
 
+
     /**
      * Convierte la llamada a gmAPI en una promesa.
      */
