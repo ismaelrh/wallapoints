@@ -6,7 +6,7 @@
  */
 angular.module('frontend')
 
-    .controller('StatisticCtrl', ['$http', 'SessionService', '$rootScope', function ($http, SessionService, $rootScopes) {
+    .controller('StatisticCtrl', ['$http', 'SessionService', '$rootScope', function ($http, SessionService, $rootScope) {
 
     var self = this; //Para no perder la variable this, la guardamos en self (de lo contrario se sobreescribe)
 
