@@ -84,7 +84,7 @@ angular.module('frontend')
         self.PoisRegister = function () {
             StatsService.getPoisInSystem().then(function (response) {
                 self.dates2 = response.dates;
-                self.poiData = response.userData;
+                self.poiData = response.poisData;
                 self.poiSeries = ['Created'];
 
 
@@ -98,7 +98,7 @@ angular.module('frontend')
         self.routeRegister = function () {
             StatsService.getRoutesInSystem().then(function (response) {
                 self.dates3 = response.dates;
-                self.routeData = response.userData;
+                self.routeData = response.routesData;
                 self.routeSeries = ['Created'];
 
 

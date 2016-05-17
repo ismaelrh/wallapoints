@@ -203,7 +203,7 @@ module.exports = function (app) {
                 }
 
 
-                //Borramos rutas con esos POIS y rutas del creador
+                //Borramos rutas con esos POI
                 Route.remove({pois: {$in: findResult}})
                     .then(function (results) {
 
