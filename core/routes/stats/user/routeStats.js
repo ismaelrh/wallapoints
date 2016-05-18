@@ -306,7 +306,7 @@ module.exports = function (app) {
                 }
 
                 res.status(200).send({
-                    error: "false",
+                    error: false,
                     message: response.cleanRouteForStats(),
                     links: generateRouteStatsLinks(username)
                 });
@@ -403,7 +403,7 @@ module.exports = function (app) {
                 var labels = ["< 15 min", "15min-1h", "1-5h", "5-10h", "10-24h", "> 1 day"];
 
                 res.status(200).send({
-                    error: "false",
+                    error: false,
                     message: {data: data, labels: labels},
                     links: generateRouteStatsLinks(username)
                 });
