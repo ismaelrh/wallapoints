@@ -1,0 +1,21 @@
+version: '2'
+
+networks:
+   wallapoints:
+services:
+ mongo:
+   container_name: "mongo"
+   image: mongo:latest
+   ports:
+    - "27017:27017"
+   networks:
+    - wallapoints
+
+ node:
+   container_name: "node"
+   build: .
+   ports:
+    - "8888:8888"
+   networks:
+    - wallapoints
+
