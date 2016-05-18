@@ -86,6 +86,9 @@ mongoose.connection.once('open', function () {
             console.log('* Admin user added!');
             console.log('[DONE] Deploy finished');
         })
+        .then(
+
+        )
 
 
 });
