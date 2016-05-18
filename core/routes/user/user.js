@@ -354,7 +354,13 @@ module.exports = function (app) {
                     // Se guarda en la db
                     result.save();
 
-                    res.send({"error": false, "message": token});
+                    res.send({
+                        "error": false,
+                        "message": token,
+                        "links": [
+                            {"poiList":"/pois"}
+                        ]});
+
                 } else {
                     res.status(401).send({"error": true, "message": "Incorrect username or password"});
                 }

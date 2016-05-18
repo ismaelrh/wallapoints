@@ -72,7 +72,7 @@ module.exports = function (app) {
                                 res.status(200).send({
                                     error: "false",
                                     message: message,
-                                    links: [{"adminStats": "/statistic"}]
+                                    links: generateAdminStatsLinks()
                                 });
                             }
                         });
@@ -99,7 +99,7 @@ module.exports = function (app) {
                 res.status(200).send({
                     error: "false",
                     message: access,
-                    links: [{"adminStats": "/statistic"}]
+                    links:generateAdminStatsLinks()
                 });
 
             }
@@ -124,7 +124,7 @@ module.exports = function (app) {
                 res.status(200).send({
                     error: "false",
                     message: pois,
-                    links: [{"adminStats": "/statistic"}]
+                    links: generateAdminStatsLinks()
                 });
 
             }
@@ -149,7 +149,7 @@ module.exports = function (app) {
                 res.status(200).send({
                     error: "false",
                     message: pois,
-                    links: [{"adminStats": "/statistic"}]
+                    links: generateAdminStatsLinks()
                 });
 
             }
@@ -192,7 +192,7 @@ module.exports = function (app) {
                     res.status(200).send({
                         error: "false",
                         message: message,
-                        links: [{"adminStats": "/statistic"}]
+                        links: generateAdminStatsLinks()
                     });
 
                 }
@@ -236,7 +236,7 @@ module.exports = function (app) {
                     res.status(200).send({
                         error: "false",
                         message: message,
-                        links: [{"adminStats": "/statistic"}]
+                        links: generateAdminStatsLinks()
                     });
 
                 }
@@ -280,7 +280,7 @@ module.exports = function (app) {
                     res.status(200).send({
                         error: "false",
                         message: message,
-                        links: [{"adminStats": "/statistic"}]
+                        links: generateAdminStatsLinks()
                     });
 
                 }
@@ -383,8 +383,8 @@ module.exports = function (app) {
             today.setHours(today.getHours() + 24);
 
         }
-        //devuelve el array de fechas y dos arrays de altas y fechas que coinciden en indice con el de fechas
-        return {dates: arrayFechas, userData: [arrayAltas]}
+
+        return {dates: arrayFechas, poisData: [arrayAltas]}
 
 
     }
@@ -429,11 +429,24 @@ module.exports = function (app) {
             today.setHours(today.getHours() + 1);
 
         }
-        //devuelve array de fechas con hora junto al array de logins por hora de las ultimas 24 horas
-        return {dates: arrayFechas, userData: [arrayAccess]}
+
+        return {dates: arrayFechas, routesData: [arrayAccess]}
 
 
     }
+
+    function generateAdminStatsLinks(){
+        return [
+            {"usersInOut": "/stats/admin/usersInOut"},
+            {"accessesToday": "/stats/admin/accessesToday"},
+            {"totalPois": "/stats/admin/totalPois"},
+            {"totalRoutes": "/stats/admin/totalRoutes"},
+            {"accessesByHour": "/stats/admin/accessesByHour"},
+            {"poisInSystem": "/stats/admin/poisInSystem"},
+            {"routesInSystem": "/stats/admin/routesInSystem"}
+        ];
+    }
+
 
     return router;
 

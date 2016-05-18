@@ -7,7 +7,7 @@ var express = require('express');
 var Q = require("q");
 
 
-//Empieza en /stats/users
+//Empieza en /stats/users/:username/routes
 
 module.exports = function (app) {
 
