@@ -89,69 +89,84 @@ module.exports = function (app) {
             "location_type": "APPROXIMATE"
         };
 
-        var locations= {
-                "locations": req.body.lat + "," + req.body.long};
+        var locations = {
+            "locations": req.body.lat + "," + req.body.long
+        };
 
         // Realiza una petición al API Google Maps Geocoding para obtener la direccion y el pais
         gmAPI.reverseGeocode(reverseGeocodeParams, function (err, result) {
             var formatted_address = 'unknown';
             var country = 'unknown';
-            var city= 'unknown';
+            var city = 'unknown';
             var elevation = 0;
             if (result != undefined) {
                 formatted_address = result.results[0].formatted_address;
-                if (result.results[0].address_components){
+                if (result.results[0].address_components) {
                     for (var i = 0; i < result.results[0].address_components.length; i++) {
-                        if (result.results[0].address_components[i].types[0]=="country"){
+                        if (result.results[0].address_components[i].types[0] == "country") {
                             country = result.results[0].address_components[i].long_name;
                         }
 
-                        if (result.results[0].address_components[i].types[0]=="locality"){
+                        if (result.results[0].address_components[i].types[0] == "locality") {
                             city = result.results[0].address_components[i].long_name;
                         }
                     }
-                }}
+                }
+            }
 
-            gmAPI.elevationFromLocations(locations, function (err,result){
-                if (result != undefined){
-                    elevation = result.results[0].elevation;
+            var keywords = [];
+            if (req.body.keywords) {
+                keywords = req.body.keywords;
+            }
+
+            var newPoi = new Poi(
+                {
+                    name: req.body.name,
+                    description: req.body.description,
+                    multimediaUrl: req.body.multimediaUrl,
+                    keywords: keywords,
+                    lat: req.body.lat,
+                    long: req.body.long,
+                    formatted_address: formatted_address,
+                    country: country,
+                    city: city,
+                    creator: creator
+                }
+            );
+
+
+            newPoi.save(function (err, firstResult) {
+
+                if (err) {
+                    res.status(500).send({"error": true, "message": "Error saving data"});
+                    return;
                 }
 
-                var keywords = [];
-                if (req.body.keywords) {
-                    keywords = req.body.keywords;
-                }
-
-                var newPoi = new Poi(
-                    {
-                        name: req.body.name,
-                        description: req.body.description,
-                        multimediaUrl: req.body.multimediaUrl,
-                        keywords: keywords,
-                        lat: req.body.lat,
-                        long: req.body.long,
-                        formatted_address: formatted_address,
-                        country: country,
-                        city: city,
-                        elevation: elevation,
-                        creator: creator
-                    }
-                );
-
-                newPoi.save(function (err, result) {
-
-                    if (err) {
-                        res.send({"error": true, "message": "Error saving data"});
-                    }
-                    else {
-                        res.send({
-                            "error": false,
-                            "message": result.cleanObjectAndAddHref(),
-                            links: [{"poiList": "/pois"}]
-                        });
-                    }
+                //Se responde
+                res.send({
+                    "error": false,
+                    "message": firstResult.cleanObjectAndAddHref(),
+                    links: [{"poiList": "/pois"}]
                 });
+
+                //Tras responderse se guarda la elevacion
+                gmAPI.elevationFromLocations(locations, function (err, result) {
+                    if (result != undefined) {
+                        elevation = result.results[0].elevation;
+                    }
+
+
+                    firstResult.elevation = elevation;
+
+
+                    firstResult.save();
+
+                });
+
+
             });
+
+
         });
     });
 
@@ -313,50 +328,60 @@ module.exports = function (app) {
                 "location_type": "APPROXIMATE"
             };
 
-            var locations= {
-                "locations": poi.lat + "," + poi.long};
+            var locations = {
+                "locations": poi.lat + "," + poi.long
+            };
 
             //Actualizamos localización y luego guardamos
             gmAPI.reverseGeocode(reverseGeocodeParams, function (err, result) {
 
                 var country = 'unknown';
-                var city= 'unknown';
+                var city = 'unknown';
                 var elevation = 0;
                 poi.formatted_address = 'unknown';
                 if (result != undefined) {
                     poi.formatted_address = result.results[0].formatted_address;
-                    if (result.results[0].address_components){
+                    if (result.results[0].address_components) {
                         for (var i = 0; i < result.results[0].address_components.length; i++) {
-                            if (result.results[0].address_components[i].types[0]=="country"){
+                            if (result.results[0].address_components[i].types[0] == "country") {
                                 poi.country = result.results[0].address_components[i].long_name;
                             }
 
-                            if (result.results[0].address_components[i].types[0]=="locality"){
+                            if (result.results[0].address_components[i].types[0] == "locality") {
                                 poi.city = result.results[0].address_components[i].long_name;
                             }
                         }
                     }
                 }
 
-                gmAPI.elevationFromLocations(locations, function (err,result){
-                    if (result != undefined) {
-                        poi.elevation = result.results[0].elevation;
+                poi.save(function (err, result) {
+                    if (err) {
+                        res.send({"error": true, "message": "Error updating poi"});
+                        return;
                     }
 
+                    res.send({
+                        "error": false,
+                        "message": result.cleanObjectAndAddHref(),
+                        links: [{"poiList": "/pois"}]
+                    });
 
-                        poi.save(function (err, result) {
-                            if (err) {
-                                res.send({"error": true, "message": "Error updating poi"});
-                            }
-                            else {
-                                res.send({
-                                    "error": false,
-                                    "message": result.cleanObjectAndAddHref(),
-                                    links: [{"poiList": "/pois"}]
-                                });
-                            }
-                        });
+
+                    //Una vez respondido se actualiza la altitud.
+                    gmAPI.elevationFromLocations(locations, function (err, resultElevation) {
+
+                        if (resultElevation != undefined) {
+                            result.elevation = resultElevation.results[0].elevation;
+
+                        }
+
+                        result.save();
+
+                    });
+
                 });
+
+
             });
 
 
@@ -448,7 +473,6 @@ module.exports = function (app) {
 
             var start = new Date(year, month, day, 0, 0, 0, 0);
             var end = new Date(year, month, day + 1, 23, 59, 59, 99);
-
 
 
             searchObject.date = {

@@ -1,7 +1,4 @@
-/**
- * Modelo que guarda la fecha de baja de cada usuario.
- * @author Ismael Rodríguez, Sergio Soro, David Vergara. 2016.
- */
+
 var mongoose = require('mongoose');
 
 //Definimos esquema
