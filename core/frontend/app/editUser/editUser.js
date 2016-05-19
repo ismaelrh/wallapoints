@@ -6,7 +6,7 @@
  */
 angular.module('frontend')
 
-    .controller('EditUserCtrl', ['$routeParams','UserService','$rootScope',function($routeParams,UserService,$rootScope) {
+    .controller('EditUserCtrl', ['$routeParams','UserService','$rootScope','SessionService',function($routeParams,UserService,$rootScope,SessionService) {
 
         var self = this; //Para no perder la variable this, la guardamos en self (de lo contrario se sobreescribe)
 
