@@ -276,6 +276,8 @@ module.exports = function (app) {
 
 
                     var message = procesarPois(route);
+                    message.routesData = message.poisData;
+                    delete message.poisData;
 
                     res.status(200).send({
                         error: "false",
@@ -430,7 +432,7 @@ module.exports = function (app) {
 
         }
 
-        return {dates: arrayFechas, routesData: [arrayAccess]}
+        return {dates: arrayFechas, userData: [arrayAccess]}
 
 
     }

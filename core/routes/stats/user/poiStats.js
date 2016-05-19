@@ -170,7 +170,7 @@ module.exports = function (app) {
         var username = req.params.username;
 
         Poi
-            .findOne({creator: username, elevation: {$gte: 0}})
+            .findOne({creator: username, elevation: {$gt: 0}})
             .sort('elevation')  //Mínima altitud
             .exec(function (err, response) {
 

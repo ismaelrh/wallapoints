@@ -339,7 +339,7 @@ module.exports = function (app) {
                 var city = 'unknown';
                 var elevation = 0;
                 poi.formatted_address = 'unknown';
-                if (result != undefined && result.results.length > 0)  {
+                if (result != undefined && result.results.length > 0) {
                     poi.formatted_address = result.results[0].formatted_address;
                     if (result.results[0].address_components) {
                         for (var i = 0; i < result.results[0].address_components.length; i++) {
@@ -369,10 +369,10 @@ module.exports = function (app) {
 
                     //Una vez respondido se actualiza la altitud.
                     gmAPI.elevationFromLocations(locations, function (err, resultElevation) {
-
+                        console.log("Queried elevation: " + resultElevation);
                         if (resultElevation != undefined) {
                             result.elevation = resultElevation.results[0].elevation;
-
+                            console.log("New elevation: " + result.elevation);
                         }
 
                         result.save();

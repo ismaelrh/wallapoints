@@ -46,6 +46,7 @@ app.set('port', process.env.PORT || config.port[app.settings.env]);
 //Servimos el frontend en "/"
 app.use(express.static('./frontend/app'));
 
+
 //Añadimos el middleware de gestor de acceso y JWT.
 require('./security/jwt-handler')(app);
 
@@ -59,6 +60,9 @@ app.models = require('./models');
 //Cargamos las rutas
 require('./routes')(app);
 
+app.use('/', function(req, res) {
+    console.log("hola");
+});
 
 //Conectamos y lanzamos el servidor
 mongoose.connect(app.get('dbUrl'));
