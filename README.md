@@ -20,6 +20,8 @@ Authors: Ismael Rodríguez (me), Sergio Soro (@teruyi), David Vergara (@davidver
 * JSON Web Tokens
 * Chart.js
 * Bootstrap
+* Mocha
+* Chai
 
 ##Directories:
 * **core** -> Contains the main web service and frontend.
