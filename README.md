@@ -1,13 +1,15 @@
 # WallaPoints
 
-[![Build Status](https://travis-ci.com/ismaro3/wallapoints.svg?token=fCoJEKj2f8k1vssPR5Um&branch=master)](https://travis-ci.com/ismaro3/wallapoints)
+[![Build Status](https://travis-ci.org/ismaro3/wallapoints.svg?branch=master)](https://travis-ci.org/ismaro3/wallapoints)
 
-Map-centered social network where users can manage POIs (Points of Interest) and routes of POIs. 
+Responsive map-centered social network where users can manage POIs (Points of Interest) and routes of POIs. 
 Guests can visualize all POIs and rate other users POIs, follow users, etc.
 Registered users can create, modify and remove POIs and routes, and obtain statistics about their points.
 
 Developed as a project for Web Systems and Technologies subject in University of Zaragoza, Spain.
 Authors: Ismael Rodríguez (me), Sergio Soro (@teruyi), David Vergara (@davidvergara).
+
+![System screenshot](screenshot.png)
 
 ##Technologies
 * RESTful architecture.
@@ -16,6 +18,7 @@ Authors: Ismael Rodríguez (me), Sergio Soro (@teruyi), David Vergara (@davidver
 * Mongoose
 * JSON Web Tokens
 * Chart.js
+* Bootstrap
 
 ##Directories:
 * **core** -> Contains the main web service and frontend.
