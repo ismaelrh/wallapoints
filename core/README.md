@@ -8,7 +8,7 @@
 3. Edit the 'config.js' file to suit your needs (change the secrets and the Google Maps API Key)
 4. Make sure that a MongoDB instance is running.
 5. To create the admin user (that can create new users) and initialize the database data, please run the 'deploy.js' file.
-6. From now on, run node server.js` inside the 'core' folder every time you want to run the project.
+6. From now on, run `node server.js` inside the 'core' folder every time you want to run the project.
 
 ##How to test
 1. Run `mocha`inside the 'core' directory.
