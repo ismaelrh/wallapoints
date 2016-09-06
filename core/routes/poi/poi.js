@@ -370,7 +370,7 @@ module.exports = function (app) {
                     //Una vez respondido se actualiza la altitud.
                     gmAPI.elevationFromLocations(locations, function (err, resultElevation) {
                         console.log("Queried elevation: " + resultElevation);
-                        if (resultElevation != undefined) {
+                        if (resultElevation != undefined && resultElevation.results && resultElevation.results.length > 0 && resultElevation.results[0].elevation) {
                             result.elevation = resultElevation.results[0].elevation;
                             console.log("New elevation: " + result.elevation);
                         }
