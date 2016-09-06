@@ -17,11 +17,11 @@ module.exports = {
         admin:{
             password: "1",
             email: "admin@mail.com",
-            name: "Ismael",
-            surname: "Rodríguez"
+            name: "Admin",
+            surname: "Smith"
         }
     },
     jwtsecret: "firmasuperlargaeimposibledeadivinar",
-    "gmaps-api-key": "AIzaSyD6pa36NtjEyNdffeAwWJFY44k_C4z2lh8"
+    "gmaps-api-key": "Insert_your_own"
 
 };

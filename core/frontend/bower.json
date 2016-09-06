@@ -26,6 +26,6 @@
     "angular-drag-and-drop-lists": "^1.4.0"
   },
   "resolutions": {
-    "angular": "1.4.10"
+    "angular": "~1.4.0"
   }
 }
