@@ -1,28 +1,28 @@
 # WallaPoints Core
 
 [![Build Status](https://travis-ci.com/ismaro3/wallapoints.svg?token=fCoJEKj2f8k1vssPR5Um&branch=master)](https://travis-ci.com/ismaro3/wallapoints)
-[![Heroku](https://heroku-badge.herokuapp.com/?app=wallapoints)](http://wallapoints.herokuapp.com/)
 
-##Cómo ejecutar
-1. La primera vez que se descargue ejecutar `npm install` dentro del directorio 'core'.
-3. Asegurarse de tener una instancia de MongoDB ejecutándose.
-2. Para ejecutarlo cada vez, ejecutar `node server.js` en el directorio 'core'.
+##How to run the project
+1. Clone the project.
+2. Run `npm install` inside the 'core' directory.
+3. Edit the 'config.js' file to suit your needs (change the secrets and the Google Maps API Key)
+4. Make sure that a MongoDB instance is running.
+5. To create the admin user (that can create new users) and initialize the database data, please run the 'deploy.js' file.
+6. From now on, run node server.js` inside the 'core' folder every time you want to run the project.
 
-##Cómo testear
-1. Ejecutar en una nueva terminal `mocha` dentro del directorio 'core'. Ejecutará los tests.
+##How to test
+1. Run `mocha`inside the 'core' directory.
 
-##Directorios:
-* **frontend** -> Contiene el frontend escrito en AngularJS.
-* **models** -> Contiene los modelos de Mongoose (MongoDB)
-* **routes** -> Contiene los módulos de enrutamiento, encargados de cada uno de los recursos.
-* **methods** -> Contiene algoritmos más complejos que deberían separarse de los routes por su complejidad (vacío de momento).
-* **test** -> Contiene los tests de las distintas API, escritos con _Mocha_ y _Chai_.
+##Directories:
+* **frontend** -> Contains the AngularJS frontend.
+* **models** -> Contains the Mongoose models.
+* **routes** -> Contains the enrouting modules, every one responsible for one of the REST resources.
+* **test** -> Contains API test, written with _Mocha_ and _Chai_.
 
-##Archivos:
-* **server.js** -> Módulo principal, lanza el servidor.
-* **config.js** -> Configuración de DB y puertos.
-* **package.json** -> Dependencias.
+##Files:
+* **server.js** -> Main module, launchs the server.
+* **config.js** -> Configuration file: DB connection, server ports, admin user, JWT secret and Google Maps API Key.
+* **deploy.js** -> Script that initializes the server data. Must be run before launching the server for the first time.
+* **package.json** -> Dependencies
 
-
-_Proyecto de STW de Ismael Rodríguez, Sergio Soro y David Vergara_
 

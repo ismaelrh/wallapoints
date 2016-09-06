@@ -1,16 +1,20 @@
 # WallaPoints
 
 [![Build Status](https://travis-ci.com/ismaro3/wallapoints.svg?token=fCoJEKj2f8k1vssPR5Um&branch=master)](https://travis-ci.com/ismaro3/wallapoints)
-[![Heroku](https://heroku-badge.herokuapp.com/?app=wallapoints)](http://wallapoints.herokuapp.com/)
 
-Proyecto de STW de Ismael Rodríguez, Sergio Soro y David Vergara.
+Map-centered social network where users can manage POIs (Points of Interest) and routes of POIs. It uses a RESTful model. 
+Guests can visualize all POIs and rate other users POIs, follow users, etc.
+Registered users can create, modify and remove POIs and routes, and obtain statistics about their points.
 
-##Directorios:
-* **core** -> Contiene el servicio web principal junto al frontend
-
-##Ficheros:
-* **.travis.yml** -> Fichero de configuración de test Travis.
-* **Procfile** -> Fichero de configuración de ejecución en Heroku.
+Developed as a project for Web Systems and Technologies subject in University of Zaragoza, Spain.
+Authors: Ismael Rodríguez (me), Sergio Soro (@teruyi), David Vergara (@davidvergara).
 
 
-Por favor, lee el README.md dentro de la carpeta "core" para más información.
+##Directories:
+* **core** -> Contains the main web service and frontend.
+
+##Files:
+* **.travis.yml** -> Travis tests configuration file. 
+* **Procfile** -> Heroku deploy config file.
+
+Please read the README.md file inside "core" folder to obtain more information.
