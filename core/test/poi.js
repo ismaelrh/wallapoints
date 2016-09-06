@@ -122,6 +122,7 @@ describe('Poi', function () {
             .set('Authorization','Bearer ' + generateUserToken('admin'))
             .end(function (err, res) {
 
+		console.log(JSON.stringify(res));
                 res.should.have.status(200);
                 res.should.be.json;
                 res.body.should.be.a('object');
