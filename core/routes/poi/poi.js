@@ -151,7 +151,7 @@ module.exports = function (app) {
 
                 //Tras responderse se guarda la elevacion
                 gmAPI.elevationFromLocations(locations, function (err, result) {
-                    if (result != undefined) {
+                    if (result != undefined && result.results && result.results.length > 0 && result.results[0].elevation) {
                         elevation = result.results[0].elevation;
                     }
 
