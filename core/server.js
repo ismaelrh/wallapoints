@@ -24,7 +24,6 @@ if (app.settings.env == 'development') {
 
 //Creamos objeto de API de Google Maps
 var publicConfig = {
-    key: config["gmaps-api-key"],
     stagger_time: 1000, // for elevationPath
     encode_polylines: false,
     secure: true
@@ -32,6 +31,7 @@ var publicConfig = {
 
 //Si la API de Google Maps no está en variable de entorno, la cogemos de config
 if(!process.env.GMAPI_KEY){
+    publicConfig.key = config["gmaps-api-key"];
     var gmAPI = new GoogleMapsAPI(publicConfig);
     //Pones objeto de la API de Gmaps en gmAPI
     app.set('gmAPI', gmAPI);
