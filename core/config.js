@@ -22,6 +22,6 @@ module.exports = {
         }
     },
     jwtsecret: "firmasuperlargaeimposibledeadivinar",
-    gmaps-api-key: "Insert_your_own"
+    "gmaps-api-key": "Insert_your_own"
 
 };
