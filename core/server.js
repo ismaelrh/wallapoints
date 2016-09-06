@@ -30,9 +30,16 @@ var publicConfig = {
     secure: true
 };
 
-var gmAPI = new GoogleMapsAPI(publicConfig);
-//Pones objeto de la API de Gmaps en gmAPI
-app.set('gmAPI', gmAPI);
+//Si la API de Google Maps no está en variable de entorno, la cogemos de config
+if(!process.env.GMAPI_KEY){
+    var gmAPI = new GoogleMapsAPI(publicConfig);
+    //Pones objeto de la API de Gmaps en gmAPI
+    app.set('gmAPI', gmAPI);
+}
+else{
+
+    app.set('gmAPI',process.env.GMAPI_KEY);
+}
 
 //Secret usado para firmar JWT's
 app.set('jwtsecret', config.jwtsecret);
