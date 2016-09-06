@@ -1,6 +1,6 @@
 # WallaPoints Core
 
-[![Build Status](https://travis-ci.com/ismaro3/wallapoints.svg?token=fCoJEKj2f8k1vssPR5Um&branch=master)](https://travis-ci.com/ismaro3/wallapoints)
+[![Build Status](https://travis-ci.org/ismaro3/wallapoints.svg?branch=master)](https://travis-ci.org/ismaro3/wallapoints)
 
 ##How to run the project
 1. Clone the project.
