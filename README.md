@@ -7,6 +7,7 @@ Guests can visualize all POIs and rate other users POIs, follow users, etc.
 Registered users can create, modify and remove POIs and routes, and obtain statistics about their points.
 
 Developed as a project for Web Systems and Technologies subject in University of Zaragoza, Spain.
+
 Authors: Ismael Rodríguez (me), Sergio Soro (@teruyi), David Vergara (@davidvergara).
 
 ![System screenshot](screenshot.png)
